@@ -7,6 +7,7 @@ import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed'
 import PropFilter from '@/components/Terminal/PropFilter';
 import MissionAlpha from '@/components/Terminal/MissionAlpha';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
+import QuickAddBet from '@/components/Terminal/QuickAddBet';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -91,6 +92,12 @@ export default function MasterTerminal() {
       <div className="mt-8">
         <HedgeCalculator />
       </div>
+
+      {arbs[0] && (
+        <div className="mt-8">
+          <QuickAddBet game={arbs[0]} userBankroll={bankroll} unitSizePercent={0.01} />
+        </div>
+      )}
 
       {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
     </main>
