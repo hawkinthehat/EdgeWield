@@ -2,7 +2,7 @@
 
 type FilterType = 'all' | 'game' | 'prop';
 
-type ArbRow = {
+export type ArbRow = {
   id: string;
   market_type: string;
   event_name: string;
@@ -17,7 +17,7 @@ type ArbRow = {
   is_prop: boolean;
 };
 
-const sampleRows: ArbRow[] = [
+export const sampleRows: ArbRow[] = [
   {
     id: 'row-1',
     market_type: 'h2h',
@@ -78,17 +78,19 @@ function filterRows(rows: ArbRow[], filter: FilterType, locked: boolean): ArbRow
 export default function ArbFeed({
   filter,
   locked,
+  rows = sampleRows,
 }: {
   filter: FilterType;
   locked: boolean;
+  rows?: ArbRow[];
 }) {
-  const rows = filterRows(sampleRows, filter, locked);
+  const visibleRows = filterRows(rows, filter, locked);
 
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-[10px] uppercase tracking-widest text-slate-400">Live Edge Feed</p>
-        <p className="text-[10px] uppercase tracking-widest text-edge-emerald">{rows.length} opportunities</p>
+        <p className="text-[10px] uppercase tracking-widest text-edge-emerald">{visibleRows.length} opportunities</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[860px] border-collapse text-left">
@@ -105,7 +107,7 @@ export default function ArbFeed({
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
+            {visibleRows.map((row) => (
               <tr key={row.id} className="border-b border-slate-900 text-xs text-slate-200">
                 <td className="py-3 font-mono uppercase">{row.market_type}</td>
                 <td className="py-3">{row.event_name}</td>
