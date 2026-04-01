@@ -76,8 +76,12 @@ export default function MasterTerminal() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const API_KEY = process.env.NEXT_PUBLIC_THE_ODDS_API_KEY ?? '';
-  const SPORT = process.env.NEXT_PUBLIC_THE_ODDS_SPORT ?? 'americanfootball_nfl';
+  const env =
+    typeof process !== 'undefined' && process.env
+      ? process.env
+      : ({} as Record<string, string | undefined>);
+  const API_KEY = env.NEXT_PUBLIC_THE_ODDS_API_KEY ?? '';
+  const SPORT = env.NEXT_PUBLIC_THE_ODDS_SPORT ?? 'americanfootball_nfl';
 
   const oddsUrl = useMemo(() => {
     if (!API_KEY) {
