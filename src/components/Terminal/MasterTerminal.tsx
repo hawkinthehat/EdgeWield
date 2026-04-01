@@ -6,6 +6,7 @@ import CFODash from '@/components/Terminal/CFODash';
 import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
 import PropFilter from '@/components/Terminal/PropFilter';
 import MissionAlpha from '@/components/Terminal/MissionAlpha';
+import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -86,6 +87,10 @@ export default function MasterTerminal() {
 
       {/* 4. THE LIVE EDGE FEED */}
       <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
+
+      <div className="mt-8">
+        <HedgeCalculator />
+      </div>
 
       {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
     </main>
