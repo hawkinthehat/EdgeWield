@@ -32,6 +32,7 @@ export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
     .from('profiles')
     .update({
       bankroll_size: formData.bankroll,
+      total_bankroll: formData.bankroll,
       unit_size_percentage: unitPercent,
       risk_tolerance: formData.risk,
       onboarding_completed: true,
