@@ -9,4 +9,4 @@ create table if not exists public.market_cache (
   last_updated timestamp with time zone default now()
 );
 
-create index if not exists idx_market_cache_sport_key on public.market_cache (sport_key);
+create index if not exists idx_sport_key on public.market_cache (sport_key);
