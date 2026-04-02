@@ -41,6 +41,7 @@ export async function POST() {
       },
     ],
     mode: 'subscription',
+    allow_promotion_codes: true,
     success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?success=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?canceled=true`,
     metadata: { supabase_user_id: user.id },
