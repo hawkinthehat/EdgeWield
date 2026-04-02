@@ -9,6 +9,7 @@ import MissionAlpha from '@/components/Terminal/MissionAlpha';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
+import BookieSettings from '@/components/Terminal/BookieSettings';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -17,12 +18,19 @@ export default function MasterTerminal() {
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
+  const [activeBookies, setActiveBookies] = useState<string[]>(['fanduel', 'draftkings', 'betmgm']);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const topArbs = useMemo(() => {
-    return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
-  }, [arbs]);
+    return [...arbs]
+      .filter(
+        (arb) =>
+          activeBookies.includes(arb.bookie_a.toLowerCase()) &&
+          activeBookies.includes(arb.bookie_b.toLowerCase()),
+      )
+      .sort((a, b) => b.profit_percent - a.profit_percent);
+  }, [activeBookies, arbs]);
 
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -47,12 +55,15 @@ export default function MasterTerminal() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('is_pro')
+        .select('is_pro,active_bookies')
         .eq('id', user.id)
         .single();
 
       if (isMounted) {
         setIsPro(Boolean(profile?.is_pro));
+        if (Array.isArray(profile?.active_bookies) && profile.active_bookies.length > 0) {
+          setActiveBookies(profile.active_bookies.map((book: string) => book.toLowerCase()));
+        }
       }
 
       channel = supabase
@@ -64,6 +75,9 @@ export default function MasterTerminal() {
             const nextIsPro = Boolean(payload.new?.is_pro);
             const previousIsPro = Boolean(payload.old?.is_pro);
             setIsPro(nextIsPro);
+            if (Array.isArray(payload.new?.active_bookies) && payload.new.active_bookies.length > 0) {
+              setActiveBookies(payload.new.active_bookies.map((book: string) => book.toLowerCase()));
+            }
             if (nextIsPro && !previousIsPro) {
               setShowMission(true);
             }
@@ -136,8 +150,12 @@ export default function MasterTerminal() {
         )}
       </div>
 
+      <div className="mb-6">
+        <BookieSettings currentBooks={activeBookies} onChange={setActiveBookies} />
+      </div>
+
       {/* 4. THE LIVE EDGE FEED */}
-      <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
+      <ArbFeed filter={filter} locked={!isPro} rows={topArbs} />
 
       <div className="mt-8">
         <HedgeCalculator />

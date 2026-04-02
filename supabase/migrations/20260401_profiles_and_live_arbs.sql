@@ -5,7 +5,7 @@ create table if not exists profiles (
   id uuid references auth.users primary key,
   bankroll_size numeric default 1000,
   is_pro boolean default false, -- THE $99 GATE
-  active_bookies text[] default '{FanDuel,DraftKings}',
+  active_bookies text[] default '{fanduel,draftkings,betmgm}',
   updated_at timestamp with time zone default now()
 );
 
