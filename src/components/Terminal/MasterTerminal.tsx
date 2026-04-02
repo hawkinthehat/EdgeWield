@@ -1,55 +1,46 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
-import CFODash from '@/components/Terminal/CFODash';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { WatcherDash } from '@/components/Terminal/CFODash';
 import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
 import PropFilter from '@/components/Terminal/PropFilter';
 import MissionAlpha from '@/components/Terminal/MissionAlpha';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
+import { useWatcherRealtime, type WatcherProfile } from '@/hooks/useWatcherRealtime';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
-export default function MasterTerminal() {
+type MasterTerminalProps = {
+  serverProfile?: Partial<WatcherProfile>;
+};
+
+export default function MasterTerminal({ serverProfile }: MasterTerminalProps) {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
-  const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
-  const [bankroll] = useState(1000);
+  const initialProfile = useMemo<WatcherProfile>(
+    () => ({
+      id: serverProfile?.id,
+      bankroll_size: Number(serverProfile?.bankroll_size ?? 1000),
+      is_pro: Boolean(serverProfile?.is_pro),
+    }),
+    [serverProfile],
+  );
+  const { profile } = useWatcherRealtime(initialProfile);
+  const bankroll = Number(profile.bankroll_size) || 0;
+  const isPro = Boolean(profile.is_pro);
+  const previousIsProRef = useRef(isPro);
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
   }, [arbs]);
 
   useEffect(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return;
+    if (isPro && !previousIsProRef.current) {
+      setShowMission(true);
     }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    let channel: RealtimeChannel | null = null;
-
-    channel = supabase
-      .channel('profile-changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
-        const nextIsPro = Boolean(payload.new?.is_pro);
-        const previousIsPro = Boolean(payload.old?.is_pro);
-        setIsPro(nextIsPro);
-        if (nextIsPro && !previousIsPro) {
-          setShowMission(true);
-        }
-      })
-      .subscribe();
-
-    return () => {
-      if (channel) {
-        void supabase.removeChannel(channel);
-      }
-    };
-  }, []);
+    previousIsProRef.current = isPro;
+  }, [isPro]);
 
   return (
     <main className="min-h-screen bg-edge-navy text-white p-8">
@@ -70,7 +61,7 @@ export default function MasterTerminal() {
       </div>
 
       {/* 2. THE CFO ANALYTICS */}
-      <CFODash />
+      <WatcherDash bankroll={bankroll} />
 
       {/* 3. THE MARKET CONTROL */}
       <div className="mb-6 mt-12 flex items-center justify-between gap-4">
