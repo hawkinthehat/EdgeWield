@@ -78,7 +78,7 @@ export default function HedgeTeaser({
           ? 'View Strategy'
           : isCheckingOut
             ? 'Redirecting to Checkout...'
-            : 'Upgrade to Watcher Pro'}
+            : 'Upgrade to EdgeWield Pro'}
       </button>
     </div>
   );

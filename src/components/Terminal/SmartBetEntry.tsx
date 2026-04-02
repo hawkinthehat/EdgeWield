@@ -3,13 +3,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle, Shield } from 'lucide-react';
 
-type WatcherProfile = {
+type EdgeWieldProfile = {
   total_bankroll: number;
   unit_size_percentage: number;
   risk_tolerance: string;
 };
 
-type WatcherGame = {
+type EdgeWieldGame = {
   id?: string;
   sport_key: string;
   home_team: string;
@@ -25,8 +25,8 @@ type SaveBetPayload = {
 };
 
 interface SmartBetEntryProps {
-  game: WatcherGame;
-  userProfile: WatcherProfile;
+  game: EdgeWieldGame;
+  userProfile: EdgeWieldProfile;
   onSave: (bet: SaveBetPayload) => void;
 }
 
@@ -100,7 +100,7 @@ export default function SmartBetEntry({ game, userProfile, onSave }: SmartBetEnt
 
       <div className="mb-8">
         <div className="mb-3 flex items-end justify-between">
-          <label className="text-sm font-bold text-slate-700">Watcher Confidence</label>
+          <label className="text-sm font-bold text-slate-700">EdgeWield Confidence</label>
           <span className="text-xl font-mono font-bold text-blue-600">{confidence}u</span>
         </div>
         <input
