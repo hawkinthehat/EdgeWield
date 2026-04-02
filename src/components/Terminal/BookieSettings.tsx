@@ -5,11 +5,11 @@ import { CheckCircle2, Circle } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 const ALL_BOOKS = [
-  { id: 'fanduel', name: 'FanDuel', logo: '🔵' },
-  { id: 'draftkings', name: 'DraftKings', logo: '👑' },
-  { id: 'betmgm', name: 'BetMGM', logo: '🦁' },
-  { id: 'caesars', name: 'Caesars', logo: '🏛️' },
-  { id: 'betrivers', name: 'BetRivers', logo: '⚡' },
+  { id: 'fanduel', name: 'FanDuel', logo: 'FD' },
+  { id: 'draftkings', name: 'DraftKings', logo: 'DK' },
+  { id: 'betmgm', name: 'BetMGM', logo: 'MGM' },
+  { id: 'caesars', name: 'Caesars', logo: 'CZ' },
+  { id: 'betrivers', name: 'BetRivers', logo: 'BR' },
 ] as const;
 
 type BookId = (typeof ALL_BOOKS)[number]['id'];
