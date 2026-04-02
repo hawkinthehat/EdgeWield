@@ -34,20 +34,46 @@ export default function MasterTerminal() {
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
     let channel: RealtimeChannel | null = null;
+    let isMounted = true;
 
-    channel = supabase
-      .channel('profile-changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
-        const nextIsPro = Boolean(payload.new?.is_pro);
-        const previousIsPro = Boolean(payload.old?.is_pro);
-        setIsPro(nextIsPro);
-        if (nextIsPro && !previousIsPro) {
-          setShowMission(true);
-        }
-      })
-      .subscribe();
+    void (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user?.id || !isMounted) {
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_pro')
+        .eq('id', user.id)
+        .single();
+
+      if (isMounted) {
+        setIsPro(Boolean(profile?.is_pro));
+      }
+
+      channel = supabase
+        .channel(`profile-changes-${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
+          (payload) => {
+            const nextIsPro = Boolean(payload.new?.is_pro);
+            const previousIsPro = Boolean(payload.old?.is_pro);
+            setIsPro(nextIsPro);
+            if (nextIsPro && !previousIsPro) {
+              setShowMission(true);
+            }
+          },
+        )
+        .subscribe();
+    })();
 
     return () => {
+      isMounted = false;
       if (channel) {
         void supabase.removeChannel(channel);
       }
