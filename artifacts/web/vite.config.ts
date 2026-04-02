@@ -12,6 +12,7 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 const basePath = process.env.BASE_PATH ?? "/";
+const apiProxyTarget = process.env.VITE_API_PROXY_TARGET ?? "http://localhost:4000";
 
 export default defineConfig({
   base: basePath,
@@ -48,6 +49,12 @@ export default defineConfig({
   server: {
     port,
     host: "0.0.0.0",
+    proxy: {
+      "/api": {
+        target: apiProxyTarget,
+        changeOrigin: true,
+      },
+    },
     allowedHosts: true,
     fs: {
       strict: true,
