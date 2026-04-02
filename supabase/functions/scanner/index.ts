@@ -1,18 +1,3 @@
-type JsonLike = string | number | boolean | null | Record<string, unknown> | JsonLike[];
-
-type SupabaseLike = {
-  from: (table: string) => {
-    select: (columns: string) => {
-      eq: (column: string, value: JsonLike) => Promise<{ data: any; error?: { message: string } | null }>;
-      single: () => Promise<{ data: any; error?: { message: string } | null }>;
-    };
-    insert: (values: Record<string, unknown>) => Promise<{ error?: { message: string } | null }>;
-    update: (values: Record<string, unknown>) => {
-      eq: (column: string, value: JsonLike) => Promise<{ error?: { message: string } | null }>;
-    };
-  };
-};
-
 type BetRow = {
   id: string;
   user_id: string;
@@ -79,7 +64,7 @@ function resolveOpponentOdds(bet: BetRow, market: MarketCacheRow): number | null
   return null;
 }
 
-async function sendHedgeAlert(userId: string, eventName: string, opponentOdds: number, supabase: SupabaseLike) {
+async function sendHedgeAlert(userId: string, eventName: string, opponentOdds: number, supabase: any) {
   const { error } = await supabase.from('hedge_alerts').insert({
     user_id: userId,
     event_name: eventName,
@@ -92,7 +77,7 @@ async function sendHedgeAlert(userId: string, eventName: string, opponentOdds: n
   }
 }
 
-export async function scanForHedges(supabase: SupabaseLike) {
+export async function scanForHedges(supabase: any) {
   const { data: activeBets, error: activeBetsError } = await supabase
     .from('bets')
     .select('id,user_id,game_id,event_name,team,side,wager_amount,odds_at_entry,status')
