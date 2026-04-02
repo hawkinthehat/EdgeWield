@@ -17,7 +17,7 @@ export default function MasterTerminal() {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [showMission, setShowMission] = useState(false);
-  const [arbs, setArbs] = useState<ArbRow[]>(sampleRows);
+  const [arbs, setArbs] = useState<ArbRow[]>([]);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isLoadingArbs, setIsLoadingArbs] = useState(true);
@@ -95,7 +95,7 @@ export default function MasterTerminal() {
 
         const payload = (await response.json()) as { arbs?: ArbRow[] };
         if (isMounted && Array.isArray(payload.arbs)) {
-          setArbs(payload.arbs.length > 0 ? payload.arbs : sampleRows);
+          setArbs(payload.arbs);
         }
       } catch {
         // Keep rendering existing snapshot on transient scan failures.
