@@ -20,6 +20,11 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     async function getProfile() {
       const {
         data: { user },
@@ -47,6 +52,10 @@ export default function SettingsPage() {
   }, []);
 
   const handleSave = async () => {
+    if (!supabase) {
+      return;
+    }
+
     setLoading(true);
     const {
       data: { user },
@@ -81,6 +90,11 @@ export default function SettingsPage() {
   return (
     <div className="max-w-2xl">
       <h1 className="mb-8 text-3xl font-black italic uppercase">Terminal Settings</h1>
+      {!supabase && (
+        <p className="mb-6 rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-xs font-bold uppercase tracking-wider text-amber-300">
+          Missing Supabase environment variables. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.
+        </p>
+      )}
 
       <div className="mb-6 rounded-[2.5rem] border border-edge-border bg-edge-slate/20 p-8">
         <div className="mb-6 flex items-center gap-3">
@@ -129,7 +143,7 @@ export default function SettingsPage() {
       <button
         type="button"
         onClick={handleSave}
-        disabled={loading}
+        disabled={loading || !supabase}
         className="flex w-full items-center justify-center gap-3 rounded-2xl bg-white p-5 font-black uppercase tracking-widest text-edge-navy transition-all hover:bg-edge-emerald disabled:cursor-not-allowed disabled:opacity-60"
       >
         {saved ? <CheckCircle size={20} /> : <Save size={20} />}
