@@ -1,0 +1,72 @@
+'use client'
+import { Activity, Zap, Info } from 'lucide-react'
+
+export default function LiveSweat({ activeBets = [] }) {
+  // Example data: A "Locked" Arb currently in play
+  const mockSweat = [
+    { 
+      id: 1, 
+      game: 'Lakers vs Celtics', 
+      status: '2nd Quarter', 
+      score: '42 - 38', 
+      lockedProfit: 24.50,
+      exposure: 500.00,
+      middleOpportunity: 1.2 // % chance to win BOTH sides
+    }
+  ]
+
+  return (
+    <div className="mt-10">
+      <div className="flex items-center gap-3 mb-6">
+        <Activity className="text-edge-emerald animate-pulse" size={20} />
+        <h2 className="text-xl font-black italic uppercase italic">Live Sweat Terminal</h2>
+      </div>
+
+      <div className="grid gap-4">
+        {mockSweat.map((bet) => (
+          <div key={bet.id} className="bg-edge-navy border border-edge-border p-6 rounded-[2.5rem] relative overflow-hidden group">
+            {/* BACKGROUND PULSE */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-edge-emerald/5 blur-3xl -mr-16 -mt-16 group-hover:bg-edge-emerald/10 transition-all" />
+            
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+              {/* GAME INFO */}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-black text-edge-emerald uppercase tracking-widest">{bet.status}</span>
+                  <div className="w-1 h-1 bg-slate-700 rounded-full" />
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">{bet.game}</span>
+                </div>
+                <div className="text-3xl font-black italic text-white tracking-tighter">
+                  {bet.score}
+                </div>
+              </div>
+
+              {/* PROFIT LOCK STATS */}
+              <div className="flex gap-8 px-8 border-x border-edge-border/50">
+                <div className="text-center">
+                  <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Locked Profit</p>
+                  <p className="text-xl font-black text-edge-emerald">+${bet.lockedProfit}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Total Exposure</p>
+                  <p className="text-xl font-black text-white">${bet.exposure}</p>
+                </div>
+              </div>
+
+              {/* ACTION: THE MIDDLE WATCH */}
+              <div className="flex flex-col items-end">
+                <div className="flex items-center gap-1 text-blue-400 mb-2">
+                  <Zap size={12} fill="currentColor" />
+                  <span className="text-[9px] font-black uppercase italic">Middle Alert: {bet.middleOpportunity}%</span>
+                </div>
+                <button className="bg-edge-slate/30 hover:bg-edge-slate/50 border border-edge-border text-[10px] font-black uppercase px-4 py-2 rounded-xl transition-all">
+                  View Live Odds
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

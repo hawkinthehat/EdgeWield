@@ -1,0 +1,78 @@
+import { Swords, ShieldCheck, Zap, BarChart3, ChevronRight } from 'lucide-react';
+import Logo from '@/components/Logo';
+
+export default function LandingPage() {
+  return (
+    <div className="min-h-screen bg-edge-navy selection:bg-edge-emerald/30 overflow-x-hidden">
+      {/* NAVIGATION */}
+      <nav className="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center border-b border-edge-border/50">
+        <Logo />
+        <div className="flex gap-6 items-center">
+          <button className="text-slate-400 font-bold hover:text-white transition-colors">Login</button>
+          <button className="bg-edge-emerald text-edge-navy px-6 py-2.5 rounded-xl font-black text-sm shadow-lg shadow-edge-emerald/20 hover:scale-105 transition-transform">
+            Start Your Shield
+          </button>
+        </div>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section className="max-w-5xl mx-auto pt-24 pb-20 text-center px-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-edge-emerald/10 border border-edge-emerald/20 text-edge-emerald text-xs font-bold uppercase tracking-widest mb-8 animate-pulse">
+          <Zap size={14} /> Beta Phase 1.0 Now Live
+        </div>
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9]">
+          THE EDGE EXISTS. <br />
+          <span className="text-edge-emerald italic">WIELD IT.</span>
+        </h1>
+        <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+          Stop gambling on gut feelings. EdgeWield is the surgical companion for your bankroll—providing the mathematical layer needed to lock in profit.
+        </p>
+        
+        <div className="flex flex-col items-center gap-4">
+          <button className="bg-white text-edge-navy px-10 py-5 rounded-2xl font-black text-xl flex items-center gap-3 hover:bg-edge-emerald hover:text-edge-navy transition-all group">
+            Unlock Pro Access <ChevronRight className="group-hover:translate-x-1 transition-transform" />
+          </button>
+          <p className="text-xs text-slate-500 font-mono tracking-widest uppercase mt-4">
+            Use Code <span className="text-edge-emerald font-bold">BETA50</span> for 50% Off Lifetime access
+          </p>
+        </div>
+      </section>
+
+      {/* FEATURE GRID */}
+      <section className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-6 pb-32">
+        <Feature 
+          icon={<ShieldCheck className="text-edge-emerald" />} 
+          title="Bankroll Shield" 
+          desc="Automated unit sizing based on your actual balance. We calculate the risk; you execute the move." 
+        />
+        <Feature 
+          icon={<Zap className="text-edge-emerald" />} 
+          title="Hedge Scanning" 
+          desc="Our bot monitors live odds across your active bookies to find 0% vig and locked-profit opportunities." 
+        />
+        <Feature 
+          icon={<BarChart3 className="text-edge-emerald" />} 
+          title="The Sweat Grid" 
+          desc="Real-time win probability and hedge calculators that turn stressful games into clinical outcomes." 
+        />
+      </section>
+
+      {/* SOCIAL PROOF FOOTER */}
+      <footer className="text-center py-10 border-t border-edge-border/30 text-slate-600 text-[10px] uppercase tracking-[0.5em] font-bold">
+        EdgeWield Terminal // Est. 2026 // Built for the Professional
+      </footer>
+    </div>
+  );
+}
+
+function Feature({ icon, title, desc }: { icon: any, title: string, desc: string }) {
+  return (
+    <div className="p-10 bg-edge-slate/30 border border-edge-border rounded-[2.5rem] hover:border-edge-emerald/50 transition-all">
+      <div className="mb-6 p-4 bg-edge-navy rounded-2xl w-fit shadow-inner">
+        {icon}
+      </div>
+      <h3 className="text-2xl font-black mb-4">{title}</h3>
+      <p className="text-slate-400 leading-relaxed text-sm">{desc}</p>
+    </div>
+  );
+}

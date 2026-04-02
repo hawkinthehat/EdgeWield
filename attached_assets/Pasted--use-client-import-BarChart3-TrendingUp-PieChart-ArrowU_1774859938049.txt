@@ -1,0 +1,53 @@
+'use client'
+import { BarChart3, TrendingUp, PieChart, ArrowUpRight } from 'lucide-react'
+
+export default function CFODash({ stats = { totalProfit: 412.50, roi: 4.2, trades: 12, growth: 12.4 } }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      {/* NET PROFIT */}
+      <div className="p-6 bg-edge-slate/20 border border-edge-border rounded-[2rem] hover:border-edge-emerald/40 transition-all">
+        <div className="flex justify-between items-start mb-4">
+          <div className="p-2 bg-edge-emerald/10 rounded-xl">
+            <TrendingUp size={18} className="text-edge-emerald" />
+          </div>
+          <span className="text-[10px] font-black text-edge-emerald">+12% MoM</span>
+        </div>
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Net Realized Profit</p>
+        <h3 className="text-2xl font-black text-white italic mt-1">${stats.totalProfit.toLocaleString()}</h3>
+      </div>
+
+      {/* AVERAGE YIELD */}
+      <div className="p-6 bg-edge-slate/20 border border-edge-border rounded-[2rem]">
+        <div className="flex justify-between items-start mb-4">
+          <div className="p-2 bg-blue-500/10 rounded-xl">
+            <BarChart3 size={18} className="text-blue-500" />
+          </div>
+        </div>
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Avg. Yield Per Arb</p>
+        <h3 className="text-2xl font-black text-white italic mt-1">{stats.roi}%</h3>
+      </div>
+
+      {/* WIN VELOCITY */}
+      <div className="p-6 bg-edge-slate/20 border border-edge-border rounded-[2rem]">
+        <div className="flex justify-between items-start mb-4">
+          <div className="p-2 bg-purple-500/10 rounded-xl">
+            <PieChart size={18} className="text-purple-500" />
+          </div>
+        </div>
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Missions Executed</p>
+        <h3 className="text-2xl font-black text-white italic mt-1">{stats.trades} <span className="text-xs text-slate-500 uppercase">Trades</span></h3>
+      </div>
+
+      {/* PROJECTED GROWTH */}
+      <div className="p-6 bg-edge-emerald text-edge-navy rounded-[2rem] shadow-lg shadow-edge-emerald/20">
+        <div className="flex justify-between items-start mb-4">
+          <div className="p-2 bg-edge-navy/10 rounded-xl">
+            <ArrowUpRight size={18} />
+          </div>
+        </div>
+        <p className="text-[10px] font-black uppercase tracking-widest opacity-70">Projected 30D Growth</p>
+        <h3 className="text-2xl font-black italic mt-1">+${(stats.totalProfit * 1.5).toFixed(2)}</h3>
+      </div>
+    </div>
+  )
+}

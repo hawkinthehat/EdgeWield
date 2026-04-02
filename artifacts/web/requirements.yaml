@@ -1,0 +1,18 @@
+packages:
+  "framer-motion": "For premium smooth animations and page transitions"
+  "react-hook-form": "For robust form state management in the contact form"
+  "@hookform/resolvers": "For Zod form validation integration"
+  "zod": "For form schema validation"
+  "lucide-react": "For premium iconography across the site"
+
+images:
+  - path: "artifacts/web/public/images/hero-abstract.png"
+    description: "Dark, premium abstract 3D geometric background with subtle electric violet and deep blue glowing edge highlights, sophisticated minimal corporate tech feel, very dark and moody"
+    aspect_ratio: "16:9"
+  - path: "artifacts/web/public/images/about-vision.png"
+    description: "Conceptual abstract futuristic architecture representing corporate vision and future, dark mode, sharp lines, subtle purple light leaks, premium aesthetic"
+    aspect_ratio: "16:9"
+
+notes:
+  - "Pure frontend implementation as requested. Contact form submission is mocked."
+  - "Using dark mode as the default and only theme for a premium, sharp brand feel."

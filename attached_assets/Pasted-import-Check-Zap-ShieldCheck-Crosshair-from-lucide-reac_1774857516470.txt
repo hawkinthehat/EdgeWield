@@ -1,0 +1,94 @@
+import { Check, Zap, ShieldCheck, Crosshair } from 'lucide-react';
+
+export default function Pricing() {
+  const tiers = [
+    {
+      name: 'Standard',
+      price: '19.99',
+      promo: '9.99',
+      icon: <ShieldCheck className="text-slate-400" />,
+      features: [
+        '15-Minute Market Sync',
+        'Main Markets (Moneyline/Spreads)',
+        'Standard Unit Calculator',
+        'Email Alerts (Delayed)',
+      ],
+      cta: 'Start Scouting',
+      highlight: false
+    },
+    {
+      name: 'Pro Terminal',
+      price: '49.99',
+      promo: '24.99',
+      icon: <Crosshair className="text-edge-emerald" />,
+      features: [
+        '90-Second Instant Sync',
+        'Player Props & Alt Lines',
+        'Auto-Hedge Unit Execution',
+        'Direct "Wield" SMS Alerts',
+        'Institutional Arb Scanner'
+      ],
+      cta: 'Wield the Edge',
+      highlight: true
+    }
+  ];
+
+  return (
+    <section className="py-24 px-6 max-w-5xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl font-black italic uppercase tracking-tighter">Choose Your Tier</h2>
+        <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.4em] mt-2">
+          Use Code <span className="text-edge-emerald">BETA50</span> for 50% Lifetime Discount
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {tiers.map((tier) => (
+          <div 
+            key={tier.name}
+            className={`relative p-10 rounded-[3rem] border-2 transition-all ${
+              tier.highlight 
+              ? 'border-edge-emerald bg-edge-emerald/5 shadow-[0_0_40px_rgba(16,185,129,0.15)]' 
+              : 'border-edge-border bg-edge-slate/20'
+            }`}
+          >
+            {tier.highlight && (
+              <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-edge-emerald text-edge-navy px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                Recommended for Pros
+              </span>
+            )}
+            
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                {tier.icon}
+                <h3 className="text-2xl font-black uppercase italic">{tier.name}</h3>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black tracking-tighter">${tier.promo}</span>
+                <span className="text-slate-500 line-through text-sm font-bold">${tier.price}</span>
+                <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">/ Month</span>
+              </div>
+            </div>
+
+            <ul className="space-y-4 mb-10">
+              {tier.features.map((feature) => (
+                <li key={feature} className="flex items-center gap-3 text-sm font-medium text-slate-300">
+                  <Check size={16} className={tier.highlight ? 'text-edge-emerald' : 'text-slate-500'} />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <button className={`w-full py-4 rounded-2xl font-black uppercase tracking-tighter transition-all ${
+              tier.highlight 
+              ? 'bg-edge-emerald text-edge-navy hover:scale-105 shadow-lg' 
+              : 'bg-white text-edge-navy hover:bg-slate-200'
+            }`}>
+              {tier.cta}
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

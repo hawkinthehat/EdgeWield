@@ -1,0 +1,55 @@
+'use client'
+import { useState } from 'react';
+import { Percent, Info } from 'lucide-react';
+
+export default function KellyTool({ bankroll = 1000 }) {
+  const [odds, setOdds] = useState(2.10); // Decimal Odds
+  const [prob, setProb] = useState(52);   // Your estimated win chance %
+  
+  const b = odds - 1;
+  const p = prob / 100;
+  const q = 1 - p;
+  const kellyPercent = ((b * p - q) / b) * 0.25; // Quarter Kelly (Safe Mode)
+  const recommendedBet = Math.max(0, bankroll * kellyPercent);
+
+  return (
+    <div className="p-8 bg-edge-slate/30 border border-edge-emerald/30 rounded-[2.5rem] mt-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xs font-black uppercase tracking-widest text-edge-emerald">Kelly Optimizer</h3>
+        <span className="text-[10px] bg-edge-emerald/10 text-edge-emerald px-2 py-1 rounded">1/4 Kelly (Safe)</span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6 mb-8">
+        <div>
+          <label className="text-[10px] font-bold text-slate-500 uppercase block mb-2">Decimal Odds</label>
+          <input 
+            type="number" 
+            value={odds}
+            onChange={(e) => setOdds(Number(e.target.value))}
+            className="w-full bg-edge-navy border border-edge-border p-3 rounded-xl font-black text-white"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-bold text-slate-500 uppercase block mb-2">Win Probability %</label>
+          <input 
+            type="number" 
+            value={prob}
+            onChange={(e) => setProb(Number(e.target.value))}
+            className="w-full bg-edge-navy border border-edge-border p-3 rounded-xl font-black text-white"
+          />
+        </div>
+      </div>
+
+      <div className="bg-edge-navy p-6 rounded-2xl border border-edge-border flex justify-between items-center">
+        <div>
+          <p className="text-[10px] font-bold text-slate-500 uppercase italic">Execution Amount</p>
+          <p className="text-3xl font-black text-white">${recommendedBet.toFixed(2)}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] font-bold text-slate-500 uppercase italic">Risk %</p>
+          <p className="text-xl font-black text-edge-emerald">{(kellyPercent * 100).toFixed(2)}%</p>
+        </div>
+      </div>
+    </div>
+  );
+}

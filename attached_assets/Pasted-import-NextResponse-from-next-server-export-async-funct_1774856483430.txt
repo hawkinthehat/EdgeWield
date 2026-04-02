@@ -1,0 +1,57 @@
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  const API_KEY = process.env.ODDS_API_KEY;
+  const SPORT = 'americanfootball_nfl'; // You can change this to 'basketball_nba', etc.
+  const REGION = 'us';
+  const MARKET = 'h2h'; // Moneyline (Head to Head)
+
+  try {
+    const response = await fetch(
+      `https://api.the-odds-api.com/v4/sports/${SPORT}/odds/?apiKey=${API_KEY}&regions=${REGION}&markets=${MARKET}&oddsFormat=decimal`
+    );
+    const data = await response.json();
+
+    const arbOpportunities = [];
+
+    // 1. Loop through every game (event)
+    data.forEach((event: any) => {
+      const outcomes = {
+        home: [] as any[],
+        away: [] as any[]
+      };
+
+      // 2. Group odds by Home Team and Away Team
+      event.bookmakers.forEach((bookie: any) => {
+        const market = bookie.markets[0];
+        if (market) {
+          outcomes.home.push({ bookie: bookie.title, price: market.outcomes[0].price });
+          outcomes.away.push({ bookie: bookie.title, price: market.outcomes[1].price });
+        }
+      });
+
+      // 3. Find the BEST odds for both sides across ALL bookies
+      const bestHome = outcomes.home.reduce((prev, curr) => (curr.price > prev.price ? curr : prev));
+      const bestAway = outcomes.away.reduce((prev, curr) => (curr.price > prev.price ? curr : prev));
+
+      // 4. Calculate Arbitrage (The Arb Formula)
+      const totalProbability = (1 / bestHome.price) + (1 / bestAway.price);
+
+      if (totalProbability < 1) {
+        const profitPercentage = ((1 - totalProbability) * 100).toFixed(2);
+        
+        arbOpportunities.push({
+          id: event.id,
+          game: `${event.home_team} vs ${event.away_team}`,
+          profit: profitPercentage,
+          sideA: { bookie: bestHome.bookie, odds: bestHome.price, team: event.home_team },
+          sideB: { bookie: bestAway.bookie, odds: bestAway.price, team: event.away_team }
+        });
+      }
+    });
+
+    return NextResponse.json({ arbs: arbOpportunities });
+  } catch (error) {
+    return NextResponse.json({ error: 'Scout failed to initialize' }, { status: 500 });
+  }
+}
