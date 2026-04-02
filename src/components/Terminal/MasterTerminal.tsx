@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { WatcherDash } from '@/components/Terminal/CFODash';
 import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
 import PropFilter from '@/components/Terminal/PropFilter';
@@ -29,15 +29,17 @@ export default function MasterTerminal({ serverProfile }: MasterTerminalProps) {
   const { profile } = useWatcherRealtime(initialProfile);
   const bankroll = Number(profile.bankroll_size) || 0;
   const isPro = Boolean(profile.is_pro);
+  const previousIsProRef = useRef(isPro);
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
   }, [arbs]);
 
   useEffect(() => {
-    if (isPro) {
+    if (isPro && !previousIsProRef.current) {
       setShowMission(true);
     }
+    previousIsProRef.current = isPro;
   }, [isPro]);
 
   return (
