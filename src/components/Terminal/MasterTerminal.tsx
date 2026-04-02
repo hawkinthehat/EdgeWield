@@ -7,6 +7,8 @@ import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed'
 import PropFilter from '@/components/Terminal/PropFilter';
 import MissionAlpha from '@/components/Terminal/MissionAlpha';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
+import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
+import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -16,6 +18,7 @@ export default function MasterTerminal() {
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [bankroll] = useState(1000);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
@@ -31,25 +34,73 @@ export default function MasterTerminal() {
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
     let channel: RealtimeChannel | null = null;
+    let isMounted = true;
 
-    channel = supabase
-      .channel('profile-changes')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
-        const nextIsPro = Boolean(payload.new?.is_pro);
-        const previousIsPro = Boolean(payload.old?.is_pro);
-        setIsPro(nextIsPro);
-        if (nextIsPro && !previousIsPro) {
-          setShowMission(true);
-        }
-      })
-      .subscribe();
+    void (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user?.id || !isMounted) {
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_pro')
+        .eq('id', user.id)
+        .single();
+
+      if (isMounted) {
+        setIsPro(Boolean(profile?.is_pro));
+      }
+
+      channel = supabase
+        .channel(`profile-changes-${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
+          (payload) => {
+            const nextIsPro = Boolean(payload.new?.is_pro);
+            const previousIsPro = Boolean(payload.old?.is_pro);
+            setIsPro(nextIsPro);
+            if (nextIsPro && !previousIsPro) {
+              setShowMission(true);
+            }
+          },
+        )
+        .subscribe();
+    })();
 
     return () => {
+      isMounted = false;
       if (channel) {
         void supabase.removeChannel(channel);
       }
     };
   }, []);
+
+  const handleUpgrade = async () => {
+    if (isCheckingOut) {
+      return;
+    }
+
+    try {
+      setIsCheckingOut(true);
+      const response = await fetch('/api/checkout', { method: 'POST' });
+      if (!response.ok) {
+        return;
+      }
+      const payload = (await response.json()) as { url?: string };
+      if (payload.url) {
+        window.location.href = payload.url;
+      }
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
+  const teaserEvent = topArbs[0]?.event_name ?? 'No live game selected';
 
   return (
     <main className="min-h-screen bg-edge-navy text-white p-8">
@@ -90,6 +141,27 @@ export default function MasterTerminal() {
 
       <div className="mt-8">
         <HedgeCalculator />
+      </div>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {isPro ? (
+          <HedgeAlertCard
+            originalBet={{
+              wager: 100,
+              odds: 200,
+              event_name: teaserEvent,
+            }}
+            liveOpponentOdds={-125}
+          />
+        ) : (
+          <HedgeTeaser
+            isPremium={false}
+            event={teaserEvent}
+            potentialProfit="42.50"
+            onUpgrade={handleUpgrade}
+            isCheckingOut={isCheckingOut}
+          />
+        )}
       </div>
 
       {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
