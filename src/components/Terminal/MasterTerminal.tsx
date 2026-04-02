@@ -9,6 +9,7 @@ import MissionAlpha from '@/components/Terminal/MissionAlpha';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
+import TerminalStatus from '@/components/Terminal/TerminalStatus';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -16,9 +17,11 @@ export default function MasterTerminal() {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [showMission, setShowMission] = useState(false);
-  const [arbs] = useState<ArbRow[]>(sampleRows);
+  const [arbs, setArbs] = useState<ArbRow[]>([]);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isLoadingArbs, setIsLoadingArbs] = useState(true);
+  const [pulseCount, setPulseCount] = useState(0);
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
@@ -80,6 +83,46 @@ export default function MasterTerminal() {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchArbs = async () => {
+      try {
+        const response = await fetch('/api/scan', { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { arbs?: ArbRow[] };
+        if (isMounted && Array.isArray(payload.arbs)) {
+          setArbs(payload.arbs);
+        }
+      } catch {
+        // Keep rendering existing snapshot on transient scan failures.
+      } finally {
+        if (isMounted) {
+          setIsLoadingArbs(false);
+        }
+      }
+    };
+
+    void fetchArbs();
+    const interval = setInterval(fetchArbs, 60_000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const pulse = setInterval(() => {
+      setPulseCount((previous) => previous + 1);
+    }, 90_000);
+
+    return () => clearInterval(pulse);
+  }, []);
+
   const handleUpgrade = async () => {
     if (isCheckingOut) {
       return;
@@ -122,6 +165,9 @@ export default function MasterTerminal() {
 
       {/* 2. THE CFO ANALYTICS */}
       <CFODash />
+      <div className="mt-6">
+        <TerminalStatus pulseCount={pulseCount} />
+      </div>
 
       {/* 3. THE MARKET CONTROL */}
       <div className="mb-6 mt-12 flex items-center justify-between gap-4">
@@ -137,6 +183,11 @@ export default function MasterTerminal() {
       </div>
 
       {/* 4. THE LIVE EDGE FEED */}
+      {isLoadingArbs && (
+        <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
+          Scanning markets...
+        </p>
+      )}
       <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
 
       <div className="mt-8">
