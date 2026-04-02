@@ -28,20 +28,19 @@ export const useWatcherRealtime = (initialProfile: WatcherProfile) => {
   }, []);
 
   useEffect(() => {
-    if (!supabase) {
+    if (!supabase || !profile.id) {
       return;
     }
 
-    const changeFilter = profile.id ? `id=eq.${profile.id}` : undefined;
     const profileSubscription: RealtimeChannel = supabase
-      .channel(`profile_changes_${profile.id ?? 'all'}`)
+      .channel(`profile_changes_${profile.id}`)
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'profiles',
-          ...(changeFilter ? { filter: changeFilter } : {}),
+          filter: `id=eq.${profile.id}`,
         },
         (payload) => {
           const nextProfile = payload.new as Partial<WatcherProfile>;
@@ -51,7 +50,7 @@ export const useWatcherRealtime = (initialProfile: WatcherProfile) => {
 
           setProfile((prev) => ({
             ...prev,
-            ...(nextProfile.id ? { id: String(nextProfile.id) } : prev.id ? { id: prev.id } : {}),
+            ...(nextProfile.id ? { id: String(nextProfile.id) } : {}),
             ...(nextProfile.bankroll_size !== undefined
               ? { bankroll_size: Number(nextProfile.bankroll_size) || 0 }
               : {}),

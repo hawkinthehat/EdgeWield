@@ -10,11 +10,22 @@ import { useWatcherRealtime, type WatcherProfile } from '@/hooks/useWatcherRealt
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
-export default function MasterTerminal() {
+type MasterTerminalProps = {
+  serverProfile?: Partial<WatcherProfile>;
+};
+
+export default function MasterTerminal({ serverProfile }: MasterTerminalProps) {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
-  const initialProfile = useMemo<WatcherProfile>(() => ({ bankroll_size: 1000, is_pro: false }), []);
+  const initialProfile = useMemo<WatcherProfile>(
+    () => ({
+      id: serverProfile?.id,
+      bankroll_size: Number(serverProfile?.bankroll_size ?? 1000),
+      is_pro: Boolean(serverProfile?.is_pro),
+    }),
+    [serverProfile],
+  );
   const { profile } = useWatcherRealtime(initialProfile);
   const bankroll = Number(profile.bankroll_size) || 0;
   const isPro = Boolean(profile.is_pro);
