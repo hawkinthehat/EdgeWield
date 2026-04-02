@@ -61,6 +61,11 @@ export default function SettingsPage() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase
       .from('profiles')
       .update({
@@ -68,7 +73,7 @@ export default function SettingsPage() {
         active_bookies: profile.active_bookies,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', user?.id ?? '');
+      .eq('id', user.id);
 
     if (!error) {
       setSaved(true);
