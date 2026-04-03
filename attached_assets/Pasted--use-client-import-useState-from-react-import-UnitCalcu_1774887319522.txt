@@ -1,0 +1,56 @@
+'use client'
+import { useState } from 'react';
+import UnitCalculator from './UnitCalculator';
+
+export default function ArbCard({ arb }) {
+  const [selectedBet, setSelectedBet] = useState(null);
+
+  const handleWield = (side) => {
+    // side = 'A' or 'B'
+    const betData = {
+      game: arb.game,
+      bookie: side === 'A' ? arb.sideA.bookie : arb.sideB.bookie,
+      odds: side === 'A' ? arb.sideA.odds : arb.sideB.odds,
+      hedgeOdds: side === 'A' ? arb.sideB.odds : arb.sideA.odds,
+      hedgeBookie: side === 'A' ? arb.sideB.bookie : arb.sideA.bookie,
+      profitPct: arb.profit_percent
+    };
+    setSelectedBet(betData);
+  };
+
+  return (
+    <div className="group relative p-6 bg-edge-slate/20 border border-edge-border rounded-[2.5rem] hover:border-edge-emerald/50 transition-all">
+      <div className="flex justify-between mb-4">
+        <h4 className="text-lg font-black italic uppercase tracking-tighter">{arb.game}</h4>
+        <span className="text-edge-emerald font-black">+{arb.profit_percent}%</span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        {/* CLICKABLE ODD TILES */}
+        <button 
+          onClick={() => handleWield('A')}
+          className="p-4 bg-edge-navy rounded-2xl border border-edge-border hover:bg-edge-emerald/10 hover:border-edge-emerald transition-all text-left"
+        >
+          <p className="text-[10px] font-bold text-slate-500 uppercase">{arb.sideA.bookie}</p>
+          <p className="text-xl font-black text-white">{arb.sideA.odds}</p>
+        </button>
+
+        <button 
+          onClick={() => handleWield('B')}
+          className="p-4 bg-edge-navy rounded-2xl border border-edge-border hover:bg-edge-emerald/10 hover:border-edge-emerald transition-all text-left"
+        >
+          <p className="text-[10px] font-bold text-slate-500 uppercase">{arb.sideB.bookie}</p>
+          <p className="text-xl font-black text-white">{arb.sideB.odds}</p>
+        </button>
+      </div>
+
+      {/* MODAL CALCULATOR (Triggered on Click) */}
+      {selectedBet && (
+        <UnitCalculator 
+          bet={selectedBet} 
+          onClose={() => setSelectedBet(null)} 
+        />
+      )}
+    </div>
+  );
+}

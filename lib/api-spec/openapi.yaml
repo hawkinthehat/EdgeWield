@@ -1,0 +1,119 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: odds
+    description: Odds and edge scanning
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /odds/edges:
+    get:
+      operationId: getEdges
+      tags: [odds]
+      summary: Get live hedge/arbitrage edges
+      description: Fetches odds from The Odds API and returns any arbitrage opportunities
+      parameters:
+        - name: sport
+          in: query
+          required: false
+          schema:
+            type: string
+            default: upcoming
+          description: Sport key (e.g. upcoming, americanfootball_nfl, basketball_nba)
+      responses:
+        "200":
+          description: List of market gaps (hedge opportunities)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MarketGap"
+        "500":
+          description: Failed to fetch odds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    MarketGap:
+      type: object
+      properties:
+        event:
+          type: string
+        teamA:
+          type: string
+        teamB:
+          type: string
+        sportKey:
+          type: string
+        marketType:
+          type: string
+        profit:
+          type: number
+        bookieA:
+          type: string
+        oddsA:
+          type: number
+        bookieB:
+          type: string
+        oddsB:
+          type: number
+        stakeA:
+          type: number
+        stakeB:
+          type: number
+        guaranteedProfit:
+          type: number
+        payout:
+          type: number
+      required:
+        - event
+        - teamA
+        - teamB
+        - sportKey
+        - marketType
+        - profit
+        - bookieA
+        - oddsA
+        - bookieB
+        - oddsB
+        - stakeA
+        - stakeB
+        - guaranteedProfit
+        - payout
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

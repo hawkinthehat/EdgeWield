@@ -1,0 +1,46 @@
+'use client'
+import { Copy, Gift, Users, Share2 } from 'lucide-react';
+import { useState } from 'react';
+
+export default function ReferralCenter({ userCode = "EDGE88X2" }) {
+  const [copied, setCopied] = useState(false);
+  const refLink = `https://edgewield.com/signup?ref=${userCode}`;
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(refLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="p-8 bg-edge-emerald/5 border-2 border-dashed border-edge-emerald/30 rounded-[3rem] mt-12">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="p-3 bg-edge-emerald text-edge-navy rounded-2xl">
+          <Gift size={20} />
+        </div>
+        <div>
+          <h3 className="text-xl font-black italic uppercase tracking-tighter">Growth Protocol</h3>
+          <p className="text-[10px] font-bold text-slate-500 uppercase">Give $10, Get 1 Month Free</p>
+        </div>
+      </div>
+
+      <div className="bg-edge-navy p-4 rounded-2xl border border-edge-border flex items-center justify-between mb-6">
+        <code className="text-sm font-mono text-edge-emerald font-bold">{refLink}</code>
+        <button onClick={copyLink} className="p-2 hover:bg-edge-slate/30 rounded-lg transition-all">
+          {copied ? <span className="text-[10px] font-black uppercase text-edge-emerald tracking-tighter italic">Copied!</span> : <Copy size={18} className="text-slate-400" />}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="p-4 bg-edge-slate/20 rounded-2xl border border-edge-border text-center">
+          <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Active Referrals</p>
+          <p className="text-2xl font-black text-white italic">03</p>
+        </div>
+        <div className="p-4 bg-edge-slate/20 rounded-2xl border border-edge-border text-center">
+          <p className="text-[9px] font-bold text-slate-500 uppercase mb-1">Free Months Earned</p>
+          <p className="text-2xl font-black text-edge-emerald italic">03</p>
+        </div>
+      </div>
+    </div>
+  );
+}
