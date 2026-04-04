@@ -1,3 +1,6 @@
+ 'use client';
+
+import { useEffect, useState } from 'react';
 import { calculateAverageCLV, formatSignedPercent, type ClvSample } from '@/lib/clv';
 
 type MetricCardProps = {
@@ -21,13 +24,42 @@ function MetricCard({ label, value, tone = "neutral" }: MetricCardProps) {
 }
 
 export default function CFODash() {
+  const [liveDataLoaded, setLiveDataLoaded] = useState(false);
+  const [liveAverageClv, setLiveAverageClv] = useState<number | null>(null);
+
   const clvSamples: ClvSample[] = [
     { entryOdds: +125, closingOdds: +110 },
     { entryOdds: -102, closingOdds: -118 },
     { entryOdds: +140, closingOdds: +122 },
   ];
 
-  const averageClv = calculateAverageCLV(clvSamples);
+  useEffect(() => {
+    let isMounted = true;
+
+    void (async () => {
+      try {
+        const response = await fetch('/api/metrics/clv', { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { averageClv: number | null; sampleCount: number };
+        if (isMounted) {
+          setLiveDataLoaded(true);
+          setLiveAverageClv(payload.averageClv);
+        }
+      } catch {
+        // Keep fallback CLV values if live fetch fails.
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const fallbackAverageClv = calculateAverageCLV(clvSamples);
+  const averageClv = liveDataLoaded ? liveAverageClv : fallbackAverageClv;
   const clvDisplay = averageClv === null ? 'N/A' : formatSignedPercent(averageClv);
 
   return (
