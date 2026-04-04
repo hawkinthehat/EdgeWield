@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { AlertCircle, Plus, ShieldCheck, TrendingUp, Zap } from 'lucide-react';
 import CFODash from '@/components/Terminal/CFODash';
 import ArbFeed, { sampleRows } from '@/components/Terminal/ArbFeed';
+import { calculateAverageCLV, formatSignedPercent } from '@/lib/clv';
 
 export default function WatcherDashboard() {
   const chartData = [
@@ -15,6 +17,53 @@ export default function WatcherDashboard() {
   const latest = chartData[chartData.length - 1];
   const previous = chartData[chartData.length - 2];
   const dayDelta = latest.bankroll - previous.bankroll;
+  const sampleClvPairs = [
+    { entryOdds: +120, closingOdds: +105 },
+    { entryOdds: -110, closingOdds: -122 },
+    { entryOdds: +150, closingOdds: +132 },
+    { entryOdds: -105, closingOdds: -115 },
+  ];
+  const fallbackAverageClv = calculateAverageCLV(sampleClvPairs);
+  const [averageClv, setAverageClv] = useState<number | null>(fallbackAverageClv);
+  const [clvSampleCount, setClvSampleCount] = useState<number>(sampleClvPairs.length);
+  const [usingFallbackClv, setUsingFallbackClv] = useState(true);
+  const averageClvLabel = averageClv === null ? 'N/A' : formatSignedPercent(averageClv, 1);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void (async () => {
+      try {
+        const response = await fetch('/api/metrics/clv', { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { averageClv?: number | null; sampleCount?: number };
+        if (!isMounted) {
+          return;
+        }
+
+        if (typeof payload.averageClv === 'number') {
+          setAverageClv(payload.averageClv);
+          setUsingFallbackClv(false);
+        } else if (payload.averageClv === null) {
+          setAverageClv(null);
+          setUsingFallbackClv(false);
+        }
+
+        if (typeof payload.sampleCount === 'number') {
+          setClvSampleCount(payload.sampleCount);
+        }
+      } catch {
+        // Keep fallback CLV values when the API route is unavailable.
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -55,8 +104,14 @@ export default function WatcherDashboard() {
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Market Edge (Avg. CLV)</p>
-            <p className="mt-2 font-mono text-3xl font-bold text-indigo-600">+3.1%</p>
-            <p className="mt-2 text-xs text-slate-400">Beating the market by 3.1% on average.</p>
+            <p className="mt-2 font-mono text-3xl font-bold text-indigo-600">{averageClvLabel}</p>
+            <p className="mt-2 text-xs text-slate-400">
+              {averageClv === null
+                ? 'No valid CLV samples available yet.'
+                : usingFallbackClv
+                  ? `Using sample CLV inputs (${clvSampleCount} rows) until graded bets are available.`
+                  : `Beating the market by ${averageClvLabel} on average across ${clvSampleCount} graded bets.`}
+            </p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Current Exposure</p>
