@@ -1,32 +1,52 @@
-'use server'
+'use server';
 
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-const riskMap: Record<string, number> = {
+type OnboardingRisk = 'Conservative' | 'Standard' | 'Aggressive';
+
+type FinalizeOnboardingInput = {
+  bankroll: number;
+  risk: OnboardingRisk | string;
+};
+
+const RISK_MAP: Record<OnboardingRisk, number> = {
   Conservative: 0.005,
   Standard: 0.01,
   Aggressive: 0.02,
-}
-
-type FinalizeOnboardingInput = {
-  bankroll: number
-  risk: string
-}
+};
 
 export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
-  const supabase = createServerActionClient({ cookies })
+  const cookieStore = await cookies();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment configuration');
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll() {
+        // Server action uses cookies for auth reads only.
+      },
+    },
+  });
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error('Unauthorized access')
+    throw new Error('Unauthorized access');
   }
 
-  const unitPercent = riskMap[formData.risk] ?? riskMap.Standard
+  const risk = (formData.risk ?? 'Standard').toString() as OnboardingRisk;
+  const unitPercent = RISK_MAP[risk] ?? RISK_MAP.Standard;
 
   const { error } = await supabase
     .from('profiles')
@@ -34,15 +54,15 @@ export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
       bankroll_size: formData.bankroll,
       total_bankroll: formData.bankroll,
       unit_size_percentage: unitPercent,
-      risk_tolerance: formData.risk,
+      risk_tolerance: risk,
       onboarding_completed: true,
     })
-    .eq('id', user.id)
+    .eq('id', user.id);
 
   if (error) {
-    console.error('Supabase Update Error:', error)
-    return { success: false, message: error.message }
+    console.error('Supabase update error:', error);
+    return { success: false, message: error.message };
   }
 
-  redirect('/dashboard')
+  redirect('/dashboard');
 }
