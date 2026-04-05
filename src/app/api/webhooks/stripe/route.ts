@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 })
   }
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = getSupabaseAdmin() as any
 
   switch (event.type) {
     case 'checkout.session.completed': {
