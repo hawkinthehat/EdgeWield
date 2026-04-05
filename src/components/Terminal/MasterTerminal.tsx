@@ -10,12 +10,18 @@ import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
 import TerminalStatus from '@/components/Terminal/TerminalStatus';
+import BookieSelector from '@/components/Terminal/BookieSelector';
+import UnitsCalc from '@/components/Terminal/UnitsCalc';
+import EdgeFeed from '@/components/Terminal/EdgeFeed';
+import UpgradeButton from '@/components/UpgradeButton';
+import Sidebar from '@/components/Sidebar';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
 export default function MasterTerminal() {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
+  const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showMission, setShowMission] = useState(false);
   const [arbs, setArbs] = useState<ArbRow[]>([]);
   const [bankroll] = useState(1000);
@@ -47,6 +53,7 @@ export default function MasterTerminal() {
       if (!user?.id || !isMounted) {
         return;
       }
+      setUserIdentity({ id: user.id, email: user.email ?? '' });
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -144,9 +151,12 @@ export default function MasterTerminal() {
   };
 
   const teaserEvent = topArbs[0]?.event_name ?? 'No live game selected';
+  const topEdge = topArbs[0];
 
   return (
-    <main className="min-h-screen bg-edge-navy text-white p-8">
+    <div className="flex min-h-screen bg-edge-navy text-white">
+      <Sidebar userBankroll={bankroll} />
+      <main className="ml-72 flex-1 overflow-y-auto p-8">
       {/* 1. THE REVENUE HEADER */}
       <div className="mb-10 flex items-end justify-between">
         <div>
@@ -181,6 +191,9 @@ export default function MasterTerminal() {
           </div>
         )}
       </div>
+      <div className="mb-8">
+        <BookieSelector />
+      </div>
 
       {/* 4. THE LIVE EDGE FEED */}
       {isLoadingArbs && (
@@ -190,8 +203,36 @@ export default function MasterTerminal() {
       )}
       <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
 
-      <div className="mt-8">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <HedgeCalculator />
+        <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
+      </div>
+
+      <div className="mt-8">
+        {isPro ? (
+          <EdgeFeed rows={topArbs} />
+        ) : (
+          <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
+            <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
+            <p className="mb-8 text-slate-500">
+              Upgrade to Pro to see live market gaps and lock in your profit.
+            </p>
+            {userIdentity ? (
+              <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
+            ) : (
+              <button
+                type="button"
+                onClick={handleUpgrade}
+                className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
+              >
+                WIELD THE PRO EDGE
+              </button>
+            )}
+            <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
+              USE CODE &quot;BETA50&quot; AT CHECKOUT
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -216,6 +257,7 @@ export default function MasterTerminal() {
       </div>
 
       {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
-    </main>
+      </main>
+    </div>
   );
 }
