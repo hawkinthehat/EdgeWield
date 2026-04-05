@@ -1,2 +1,2 @@
-export { calculateWield } from '@/lib/engine/kelly';
-export type { WieldCalculation } from '@/lib/engine/kelly';
+export { calculateWield, calculateKelly } from '@/lib/engine/kelly';
+export type { WieldCalculation, KellyCalculation } from '@/lib/engine/kelly';
