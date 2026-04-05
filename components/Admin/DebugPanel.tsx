@@ -1,7 +1,11 @@
 'use client'
 import { Zap, Database, RefreshCw } from 'lucide-react'
 
-export default function DebugPanel({ role }) {
+type DebugPanelProps = {
+  role: string
+}
+
+export default function DebugPanel({ role }: DebugPanelProps) {
   if (role !== 'admin') return null // Hidden from everyone else
 
   const triggerSync = async () => {

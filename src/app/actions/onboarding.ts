@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -18,7 +18,24 @@ const RISK_MAP: Record<OnboardingRisk, number> = {
 };
 
 export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
-  const supabase = createServerActionClient({ cookies });
+  const cookieStore = await cookies();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment configuration");
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll() {
+        // Server actions here only need read access for auth/session checks.
+      },
+    },
+  });
   const {
     data: { user },
   } = await supabase.auth.getUser();

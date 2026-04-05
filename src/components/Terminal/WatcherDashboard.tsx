@@ -14,8 +14,8 @@ export default function WatcherDashboard() {
     { date: 'Mar 27', bankroll: 4820, ev: 4600 },
   ];
 
-  const latest = chartData[chartData.length - 1];
-  const previous = chartData[chartData.length - 2];
+  const latest = chartData[chartData.length - 1] ?? { date: 'N/A', bankroll: 0, ev: 0 };
+  const previous = chartData[chartData.length - 2] ?? latest;
   const dayDelta = latest.bankroll - previous.bankroll;
   const sampleClvPairs = [
     { entryOdds: +120, closingOdds: +105 },
