@@ -1,6 +1,19 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
+import CFODash from '@/components/Terminal/CFODash';
+import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
+import PropFilter from '@/components/Terminal/PropFilter';
+import MissionAlpha from '@/components/Terminal/MissionAlpha';
+import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
+import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
+import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
+import BookieSelector from '@/components/Terminal/BookieSelector';
+import UnitsCalc from '@/components/Terminal/UnitsCalc';
+import EdgeFeed from '@/components/Terminal/EdgeFeed';
+import UpgradeButton from '@/components/UpgradeButton';
+import Sidebar from '@/components/Sidebar';
 
 type Outcome = {
   name: string;
@@ -72,62 +85,107 @@ function BetBridgeButton({ bookmaker, marketData }: BetBridgeButtonProps) {
 }
 
 export default function MasterTerminal() {
-  const [games, setGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
+  const [isPro, setIsPro] = useState(false); // Pulled from Supabase
+  const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
+  const [showMission, setShowMission] = useState(false);
+  const [arbs] = useState<ArbRow[]>(sampleRows);
+  const [bankroll] = useState(1000);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  const env =
-    typeof process !== 'undefined' && process.env
-      ? process.env
-      : ({} as Record<string, string | undefined>);
-  const API_KEY = env.NEXT_PUBLIC_THE_ODDS_API_KEY ?? '';
-  const SPORT = env.NEXT_PUBLIC_THE_ODDS_SPORT ?? 'americanfootball_nfl';
-
-  const oddsUrl = useMemo(() => {
-    if (!API_KEY) {
-      return '';
-    }
-    return `https://api.the-odds-api.com/v4/sports/${SPORT}/odds/?apiKey=${API_KEY}&regions=us&markets=h2h&oddsFormat=american`;
-  }, [API_KEY, SPORT]);
+  const topArbs = useMemo(() => {
+    return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
+  }, [arbs]);
 
   useEffect(() => {
-    const fetchOdds = async () => {
-      if (!oddsUrl) {
-        setError('Set NEXT_PUBLIC_THE_ODDS_API_KEY to load live odds.');
-        setLoading(false);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return;
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    let channel: RealtimeChannel | null = null;
+    let isMounted = true;
+
+    void (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user?.id || !isMounted) {
         return;
       }
+      setUserIdentity({ id: user.id, email: user.email ?? '' });
 
-      try {
-        const res = await fetch(oddsUrl);
-        if (!res.ok) {
-          setError(`Odds request failed (${res.status}).`);
-          setLoading(false);
-          return;
-        }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_pro')
+        .eq('id', user.id)
+        .single();
 
-        const data = (await res.json()) as Game[];
-        setGames(data);
-      } catch {
-        setError('Unable to fetch odds right now.');
-      } finally {
-        setLoading(false);
+      if (isMounted) {
+        setIsPro(Boolean(profile?.is_pro));
+      }
+
+      channel = supabase
+        .channel(`profile-changes-${user.id}`)
+        .on(
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
+          (payload) => {
+            const nextIsPro = Boolean(payload.new?.is_pro);
+            const previousIsPro = Boolean(payload.old?.is_pro);
+            setIsPro(nextIsPro);
+            if (nextIsPro && !previousIsPro) {
+              setShowMission(true);
+            }
+          },
+        )
+        .subscribe();
+    })();
+
+    return () => {
+      isMounted = false;
+      if (channel) {
+        void supabase.removeChannel(channel);
       }
     };
+  }, []);
 
-    void fetchOdds();
-  }, [oddsUrl]);
+  const handleUpgrade = async () => {
+    if (isCheckingOut) {
+      return;
+    }
 
-  if (loading) {
-    return <div className="p-10 text-center text-slate-500 animate-pulse">Loading Live Lines...</div>;
-  }
+    try {
+      setIsCheckingOut(true);
+      const response = await fetch('/api/checkout', { method: 'POST' });
+      if (!response.ok) {
+        return;
+      }
+      const payload = (await response.json()) as { url?: string };
+      if (payload.url) {
+        window.location.href = payload.url;
+      }
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
+  const teaserEvent = topArbs[0]?.event_name ?? 'No live game selected';
+  const topEdge = topArbs[0];
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4">
-      <div className="mx-auto max-w-4xl">
-        <header className="mb-8 border-b pb-4">
-          <h1 className="text-3xl font-black tracking-tighter italic text-slate-900">
-            EDGEWIELD <span className="text-blue-600">v1.0</span>
+    <div className="flex min-h-screen bg-edge-navy text-white">
+      <Sidebar userBankroll={bankroll} />
+      <main className="ml-72 flex-1 overflow-y-auto p-8">
+      {/* 1. THE REVENUE HEADER */}
+      <div className="mb-10 flex items-end justify-between">
+        <div>
+          <h1 className="text-4xl font-black italic uppercase tracking-tighter">
+            Terminal_v1.0
           </h1>
           <p className="text-sm text-slate-500">Live Market Arbitrage &amp; Deep Links</p>
         </header>
@@ -137,50 +195,69 @@ export default function MasterTerminal() {
             {error}
           </div>
         )}
-
-        <div className="grid gap-6">
-          {games.map((game) => (
-            <div
-              key={game.id}
-              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-            >
-              <div className="flex items-center justify-between bg-slate-900 p-4 text-white">
-                <div className="flex items-center gap-4">
-                  <div className="rounded bg-blue-600 px-2 py-1 text-xs font-bold">LIVE</div>
-                  <span className="text-sm font-bold uppercase tracking-wide">
-                    {game.home_team} <span className="mx-1 text-slate-400">vs</span> {game.away_team}
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-400">
-                  Starts:{' '}
-                  {new Date(game.commence_time).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3 p-4 md:grid-cols-2 lg:grid-cols-3">
-                {game.bookmakers.map((book) => (
-                  <div key={book.key} className="space-y-2">
-                    {(book.markets[0]?.outcomes ?? []).map((outcome) => (
-                      <BetBridgeButton
-                        key={`${book.key}-${outcome.name}`}
-                        bookmaker={book.title || book.key}
-                        marketData={{
-                          name: outcome.name,
-                          price: outcome.price,
-                          link: book.link ?? book.referral_label,
-                        }}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
+      <div className="mb-8">
+        <BookieSelector />
+      </div>
+
+      {/* 4. THE LIVE EDGE FEED */}
+      <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <HedgeCalculator />
+        <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
+      </div>
+
+      <div className="mt-8">
+        {isPro ? (
+          <EdgeFeed rows={topArbs} />
+        ) : (
+          <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
+            <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
+            <p className="mb-8 text-slate-500">
+              Upgrade to Pro to see live market gaps and lock in your profit.
+            </p>
+            {userIdentity ? (
+              <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
+            ) : (
+              <button
+                type="button"
+                onClick={handleUpgrade}
+                className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
+              >
+                WIELD THE PRO EDGE
+              </button>
+            )}
+            <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
+              USE CODE &quot;BETA50&quot; AT CHECKOUT
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {isPro ? (
+          <HedgeAlertCard
+            originalBet={{
+              wager: 100,
+              odds: 200,
+              event_name: teaserEvent,
+            }}
+            liveOpponentOdds={-125}
+          />
+        ) : (
+          <HedgeTeaser
+            isPremium={false}
+            event={teaserEvent}
+            potentialProfit="42.50"
+            onUpgrade={handleUpgrade}
+            isCheckingOut={isCheckingOut}
+          />
+        )}
+      </div>
+
+      {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
+      </main>
     </div>
   );
 }
