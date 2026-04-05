@@ -157,106 +157,106 @@ export default function MasterTerminal() {
     <div className="flex min-h-screen bg-edge-navy text-white">
       <Sidebar userBankroll={bankroll} />
       <main className="ml-72 flex-1 overflow-y-auto p-8">
-      {/* 1. THE REVENUE HEADER */}
-      <div className="mb-10 flex items-end justify-between">
-        <div>
-          <h1 className="text-4xl font-black italic uppercase tracking-tighter">
-            Terminal_v1.0
-          </h1>
-          <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
-            Status: 90s Pulse Sync Active
+        {/* 1. THE REVENUE HEADER */}
+        <div className="mb-10 flex items-end justify-between">
+          <div>
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter">
+              Terminal_v1.0
+            </h1>
+            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
+              Status: 90s Pulse Sync Active
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
+            <p className="text-xs font-black italic text-white">Seat #42/100</p>
+          </div>
+        </div>
+
+        {/* 2. THE CFO ANALYTICS */}
+        <CFODash />
+        <div className="mt-6">
+          <TerminalStatus pulseCount={pulseCount} />
+        </div>
+
+        {/* 3. THE MARKET CONTROL */}
+        <div className="mb-6 mt-12 flex items-center justify-between gap-4">
+          <PropFilter active={filter} onChange={setFilter} />
+          {/* PRO UPSELL BADGE */}
+          {!isPro && (
+            <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
+                Upgrade to unlock Player Props
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="mb-8">
+          <BookieSelector />
+        </div>
+
+        {/* 4. THE LIVE EDGE FEED */}
+        {isLoadingArbs && (
+          <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
+            Scanning markets...
           </p>
+        )}
+        <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <HedgeCalculator />
+          <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
         </div>
-        <div className="text-right">
-          <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
-          <p className="text-xs font-black italic text-white">Seat #42/100</p>
+
+        <div className="mt-8">
+          {isPro ? (
+            <EdgeFeed rows={topArbs} />
+          ) : (
+            <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
+              <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
+              <p className="mb-8 text-slate-500">
+                Upgrade to Pro to see live market gaps and lock in your profit.
+              </p>
+              {userIdentity ? (
+                <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleUpgrade}
+                  className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
+                >
+                  WIELD THE PRO EDGE
+                </button>
+              )}
+              <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
+                USE CODE &quot;BETA50&quot; AT CHECKOUT
+              </p>
+            </div>
+          )}
         </div>
-      </div>
 
-      {/* 2. THE CFO ANALYTICS */}
-      <CFODash />
-      <div className="mt-6">
-        <TerminalStatus pulseCount={pulseCount} />
-      </div>
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          {isPro ? (
+            <HedgeAlertCard
+              originalBet={{
+                wager: 100,
+                odds: 200,
+                event_name: teaserEvent,
+              }}
+              liveOpponentOdds={-125}
+            />
+          ) : (
+            <HedgeTeaser
+              isPremium={false}
+              event={teaserEvent}
+              potentialProfit="42.50"
+              onUpgrade={handleUpgrade}
+              isCheckingOut={isCheckingOut}
+            />
+          )}
+        </div>
 
-      {/* 3. THE MARKET CONTROL */}
-      <div className="mb-6 mt-12 flex items-center justify-between gap-4">
-        <PropFilter active={filter} onChange={setFilter} />
-        {/* PRO UPSELL BADGE */}
-        {!isPro && (
-          <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
-            <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
-              Upgrade to unlock Player Props
-            </p>
-          </div>
-        )}
-      </div>
-      <div className="mb-8">
-        <BookieSelector />
-      </div>
-
-      {/* 4. THE LIVE EDGE FEED */}
-      {isLoadingArbs && (
-        <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
-          Scanning markets...
-        </p>
-      )}
-      <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <HedgeCalculator />
-        <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
-      </div>
-
-      <div className="mt-8">
-        {isPro ? (
-          <EdgeFeed rows={topArbs} />
-        ) : (
-          <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
-            <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
-            <p className="mb-8 text-slate-500">
-              Upgrade to Pro to see live market gaps and lock in your profit.
-            </p>
-            {userIdentity ? (
-              <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
-            ) : (
-              <button
-                type="button"
-                onClick={handleUpgrade}
-                className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
-              >
-                WIELD THE PRO EDGE
-              </button>
-            )}
-            <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
-              USE CODE &quot;BETA50&quot; AT CHECKOUT
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        {isPro ? (
-          <HedgeAlertCard
-            originalBet={{
-              wager: 100,
-              odds: 200,
-              event_name: teaserEvent,
-            }}
-            liveOpponentOdds={-125}
-          />
-        ) : (
-          <HedgeTeaser
-            isPremium={false}
-            event={teaserEvent}
-            potentialProfit="42.50"
-            onUpgrade={handleUpgrade}
-            isCheckingOut={isCheckingOut}
-          />
-        )}
-      </div>
-
-      {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
+        {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
       </main>
     </div>
   );
