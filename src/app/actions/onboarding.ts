@@ -1,10 +1,10 @@
-"use server";
+'use server';
 
-import { createServerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-type OnboardingRisk = "Conservative" | "Standard" | "Aggressive";
+type OnboardingRisk = 'Conservative' | 'Standard' | 'Aggressive';
 
 type FinalizeOnboardingInput = {
   bankroll: number;
@@ -23,7 +23,7 @@ export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase environment configuration");
+    throw new Error('Missing Supabase environment configuration');
   }
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
@@ -32,35 +32,37 @@ export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
         return cookieStore.getAll();
       },
       setAll() {
-        // Server actions here only need read access for auth/session checks.
+        // Server action uses cookies for auth reads only.
       },
     },
   });
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error("Unauthorized access");
+    throw new Error('Unauthorized access');
   }
 
-  const risk = (formData.risk ?? "Standard").toString() as OnboardingRisk;
+  const risk = (formData.risk ?? 'Standard').toString() as OnboardingRisk;
   const unitPercent = RISK_MAP[risk] ?? RISK_MAP.Standard;
 
   const { error } = await supabase
-    .from("profiles")
+    .from('profiles')
     .update({
+      bankroll_size: formData.bankroll,
       total_bankroll: formData.bankroll,
       unit_size_percentage: unitPercent,
       risk_tolerance: risk,
       onboarding_completed: true,
     })
-    .eq("id", user.id);
+    .eq('id', user.id);
 
   if (error) {
-    console.error("Supabase update error:", error);
+    console.error('Supabase update error:', error);
     return { success: false, message: error.message };
   }
 
-  redirect("/dashboard");
+  redirect('/dashboard');
 }
