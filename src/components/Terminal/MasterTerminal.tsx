@@ -15,7 +15,74 @@ import EdgeFeed from '@/components/Terminal/EdgeFeed';
 import UpgradeButton from '@/components/UpgradeButton';
 import Sidebar from '@/components/Sidebar';
 
-type TerminalFilter = 'all' | 'game' | 'prop';
+type Outcome = {
+  name: string;
+  price: number;
+};
+
+type Market = {
+  outcomes: Outcome[];
+};
+
+type Bookmaker = {
+  key: string;
+  title: string;
+  markets: Market[];
+  link?: string;
+  referral_label?: string;
+};
+
+type Game = {
+  id: string;
+  home_team: string;
+  away_team: string;
+  commence_time: string;
+  bookmakers: Bookmaker[];
+};
+
+type BetBridgeButtonProps = {
+  bookmaker: string;
+  marketData: {
+    name: string;
+    price: number;
+    link?: string;
+  };
+};
+
+function BetBridgeButton({ bookmaker, marketData }: BetBridgeButtonProps) {
+  const handleBetClick = () => {
+    if (marketData.link) {
+      window.location.assign(marketData.link);
+      return;
+    }
+
+    const schemes: Record<string, string> = {
+      fanduel: 'fanduel://sportsbook',
+      draftkings: 'draftkings://sportsbook',
+      betmgm: 'betmgm://sportsbook',
+    };
+    window.location.href = schemes[bookmaker.toLowerCase()] ?? '#';
+  };
+
+  const brandStyles: Record<string, string> = {
+    fanduel: 'bg-[#0062E3] hover:bg-[#0051ba]',
+    draftkings: 'bg-[#51A341] hover:bg-[#438a35]',
+    betmgm: 'bg-[#1A1A1A] border-b-2 border-[#CCAD60]',
+  };
+
+  return (
+    <button
+      onClick={handleBetClick}
+      type="button"
+      className={`${brandStyles[bookmaker.toLowerCase()] ?? 'bg-slate-700'} flex w-full items-center justify-between rounded-lg px-4 py-2 text-white shadow-md transition-transform active:scale-95`}
+    >
+      <span className="text-xs font-bold uppercase">{bookmaker}</span>
+      <span className="font-mono text-sm font-black">
+        {marketData.price > 0 ? `+${marketData.price}` : marketData.price}
+      </span>
+    </button>
+  );
+}
 
 export default function MasterTerminal() {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
@@ -120,28 +187,12 @@ export default function MasterTerminal() {
           <h1 className="text-4xl font-black italic uppercase tracking-tighter">
             Terminal_v1.0
           </h1>
-          <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
-            Status: 90s Pulse Sync Active
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
-          <p className="text-xs font-black italic text-white">Seat #42/100</p>
-        </div>
-      </div>
+          <p className="text-sm text-slate-500">Live Market Arbitrage &amp; Deep Links</p>
+        </header>
 
-      {/* 2. THE CFO ANALYTICS */}
-      <CFODash />
-
-      {/* 3. THE MARKET CONTROL */}
-      <div className="mb-6 mt-12 flex items-center justify-between gap-4">
-        <PropFilter active={filter} onChange={setFilter} />
-        {/* PRO UPSELL BADGE */}
-        {!isPro && (
-          <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
-            <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
-              Upgrade to unlock Player Props
-            </p>
+        {error && (
+          <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+            {error}
           </div>
         )}
       </div>
