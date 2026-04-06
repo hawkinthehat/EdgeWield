@@ -11,6 +11,7 @@ import Sidebar from '@/components/Navigation/Sidebar';
 import WatcherOnboarding, { type OnboardingCompleteData } from '@/components/Onboarding/WatcherOnboarding';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
+import TerminalStatus from '@/components/Terminal/TerminalStatus';
 import BookieSettings from '@/components/Terminal/BookieSettings';
 import BookieSelector from '@/components/Terminal/BookieSelector';
 import UnitsCalc from '@/components/Terminal/UnitsCalc';
@@ -77,10 +78,13 @@ export default function MasterTerminal() {
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showMission, setShowMission] = useState(false);
+  const [arbs, setArbs] = useState<ArbRow[]>([]);
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [activeBookies, setActiveBookies] = useState<string[]>(['fanduel', 'draftkings', 'betmgm']);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isLoadingArbs, setIsLoadingArbs] = useState(true);
+  const [pulseCount, setPulseCount] = useState(0);
 
   const isPro = userProfile.is_pro || userProfile.is_premium;
   const bankroll = Number(userProfile.total_bankroll || userProfile.bankroll_size || 1000);
@@ -189,6 +193,46 @@ export default function MasterTerminal() {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchArbs = async () => {
+      try {
+        const response = await fetch('/api/scan', { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as { arbs?: ArbRow[] };
+        if (isMounted && Array.isArray(payload.arbs)) {
+          setArbs(payload.arbs);
+        }
+      } catch {
+        // Keep rendering existing snapshot on transient scan failures.
+      } finally {
+        if (isMounted) {
+          setIsLoadingArbs(false);
+        }
+      }
+    };
+
+    void fetchArbs();
+    const interval = setInterval(fetchArbs, 60_000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    const pulse = setInterval(() => {
+      setPulseCount((previous) => previous + 1);
+    }, 90_000);
+
+    return () => clearInterval(pulse);
+  }, []);
+
   const handleOnboardingComplete = (data: OnboardingCompleteData) => {
     setUserProfile((prev) => ({
       ...prev,
@@ -249,6 +293,33 @@ export default function MasterTerminal() {
           </div>
         </div>
 
+        {/* 2. THE CFO ANALYTICS */}
+        <CFODash />
+        <div className="mt-6">
+          <TerminalStatus pulseCount={pulseCount} />
+        </div>
+
+        {/* 3. THE MARKET CONTROL */}
+        <div className="mb-6 mt-12 flex items-center justify-between gap-4">
+          <PropFilter active={filter} onChange={setFilter} />
+          {/* PRO UPSELL BADGE */}
+          {!isPro && (
+            <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
+                Upgrade to unlock Player Props
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="mb-8">
+          <BookieSelector />
+        </div>
+
+        {/* 4. THE LIVE EDGE FEED */}
+        {isLoadingArbs && (
+          <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
+            Scanning markets...
+          </p>
         <div className="mb-8">
           <BookieSelector />
         </div>
@@ -362,29 +433,62 @@ export default function MasterTerminal() {
         {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
           </div>
         )}
-      </div>
+        <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        {isPro ? (
-          <HedgeAlertCard
-            originalBet={{
-              wager: 100,
-              odds: 200,
-              event_name: teaserEvent,
-            }}
-            liveOpponentOdds={-125}
-          />
-        ) : (
-          <HedgeTeaser
-            isPremium={false}
-            event={teaserEvent}
-            potentialProfit="42.50"
-            onUpgrade={handleUpgrade}
-            isCheckingOut={isCheckingOut}
-          />
-        )}
-      </div>
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <HedgeCalculator />
+          <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
+        </div>
 
+        <div className="mt-8">
+          {isPro ? (
+            <EdgeFeed rows={topArbs} />
+          ) : (
+            <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
+              <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
+              <p className="mb-8 text-slate-500">
+                Upgrade to Pro to see live market gaps and lock in your profit.
+              </p>
+              {userIdentity ? (
+                <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleUpgrade}
+                  className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
+                >
+                  WIELD THE PRO EDGE
+                </button>
+              )}
+              <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
+                USE CODE &quot;BETA50&quot; AT CHECKOUT
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          {isPro ? (
+            <HedgeAlertCard
+              originalBet={{
+                wager: 100,
+                odds: 200,
+                event_name: teaserEvent,
+              }}
+              liveOpponentOdds={-125}
+            />
+          ) : (
+            <HedgeTeaser
+              isPremium={false}
+              event={teaserEvent}
+              potentialProfit="42.50"
+              onUpgrade={handleUpgrade}
+              isCheckingOut={isCheckingOut}
+            />
+          )}
+        </div>
+
+        {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
       {arbs[0] && (
         <div className="mt-8">
           <QuickAddBet game={arbs[0]} userBankroll={bankroll} unitSizePercent={0.01} />
