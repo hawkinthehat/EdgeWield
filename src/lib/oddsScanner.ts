@@ -141,7 +141,9 @@ export function scanForArbOpportunities(events: OddsApiEvent[]): ArbOpportunity[
       return;
     }
 
-    const totalProbability = 1 / bestHome.price + 1 / bestAway.price;
+    const resolvedBestHome = bestHome as BestPrice;
+    const resolvedBestAway = bestAway as BestPrice;
+    const totalProbability = 1 / resolvedBestHome.price + 1 / resolvedBestAway.price;
     if (totalProbability >= 1) {
       return;
     }
@@ -152,10 +154,10 @@ export function scanForArbOpportunities(events: OddsApiEvent[]): ArbOpportunity[
       event_name: `${event.home_team} vs ${event.away_team}`,
       home_team: event.home_team,
       away_team: event.away_team,
-      bookie_a: bestHome.bookie,
-      odds_a: bestHome.price,
-      bookie_b: bestAway.bookie,
-      odds_b: bestAway.price,
+      bookie_a: resolvedBestHome.bookie,
+      odds_a: resolvedBestHome.price,
+      bookie_b: resolvedBestAway.bookie,
+      odds_b: resolvedBestAway.price,
       profit_percent: Number(((1 - totalProbability) * 100).toFixed(2)),
       commence_time: event.commence_time ?? new Date().toISOString(),
       is_prop: false,

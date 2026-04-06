@@ -10,6 +10,13 @@ type OnboardingPayload = {
 };
 
 const DEFAULT_BOOKIES = ['fanduel', 'draftkings', 'betmgm'];
+const BOOKIE_OPTIONS: Array<{ id: string; label: string }> = [
+  { id: 'fanduel', label: 'FanDuel' },
+  { id: 'draftkings', label: 'DraftKings' },
+  { id: 'betmgm', label: 'BetMGM' },
+  { id: 'caesars', label: 'Caesars' },
+  { id: 'betrivers', label: 'BetRivers' },
+];
 
 export default function WatcherOnboarding() {
   const [bankroll, setBankroll] = useState<number>(1000);
@@ -64,13 +71,7 @@ export default function WatcherOnboarding() {
         <label className="block">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Active Bookies</span>
           <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {[
-              ['fanduel', 'FanDuel'],
-              ['draftkings', 'DraftKings'],
-              ['betmgm', 'BetMGM'],
-              ['caesars', 'Caesars'],
-              ['betrivers', 'BetRivers'],
-            ].map(([id, label]) => {
+            {BOOKIE_OPTIONS.map(({ id, label }) => {
               const selected = activeBookies.includes(id);
               return (
                 <button

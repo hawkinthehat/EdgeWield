@@ -35,7 +35,7 @@ export interface KellyScore {
   recommendedStake: number;
   expectedValue: number;
   accepted: boolean;
-  rejectionReason?: string;
+  rejectionReason?: string | undefined;
 }
 
 export interface KellyPortfolio {

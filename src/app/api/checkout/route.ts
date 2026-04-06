@@ -60,12 +60,8 @@ export async function POST() {
     .eq('id', user.id)
     .single()
 
-  const sessionParams: Stripe.Checkout.SessionCreateParams = {
+  const sessionParams: Parameters<typeof stripe.checkout.sessions.create>[0] = {
     payment_method_types: ['card'],
-    customer:
-      typeof profile?.stripe_customer_id === 'string' && profile.stripe_customer_id.length > 0
-        ? profile.stripe_customer_id
-        : undefined,
     line_items: [
       {
         price: premiumPriceId,
@@ -80,6 +76,10 @@ export async function POST() {
       userId: user.id,
       supabase_user_id: user.id,
     },
+  }
+
+  if (typeof profile?.stripe_customer_id === 'string' && profile.stripe_customer_id.length > 0) {
+    sessionParams.customer = profile.stripe_customer_id
   }
 
   const session = await stripe.checkout.sessions.create(sessionParams)

@@ -153,8 +153,9 @@ export async function scanForHedges(supabase: any) {
       continue;
     }
 
-    const userBooks = Array.isArray((profile as ProfileBookieRow | null)?.active_bookies)
-      ? (profile as ProfileBookieRow).active_bookies.map((book) => String(book).toLowerCase())
+    const profileBooks = (profile as ProfileBookieRow | null)?.active_bookies;
+    const userBooks = Array.isArray(profileBooks)
+      ? profileBooks.map((book) => String(book).toLowerCase())
       : ['fanduel', 'draftkings', 'betmgm'];
 
     const hedgeBookA = String(bet.sportsbook ?? '').toLowerCase();

@@ -1,4 +1,4 @@
-import { getLiveOdds } from '@/lib/odds';
+import { getLiveOdds } from '../lib/odds';
 
 export default async function OddsList() {
   const games = await getLiveOdds('americanfootball_nfl');

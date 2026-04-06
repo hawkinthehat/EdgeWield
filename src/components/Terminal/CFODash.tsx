@@ -1,7 +1,6 @@
-import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
- 'use client';
+'use client';
 
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { calculateAverageCLV, formatSignedPercent, type ClvSample } from '@/lib/clv';
 
@@ -84,14 +83,9 @@ export function WatcherDash({ bankroll }: { bankroll: number }) {
       <MetricCard
         label="Active Bankroll"
         value={
-          <motion.span
-            key={bankroll}
-            initial={{ color: '#10b981' }}
-            animate={{ color: '#ffffff' }}
-            transition={{ duration: 2 }}
-          >
+          <span key={bankroll}>
             ${bankroll.toLocaleString()}
-          </motion.span>
+          </span>
         }
       />
       <MetricCard label="Mean Edge %" value="2.48%" tone="positive" />

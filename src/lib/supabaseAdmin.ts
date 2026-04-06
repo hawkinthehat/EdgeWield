@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-let client: ReturnType<typeof createClient> | null = null
+let client: any = null
 
 export function getSupabaseAdmin() {
   if (client) return client
@@ -21,7 +21,7 @@ export function getSupabaseAdmin() {
       autoRefreshToken: false,
       persistSession: false,
     },
-  })
+  }) as any
 
   return client
 }
