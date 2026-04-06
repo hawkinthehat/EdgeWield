@@ -11,6 +11,7 @@ import Sidebar from '@/components/Navigation/Sidebar';
 import WatcherOnboarding, { type OnboardingCompleteData } from '@/components/Onboarding/WatcherOnboarding';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
+import BookieSettings from '@/components/Terminal/BookieSettings';
 import BookieSelector from '@/components/Terminal/BookieSelector';
 import UnitsCalc from '@/components/Terminal/UnitsCalc';
 import EdgeFeed from '@/components/Terminal/EdgeFeed';
@@ -77,14 +78,22 @@ export default function MasterTerminal() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
+  const [activeBookies, setActiveBookies] = useState<string[]>(['fanduel', 'draftkings', 'betmgm']);
+  const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const isPro = userProfile.is_pro || userProfile.is_premium;
   const bankroll = Number(userProfile.total_bankroll || userProfile.bankroll_size || 1000);
 
   const topArbs = useMemo(() => {
-    return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
-  }, [arbs]);
+    return [...arbs]
+      .filter(
+        (arb) =>
+          activeBookies.includes(arb.bookie_a.toLowerCase()) &&
+          activeBookies.includes(arb.bookie_b.toLowerCase()),
+      )
+      .sort((a, b) => b.profit_percent - a.profit_percent);
+  }, [activeBookies, arbs]);
 
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -111,6 +120,15 @@ export default function MasterTerminal() {
 
       const { data, error } = await supabase
         .from('profiles')
+        .select('is_pro,active_bookies')
+        .eq('id', user.id)
+        .single();
+
+      if (isMounted) {
+        setIsPro(Boolean(profile?.is_pro));
+        if (Array.isArray(profile?.active_bookies) && profile.active_bookies.length > 0) {
+          setActiveBookies(profile.active_bookies.map((book: string) => book.toLowerCase()));
+        }
         .select(
           'is_pro, is_premium, bankroll_size, total_bankroll, unit_size_percentage, risk_tolerance, onboarding_completed',
         )
@@ -135,6 +153,13 @@ export default function MasterTerminal() {
             filter: `id=eq.${user.id}`,
           },
           (payload) => {
+            const nextIsPro = Boolean(payload.new?.is_pro);
+            const previousIsPro = Boolean(payload.old?.is_pro);
+            setIsPro(nextIsPro);
+            if (Array.isArray(payload.new?.active_bookies) && payload.new.active_bookies.length > 0) {
+              setActiveBookies(payload.new.active_bookies.map((book: string) => book.toLowerCase()));
+            }
+            if (nextIsPro && !previousIsPro) {
             const nextProfile = payload.new as Partial<UserProfile>;
             const oldProfile = payload.old as Partial<UserProfile>;
             const wasPro = Boolean(oldProfile?.is_pro || oldProfile?.is_premium);
@@ -199,6 +224,15 @@ export default function MasterTerminal() {
   const topEdge = topArbs[0];
 
   return (
+    <div className="flex min-h-screen bg-edge-navy text-white">
+      <Sidebar userBankroll={bankroll} />
+      <main className="ml-72 flex-1 overflow-y-auto p-8">
+        {/* 1. THE REVENUE HEADER */}
+        <div className="mb-10 flex items-end justify-between">
+          <div>
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter">
+              Terminal_v1.0
+            </h1>
     <>
       <Sidebar userProfile={userProfile} />
       <main className="ml-64 min-h-screen bg-edge-navy p-8 text-white">
@@ -225,6 +259,25 @@ export default function MasterTerminal() {
         {/* 3. THE MARKET CONTROL */}
         <div className="mb-6 mt-12 flex items-center justify-between gap-4">
           <PropFilter active={filter} onChange={setFilter} />
+          {/* PRO UPSELL BADGE */}
+          {!isPro && (
+            <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
+                Upgrade to unlock Player Props
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="mb-8">
+          <BookieSelector />
+        </div>
+
+        <div className="mb-6">
+          <BookieSettings currentBooks={activeBookies} onChange={setActiveBookies} />
+        </div>
+
+        {/* 4. THE LIVE EDGE FEED */}
+        <ArbFeed filter={filter} locked={!isPro} rows={topArbs} />
           {!isPro && (
             <div className="flex items-center gap-3">
               <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
@@ -307,6 +360,7 @@ export default function MasterTerminal() {
         </div>
 
         {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
+          </div>
         )}
       </div>
 

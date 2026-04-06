@@ -13,8 +13,14 @@ create table if not exists public.market_cache (
   away_team text,
   best_home_odds integer,
   best_away_odds integer,
+  best_home_book text,
+  best_away_book text,
   updated_at timestamp with time zone default now()
 );
+
+alter table if exists public.market_cache
+  add column if not exists best_home_book text,
+  add column if not exists best_away_book text;
 
 create index if not exists market_cache_updated_at_idx on public.market_cache (updated_at desc);
 
