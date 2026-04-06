@@ -26,6 +26,11 @@ export default function SettingsPage() {
     }
 
     async function getProfile() {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
