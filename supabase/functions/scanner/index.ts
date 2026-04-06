@@ -5,6 +5,7 @@ type BetRow = {
   event_name: string;
   team: string | null;
   side: 'home' | 'away' | null;
+  sportsbook: string | null;
   wager_amount: number;
   odds_at_entry: number;
   status: 'pending' | 'won' | 'lost' | 'pushed' | 'hedged';
@@ -16,6 +17,12 @@ type MarketCacheRow = {
   away_team: string | null;
   best_home_odds: number | null;
   best_away_odds: number | null;
+  best_home_book: string | null;
+  best_away_book: string | null;
+};
+
+type ProfileBookieRow = {
+  active_bookies: string[] | null;
 };
 
 function toDecimalOdds(americanOdds: number): number {
@@ -64,6 +71,26 @@ function resolveOpponentOdds(bet: BetRow, market: MarketCacheRow): number | null
   return null;
 }
 
+function resolveOpponentBook(bet: BetRow, market: MarketCacheRow): string | null {
+  if (bet.side === 'home') {
+    return market.best_away_book ?? null;
+  }
+
+  if (bet.side === 'away') {
+    return market.best_home_book ?? null;
+  }
+
+  if (bet.team && market.home_team && bet.team === market.home_team) {
+    return market.best_away_book ?? null;
+  }
+
+  if (bet.team && market.away_team && bet.team === market.away_team) {
+    return market.best_home_book ?? null;
+  }
+
+  return null;
+}
+
 async function sendHedgeAlert(userId: string, eventName: string, opponentOdds: number, supabase: any) {
   const { error } = await supabase.from('hedge_alerts').insert({
     user_id: userId,
@@ -80,7 +107,7 @@ async function sendHedgeAlert(userId: string, eventName: string, opponentOdds: n
 export async function scanForHedges(supabase: any) {
   const { data: activeBets, error: activeBetsError } = await supabase
     .from('bets')
-    .select('id,user_id,game_id,event_name,team,side,wager_amount,odds_at_entry,status')
+    .select('id,user_id,game_id,event_name,team,side,sportsbook,wager_amount,odds_at_entry,status')
     .eq('status', 'pending');
 
   if (activeBetsError) {
@@ -98,7 +125,7 @@ export async function scanForHedges(supabase: any) {
 
     const { data: liveMarket, error: liveMarketError } = await supabase
       .from('market_cache')
-      .select('id,home_team,away_team,best_away_odds,best_home_odds')
+      .select('id,home_team,away_team,best_away_odds,best_home_odds,best_away_book,best_home_book')
       .eq('id', bet.game_id)
       .single();
 
@@ -108,6 +135,33 @@ export async function scanForHedges(supabase: any) {
 
     const opponentOdds = resolveOpponentOdds(bet, liveMarket as MarketCacheRow);
     if (!Number.isFinite(opponentOdds)) {
+      continue;
+    }
+
+    const opponentBook = resolveOpponentBook(bet, liveMarket as MarketCacheRow);
+    if (!opponentBook) {
+      continue;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('active_bookies')
+      .eq('id', bet.user_id)
+      .single();
+
+    if (profileError) {
+      continue;
+    }
+
+    const userBooks = Array.isArray((profile as ProfileBookieRow | null)?.active_bookies)
+      ? (profile as ProfileBookieRow).active_bookies.map((book) => String(book).toLowerCase())
+      : ['fanduel', 'draftkings', 'betmgm'];
+
+    const hedgeBookA = String(bet.sportsbook ?? '').toLowerCase();
+    const hedgeBookB = String(opponentBook).toLowerCase();
+    const userCanTrade = userBooks.includes(hedgeBookA) && userBooks.includes(hedgeBookB);
+
+    if (!userCanTrade) {
       continue;
     }
 

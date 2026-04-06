@@ -54,8 +54,18 @@ export async function POST() {
     )
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('stripe_customer_id')
+    .eq('id', user.id)
+    .single()
+
+  const sessionParams: Stripe.Checkout.SessionCreateParams = {
     payment_method_types: ['card'],
+    customer:
+      typeof profile?.stripe_customer_id === 'string' && profile.stripe_customer_id.length > 0
+        ? profile.stripe_customer_id
+        : undefined,
     line_items: [
       {
         price: premiumPriceId,
@@ -64,10 +74,15 @@ export async function POST() {
     ],
     mode: 'subscription',
     allow_promotion_codes: true,
-    success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?success=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?canceled=true`,
-    metadata: { supabase_user_id: user.id },
-  })
+    success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_URL}/billing`,
+    metadata: {
+      userId: user.id,
+      supabase_user_id: user.id,
+    },
+  }
+
+  const session = await stripe.checkout.sessions.create(sessionParams)
 
   return NextResponse.json({ url: session.url }, { status: 200 })
 }

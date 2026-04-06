@@ -9,6 +9,7 @@ type OnboardingRisk = 'Conservative' | 'Standard' | 'Aggressive';
 type FinalizeOnboardingInput = {
   bankroll: number;
   risk: OnboardingRisk | string;
+  activeBookies?: string[];
 };
 
 const RISK_MAP: Record<OnboardingRisk, number> = {
@@ -36,7 +37,6 @@ export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
       },
     },
   });
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -45,16 +45,25 @@ export async function finalizeOnboarding(formData: FinalizeOnboardingInput) {
     throw new Error('Unauthorized access');
   }
 
+  const bankroll = Number(formData.bankroll);
+  if (!Number.isFinite(bankroll) || bankroll <= 0) {
+    return { success: false, message: 'Bankroll must be greater than 0' };
+  }
+
   const risk = (formData.risk ?? 'Standard').toString() as OnboardingRisk;
   const unitPercent = RISK_MAP[risk] ?? RISK_MAP.Standard;
+  const activeBookies = Array.isArray(formData.activeBookies)
+    ? formData.activeBookies.map((book) => String(book).toLowerCase())
+    : ["fanduel", "draftkings", "betmgm"];
 
   const { error } = await supabase
     .from('profiles')
     .update({
-      bankroll_size: formData.bankroll,
-      total_bankroll: formData.bankroll,
+      total_bankroll: bankroll,
+      bankroll_size: bankroll,
       unit_size_percentage: unitPercent,
       risk_tolerance: risk,
+      active_bookies: activeBookies,
       onboarding_completed: true,
     })
     .eq('id', user.id);

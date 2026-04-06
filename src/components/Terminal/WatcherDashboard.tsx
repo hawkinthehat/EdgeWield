@@ -6,7 +6,7 @@ import CFODash from '@/components/Terminal/CFODash';
 import ArbFeed, { sampleRows } from '@/components/Terminal/ArbFeed';
 import { calculateAverageCLV, formatSignedPercent } from '@/lib/clv';
 
-export default function WatcherDashboard() {
+export default function EdgeWieldDashboard() {
   const chartData = [
     { date: 'Mar 24', bankroll: 4200, ev: 4100 },
     { date: 'Mar 25', bankroll: 4150, ev: 4250 },
