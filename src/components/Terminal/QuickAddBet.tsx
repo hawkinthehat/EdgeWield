@@ -43,6 +43,41 @@ export default function QuickAddBet({
       `Saving ${confidence} unit bet on ${selectedTeam} for $${recommendedWager.toFixed(2)}`,
     )
   }
+'use client';
+
+import { useMemo, useState } from 'react';
+import { AlertTriangle, ChevronRight, Shield } from 'lucide-react';
+
+type QuickAddGame = {
+  home_team: string;
+  away_team: string;
+  commence_time: string | null;
+};
+
+interface QuickAddProps {
+  game: QuickAddGame;
+  userBankroll: number;
+  unitSizePercent: number;
+}
+
+export default function QuickAddBet({ game, userBankroll, unitSizePercent }: QuickAddProps) {
+  const [confidence, setConfidence] = useState(1);
+  const [selectedTeam, setSelectedTeam] = useState(game.home_team);
+
+  const { recommendedWager, isHighRisk } = useMemo(() => {
+    const baseUnit = userBankroll * unitSizePercent;
+    const wager = baseUnit * confidence;
+    return {
+      recommendedWager: wager,
+      isHighRisk: wager > userBankroll * 0.05,
+    };
+  }, [confidence, unitSizePercent, userBankroll]);
+
+  const handlePlaceBet = async () => {
+    console.log(`Saving ${confidence} unit bet on ${selectedTeam} for $${recommendedWager.toFixed(2)}`);
+  };
+
+  const kickoff = game.commence_time ? new Date(game.commence_time).toLocaleTimeString() : 'TBD';
 
   return (
     <div className="rounded-2xl border border-slate-700 bg-slate-900 p-6 text-white shadow-2xl">
@@ -52,6 +87,7 @@ export default function QuickAddBet({
             {game.away_team} @ {game.home_team}
           </h3>
           <p className="text-sm text-slate-400">Kickoff: {kickoffLabel}</p>
+          <p className="text-sm text-slate-400">Kickoff: {kickoff}</p>
         </div>
         <Shield className={isHighRisk ? 'text-amber-500' : 'text-emerald-500'} />
       </div>
@@ -60,6 +96,7 @@ export default function QuickAddBet({
         {[game.home_team, game.away_team].map((team) => (
           <button
             key={team}
+            type="button"
             onClick={() => setSelectedTeam(team)}
             className={`rounded-xl border-2 p-3 transition-all ${
               selectedTeam === team
@@ -88,6 +125,7 @@ export default function QuickAddBet({
           step="0.5"
           value={confidence}
           onChange={(event) => setConfidence(Number.parseFloat(event.target.value))}
+          onChange={(event) => setConfidence(Number(event.target.value))}
           className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-700 accent-blue-500"
         />
       </div>
@@ -108,9 +146,13 @@ export default function QuickAddBet({
         onClick={handlePlaceBet}
         className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-4 font-bold text-white transition-all active:scale-95 hover:bg-blue-500"
         type="button"
+        type="button"
+        onClick={handlePlaceBet}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-4 font-bold text-white transition-all active:scale-95 hover:bg-blue-500"
       >
         Lock in Strategy <ChevronRight size={18} />
       </button>
     </div>
   )
+  );
 }
