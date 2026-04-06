@@ -44,15 +44,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 })
   }
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = getSupabaseAdmin() as any
 
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
-      const userId = session.metadata?.supabase_user_id
+      const userId = session.metadata?.supabase_user_id ?? session.metadata?.userId
 
       if (!userId) {
-        console.warn('checkout.session.completed missing metadata.supabase_user_id')
+        console.warn('checkout.session.completed missing metadata user id')
         break
       }
 
@@ -76,6 +76,8 @@ export async function POST(req: Request) {
       const { error } = await supabaseAdmin.from('profiles').update(updates).eq('id', userId)
       if (error) {
         console.error('Failed to update profile from checkout.session.completed:', error)
+      } else {
+        console.log(`EdgeWield: Pro access granted to ${userId}`)
       }
       break
     }
