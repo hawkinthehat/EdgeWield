@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
-import CFODash from '@/components/Terminal/CFODash';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { WatcherDash } from '@/components/Terminal/CFODash';
 import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
 import PropFilter from '@/components/Terminal/PropFilter';
 import MissionAlpha from '@/components/Terminal/MissionAlpha';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
+import { useWatcherRealtime, type WatcherProfile } from '@/hooks/useWatcherRealtime';
 import Sidebar from '@/components/Navigation/Sidebar';
 import WatcherOnboarding, { type OnboardingCompleteData } from '@/components/Onboarding/WatcherOnboarding';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
@@ -72,8 +72,26 @@ function mergeProfile(previous: UserProfile, incoming: Partial<UserProfile>): Us
   };
 }
 
-export default function MasterTerminal() {
+type MasterTerminalProps = {
+  serverProfile?: Partial<WatcherProfile>;
+};
+
+export default function MasterTerminal({ serverProfile }: MasterTerminalProps) {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
+  const [showMission, setShowMission] = useState(false);
+  const [arbs] = useState<ArbRow[]>(sampleRows);
+  const initialProfile = useMemo<WatcherProfile>(
+    () => ({
+      id: serverProfile?.id,
+      bankroll_size: Number(serverProfile?.bankroll_size ?? 1000),
+      is_pro: Boolean(serverProfile?.is_pro),
+    }),
+    [serverProfile],
+  );
+  const { profile } = useWatcherRealtime(initialProfile);
+  const bankroll = Number(profile.bankroll_size) || 0;
+  const isPro = Boolean(profile.is_pro);
+  const previousIsProRef = useRef(isPro);
   const [userProfile, setUserProfile] = useState<UserProfile>(defaultProfile);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -100,12 +118,11 @@ export default function MasterTerminal() {
   }, [activeBookies, arbs]);
 
   useEffect(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return;
+    if (isPro && !previousIsProRef.current) {
+      setShowMission(true);
     }
+    previousIsProRef.current = isPro;
+  }, [isPro]);
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
     let channel: RealtimeChannel | null = null;
@@ -324,6 +341,18 @@ export default function MasterTerminal() {
           <BookieSelector />
         </div>
 
+      {/* 2. THE CFO ANALYTICS */}
+      <WatcherDash bankroll={bankroll} />
+
+      {/* 3. THE MARKET CONTROL */}
+      <div className="mb-6 mt-12 flex items-center justify-between gap-4">
+        <PropFilter active={filter} onChange={setFilter} />
+        {/* PRO UPSELL BADGE */}
+        {!isPro && (
+          <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
+            <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
+              Upgrade to unlock Player Props
+            </p>
         {/* 2. THE CFO ANALYTICS */}
         <CFODash />
 
