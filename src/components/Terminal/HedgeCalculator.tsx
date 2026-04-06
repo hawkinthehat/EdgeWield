@@ -2,15 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { Calculator, Lock } from 'lucide-react';
+import { calculateHedgeMetrics } from '@/lib/hedge';
 
 type HedgeResult = {
   hedge: number;
   profit: number;
 };
-
-function toDecimalOdds(odds: number): number {
-  return odds > 0 ? odds / 100 + 1 : 100 / Math.abs(odds) + 1;
-}
 
 export default function HedgeCalculator() {
   const [wager, setWager] = useState<number>(100);
@@ -19,19 +16,15 @@ export default function HedgeCalculator() {
   const [result, setResult] = useState<HedgeResult>({ hedge: 0, profit: 0 });
 
   useEffect(() => {
-    const decimalOriginal = toDecimalOdds(originalOdds);
-    const decimalLive = toDecimalOdds(liveOpponentOdds);
-    const potentialPayout = wager * decimalOriginal;
-    const recommendedHedge = potentialPayout / decimalLive;
-    const guaranteedProfit = potentialPayout - wager - recommendedHedge;
+    const { hedgeWager, guaranteedProfit } = calculateHedgeMetrics({
+      wager,
+      originalOdds,
+      liveOpponentOdds,
+    });
 
     setResult({
-      hedge: Number.isFinite(recommendedHedge)
-        ? parseFloat(recommendedHedge.toFixed(2))
-        : 0,
-      profit: Number.isFinite(guaranteedProfit)
-        ? parseFloat(guaranteedProfit.toFixed(2))
-        : 0,
+      hedge: Number.isFinite(hedgeWager) ? parseFloat(hedgeWager.toFixed(2)) : 0,
+      profit: Number.isFinite(guaranteedProfit) ? parseFloat(guaranteedProfit.toFixed(2)) : 0,
     });
   }, [wager, originalOdds, liveOpponentOdds]);
 
