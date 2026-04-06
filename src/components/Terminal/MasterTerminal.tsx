@@ -256,6 +256,12 @@ export default function MasterTerminal() {
         )}
       </div>
 
+      {arbs[0] && (
+        <div className="mt-8">
+          <QuickAddBet game={arbs[0]} userBankroll={bankroll} unitSizePercent={0.01} />
+        </div>
+      )}
+
       {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
       </main>
     </div>
