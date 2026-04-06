@@ -307,6 +307,37 @@ export default function MasterTerminal() {
         </div>
 
         {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
+        )}
+      </div>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {isPro ? (
+          <HedgeAlertCard
+            originalBet={{
+              wager: 100,
+              odds: 200,
+              event_name: teaserEvent,
+            }}
+            liveOpponentOdds={-125}
+          />
+        ) : (
+          <HedgeTeaser
+            isPremium={false}
+            event={teaserEvent}
+            potentialProfit="42.50"
+            onUpgrade={handleUpgrade}
+            isCheckingOut={isCheckingOut}
+          />
+        )}
+      </div>
+
+      {arbs[0] && (
+        <div className="mt-8">
+          <QuickAddBet game={arbs[0]} userBankroll={bankroll} unitSizePercent={0.01} />
+        </div>
+      )}
+
+      {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
       </main>
       {showOnboarding && <WatcherOnboarding onComplete={handleOnboardingComplete} />}
     </>
