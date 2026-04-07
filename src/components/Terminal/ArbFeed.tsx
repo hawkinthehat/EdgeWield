@@ -1,5 +1,7 @@
 'use client';
 
+import ArbCard from '@/components/Terminal/ArbCard';
+
 type FilterType = 'all' | 'game' | 'prop';
 
 export type ArbRow = {
@@ -62,10 +64,7 @@ export const sampleRows: ArbRow[] = [
   },
 ];
 
-function filterRows(rows: ArbRow[], filter: FilterType, locked: boolean): ArbRow[] {
-  if (locked) {
-    return rows.filter((row) => !row.is_prop && filter !== 'prop');
-  }
+function filterRows(rows: ArbRow[], filter: FilterType): ArbRow[] {
   if (filter === 'game') {
     return rows.filter((row) => !row.is_prop);
   }
@@ -84,7 +83,7 @@ export default function ArbFeed({
   locked: boolean;
   rows?: ArbRow[];
 }) {
-  const visibleRows = filterRows(rows, filter, locked);
+  const visibleRows = filterRows(rows, filter);
 
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
@@ -92,39 +91,27 @@ export default function ArbFeed({
         <p className="text-[10px] uppercase tracking-widest text-slate-400">Live Edge Feed</p>
         <p className="text-[10px] uppercase tracking-widest text-edge-emerald">{visibleRows.length} opportunities</p>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[860px] border-collapse text-left">
-          <thead>
-            <tr className="border-b border-slate-800 text-[10px] uppercase tracking-widest text-slate-500">
-              <th className="py-2">Market</th>
-              <th className="py-2">Event</th>
-              <th className="py-2">Book A</th>
-              <th className="py-2">Odds A</th>
-              <th className="py-2">Book B</th>
-              <th className="py-2">Odds B</th>
-              <th className="py-2">Profit</th>
-              <th className="py-2">Start</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visibleRows.map((row) => (
-              <tr key={row.id} className="border-b border-slate-900 text-xs text-slate-200">
-                <td className="py-3 font-mono uppercase">{row.market_type}</td>
-                <td className="py-3">{row.event_name}</td>
-                <td className="py-3">{row.bookie_a}</td>
-                <td className="py-3">{row.odds_a.toFixed(2)}</td>
-                <td className="py-3">{row.bookie_b}</td>
-                <td className="py-3">{row.odds_b.toFixed(2)}</td>
-                <td className="py-3 font-black text-edge-emerald">{row.profit_percent.toFixed(2)}%</td>
-                <td className="py-3">{new Date(row.commence_time).toLocaleTimeString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="grid gap-4 md:grid-cols-2">
+        {visibleRows.map((row) => (
+          <ArbCard
+            key={row.id}
+            userTier={locked ? 'trial' : 'pro'}
+            arb={{
+              type: row.is_prop ? 'prop' : 'game',
+              player_name: row.event_name,
+              roi: row.profit_percent,
+              market: row.market_type,
+              bookie_a: row.bookie_a,
+              odds_a: row.odds_a,
+              bookie_b: row.bookie_b,
+              odds_b: row.odds_b,
+            }}
+          />
+        ))}
       </div>
       {locked && (
         <p className="mt-3 text-[10px] uppercase tracking-widest text-amber-400">
-          Player props hidden on free tier.
+          Player props are blurred on trial tier.
         </p>
       )}
     </section>
