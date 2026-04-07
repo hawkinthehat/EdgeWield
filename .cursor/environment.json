@@ -1,0 +1,10 @@
+{
+  "baseImage": "ghcr.io/cursor-images/node-22:latest",
+  "install": "bash .cursor/scripts/bootstrap.sh",
+  "start": "bash .cursor/scripts/bootstrap.sh",
+  "persistedDirectories": [
+    "/workspace/node_modules",
+    "/workspace/.next/cache",
+    "/home/ubuntu/.npm"
+  ]
+}
