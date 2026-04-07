@@ -1,6 +1,6 @@
 'use client';
 
-import ArbCard from '@/components/Terminal/ArbCard';
+import ArbCard, { type ArbCardData, type UserTier } from '@/components/Terminal/ArbCard';
 
 type FilterType = 'all' | 'game' | 'prop';
 
@@ -74,6 +74,19 @@ function filterRows(rows: ArbRow[], filter: FilterType): ArbRow[] {
   return rows;
 }
 
+function toArbCardData(row: ArbRow): ArbCardData {
+  return {
+    type: row.is_prop ? 'prop' : 'game',
+    player_name: row.event_name,
+    roi: row.profit_percent,
+    market: row.market_type,
+    bookie_a: row.bookie_a,
+    odds_a: row.odds_a,
+    bookie_b: row.bookie_b,
+    odds_b: row.odds_b,
+  };
+}
+
 export default function ArbFeed({
   filter,
   locked,
@@ -84,6 +97,7 @@ export default function ArbFeed({
   rows?: ArbRow[];
 }) {
   const visibleRows = filterRows(rows, filter);
+  const userTier: UserTier = locked ? 'trial' : 'pro';
 
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
@@ -93,20 +107,7 @@ export default function ArbFeed({
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {visibleRows.map((row) => (
-          <ArbCard
-            key={row.id}
-            userTier={locked ? 'trial' : 'pro'}
-            arb={{
-              type: row.is_prop ? 'prop' : 'game',
-              player_name: row.event_name,
-              roi: row.profit_percent,
-              market: row.market_type,
-              bookie_a: row.bookie_a,
-              odds_a: row.odds_a,
-              bookie_b: row.bookie_b,
-              odds_b: row.odds_b,
-            }}
-          />
+          <ArbCard key={row.id} userTier={userTier} arb={toArbCardData(row)} />
         ))}
       </div>
       {locked && (

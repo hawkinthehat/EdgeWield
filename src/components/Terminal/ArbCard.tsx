@@ -2,9 +2,9 @@
 
 import { Lock } from 'lucide-react';
 
-type Tier = 'trial' | 'pro';
+export type UserTier = 'trial' | 'pro';
 
-type ArbCardData = {
+export type ArbCardData = {
   type: 'prop' | 'game';
   player_name: string;
   roi: number;
@@ -15,11 +15,18 @@ type ArbCardData = {
   odds_b: number;
 };
 
-export default function ArbCard({ arb, userTier }: { arb: ArbCardData; userTier: Tier }) {
+type ArbCardProps = {
+  arb: ArbCardData;
+  userTier: UserTier;
+  onUnlock?: () => void;
+};
+
+export default function ArbCard({ arb, userTier, onUnlock }: ArbCardProps) {
   const isLocked = arb.type === 'prop' && userTier === 'trial';
+  const displayName = isLocked ? 'Top Secret Player' : arb.player_name;
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-edge-border bg-edge-slate/10 p-6">
+    <div className="relative overflow-hidden rounded-3xl border border-edge-border bg-edge-slate/10 p-6">
       {isLocked && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-edge-navy/40 p-6 text-center backdrop-blur-md">
           <div className="mb-3 rounded-full bg-edge-emerald/20 p-3">
@@ -31,6 +38,8 @@ export default function ArbCard({ arb, userTier }: { arb: ArbCardData; userTier:
           </p>
           <button
             type="button"
+            onClick={onUnlock}
+            aria-label="Upgrade to Pro to unlock full terminal"
             className="rounded-lg bg-edge-emerald px-4 py-2 text-[10px] font-black uppercase text-edge-navy transition-all hover:scale-105"
           >
             Unlock Full Terminal
@@ -40,9 +49,7 @@ export default function ArbCard({ arb, userTier }: { arb: ArbCardData; userTier:
 
       <div className={isLocked ? 'select-none blur-sm' : ''}>
         <div className="flex items-start justify-between">
-          <h3 className="text-lg font-black uppercase italic text-white">
-            {isLocked ? 'Top Secret Player' : arb.player_name}
-          </h3>
+          <h3 className="text-lg font-black uppercase italic text-white">{displayName}</h3>
           <span className="font-black text-edge-emerald">+{arb.roi.toFixed(2)}%</span>
         </div>
         <p className="text-[10px] font-bold uppercase text-slate-500">{arb.market}</p>
