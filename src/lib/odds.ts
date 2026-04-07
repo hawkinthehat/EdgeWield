@@ -42,7 +42,7 @@ export async function getLiveOdds(sport: string = 'americanfootball_nfl'): Promi
   url.searchParams.set('oddsFormat', 'american');
 
   try {
-    const response = await fetch(url.toString(), { next: { revalidate: 300 } }); // Cache for 5 mins
+    const response = await fetch(url.toString(), { next: { revalidate: 300 } });
     if (!response.ok) {
       console.error(`Odds Fetch Error: HTTP ${response.status} ${response.statusText}`);
       return [];
