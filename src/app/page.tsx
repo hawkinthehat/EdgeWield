@@ -100,7 +100,7 @@ export default async function LandingPage() {
 
       <footer className="border-t border-white/5 py-24 text-center">
         <h2 className="mb-8 text-4xl font-black italic uppercase">
-          The House Doesn't Have to Win.
+          The House Doesn&apos;t Have to Win.
         </h2>
         <button className="rounded-2xl bg-white px-12 py-5 text-sm font-black uppercase text-black transition-all hover:bg-edge-emerald">
           Secure Your Spot in Alpha
