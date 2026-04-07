@@ -8,6 +8,26 @@ export default function TerminalPage() {
     color: '#e2e8f0',
   } as const;
 
+  const contentContainerStyle = {
+    maxWidth: '80rem',
+    margin: '0 auto',
+    padding: '3rem 1.5rem',
+  } as const;
+
+  const dataGridStyle = {
+    display: 'grid',
+    gap: '2rem',
+    gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)',
+    alignItems: 'start',
+  } as const;
+
+  const mobileDataGridStyle = {
+    display: 'grid',
+    gap: '2rem',
+    gridTemplateColumns: '1fr',
+    alignItems: 'start',
+  } as const;
+
   const navStyle = {
     position: 'sticky',
     top: 0,
@@ -58,7 +78,7 @@ export default function TerminalPage() {
         </div>
       </nav>
 
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div style={contentContainerStyle}>
         <header className="mb-12">
           <h2 className="mb-2 text-4xl font-black italic tracking-tight text-white">TERMINAL_ALPHA</h2>
           <p className="max-w-2xl font-medium text-slate-500">
@@ -66,8 +86,8 @@ export default function TerminalPage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <section className="space-y-6 lg:col-span-2">
+        <div style={typeof window === 'undefined' ? dataGridStyle : window.innerWidth < 1024 ? mobileDataGridStyle : dataGridStyle}>
+          <section className="space-y-6">
             <div className="mb-4 flex items-center justify-between">
               <h3
                 className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em]"
