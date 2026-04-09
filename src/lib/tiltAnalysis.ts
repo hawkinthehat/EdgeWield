@@ -12,25 +12,36 @@ export type TriageLogicPrompt = {
   answer?: string
 }
 
-// Halt section triage prompts used to interrupt impulsive betting flow.
+export const clinicalCategories = {
+  PHYSIO: [
+    'Rate pulse rhythm (Arrhythmic/Steady)',
+    'Identify muscle tension sector (Cervical/Thoracic/Lumbar)',
+    'Detect breath depth (Clavicular/Diaphragmatic)',
+  ],
+  LOGIC: [
+    'Calculate: (Current Min * 2) - 5',
+    'Sequence: 1, 1, 2, 3, 5, [?]',
+    'Find the prime number: 11, 15, 21',
+  ],
+  OBSERVE: [
+    'Identify the furthest sound frequency',
+    'Locate 3 unique textures in proximity',
+    'Count visible light sources',
+  ],
+} as const
+
+export function getFreshTriage(): [string, string, string] {
+  // Randomly pulls one from each category for every session.
+  const q1 = clinicalCategories.PHYSIO[Math.floor(Math.random() * 3)]
+  const q2 = clinicalCategories.LOGIC[Math.floor(Math.random() * 3)]
+  const q3 = clinicalCategories.OBSERVE[Math.floor(Math.random() * 3)]
+  return [q1, q2, q3]
+}
+
 export const triageLogicPool: TriageLogicPrompt[] = [
-  {
-    type: 'Objective Observation',
-    question:
-      'Scan peripheral environment. Count the number of right-angles visible in your immediate sight line. Is the number [Even] or [Odd]?',
-    validate: (input, actual) => input === actual,
-  },
-  {
-    type: 'Cognitive Load',
-    question: 'Subtract 7 from 100 sequentially. What is the third result? (100 -> 93 -> 86 -> ?)',
-    answer: '79',
-  },
-  {
-    type: 'Pattern Triage',
-    question:
-      'Identify the current cognitive distortion: [A] Catastrophizing (Future-fear) [B] Rumination (Past-loop) [C] Somatic (Physical-focus)',
-    // This is a self-report gate; any selection counts as 'objective observation'
-  },
+  ...clinicalCategories.PHYSIO.map((question) => ({ type: 'PHYSIO', question })),
+  ...clinicalCategories.LOGIC.map((question) => ({ type: 'LOGIC', question })),
+  ...clinicalCategories.OBSERVE.map((question) => ({ type: 'OBSERVE', question })),
 ]
 
 export type TiltBet = {

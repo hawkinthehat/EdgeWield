@@ -92,3 +92,21 @@ body {
     border-width: 30px;
   }
 }
+
+.teal-feather {
+  width: 50px;
+  filter: drop-shadow(0 0 15px #008080);
+  /* The "Jump" Animation */
+  animation: saccadic-emdr 2.5s infinite steps(12, end) alternate;
+}
+
+@keyframes saccadic-emdr {
+  0% {
+    left: 10%;
+    transform: rotate(-5deg);
+  }
+  100% {
+    left: 90%;
+    transform: rotate(5deg);
+  }
+}
