@@ -17,7 +17,7 @@ export default function LinearTerminal() {
           <div className="flex items-center gap-8">
             <EdgeWieldLogo />
             <h2 className="text-sm font-black uppercase italic tracking-[0.3em] text-white">
-              Terminal <span className="text-blue-500">//</span> Live Market
+              Terminal <span className="text-blue-500">{'//'}</span> Live Market
             </h2>
           </div>
 
