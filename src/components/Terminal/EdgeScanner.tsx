@@ -141,7 +141,7 @@ export default function EdgeScanner({ bets, bankroll }: EdgeScannerProps) {
         })}
       </div>
 
-      <KellySidebar activeBet={activeBet} bankroll={bankroll} />
+      <KellySidebar activeBet={activeBet} {...(typeof bankroll === 'number' ? { bankroll } : {})} />
     </div>
   );
 }
