@@ -12,8 +12,10 @@ import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
 import BookieSelector from '@/components/Terminal/BookieSelector';
 import UnitsCalc from '@/components/Terminal/UnitsCalc';
 import EdgeFeed from '@/components/Terminal/EdgeFeed';
+import EdgeScanner from '@/components/Terminal/EdgeScanner';
 import UpgradeButton from '@/components/UpgradeButton';
 import Sidebar from '@/components/Sidebar';
+import { getScannerData } from '@/lib/scanner';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -25,6 +27,7 @@ export default function MasterTerminal() {
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [scannerBets, setScannerBets] = useState<Awaited<ReturnType<typeof getScannerData>>>([]);
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
@@ -80,6 +83,21 @@ export default function MasterTerminal() {
       if (channel) {
         void supabase.removeChannel(channel);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void (async () => {
+      const data = await getScannerData();
+      if (isMounted) {
+        setScannerBets(data);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
     };
   }, []);
 
@@ -150,7 +168,10 @@ export default function MasterTerminal() {
 
         <div className="mt-8">
           {isPro ? (
-            <EdgeFeed rows={topArbs} />
+            <div className="space-y-8">
+              <EdgeFeed rows={topArbs} />
+              {scannerBets.length > 0 && <EdgeScanner bets={scannerBets} bankroll={bankroll} />}
+            </div>
           ) : (
             <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
               <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
