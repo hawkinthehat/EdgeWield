@@ -25,9 +25,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (!session) {
-    redirect('/');
-  }
+  // if (!session) {
+  //   redirect('/');
+  // }
 
   return <>{children}</>;
 }
