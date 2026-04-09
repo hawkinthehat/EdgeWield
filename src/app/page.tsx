@@ -1,6 +1,11 @@
-import { ArrowRight, Crown, ShieldCheck, Zap } from 'lucide-react';
+import OddsList from '@/components/OddsList';
+import InjuryPulse from '@/components/InjuryPulse';
+import { getInjuryPulse } from '@/lib/news';
+import { ArrowRight, Crown, MousePointer2, ShieldCheck, Zap } from 'lucide-react';
 
-export default function BasicLaunchPage() {
+export default async function BasicLaunchPage() {
+  const updates = await getInjuryPulse();
+
   return (
     <div className="bg-[#0A0B10] text-[#E2E8F0] selection:bg-[#3B82F6] selection:text-white">
       {/* 1. DYNAMIC HERO */}
@@ -120,6 +125,35 @@ export default function BasicLaunchPage() {
           <button className="mt-4 flex items-center gap-2 text-xs font-black uppercase text-blue-500 transition-all hover:gap-4 md:mt-0">
             Inquire for Access <ArrowRight size={16} />
           </button>
+        </div>
+      </section>
+
+      {/* LIVE PREVIEW MODULES */}
+      <section className="mx-auto max-w-6xl px-6 pb-20">
+        <div className="mb-10 text-center">
+          <h2 className="mb-3 text-3xl font-black italic uppercase text-white md:text-4xl">
+            Live Terminal Preview
+          </h2>
+          <p className="mx-auto flex max-w-2xl items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
+            <MousePointer2 size={14} className="text-blue-400" />
+            Interactive Edge Tools
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="rounded-3xl border border-white/10 bg-[#10131b] p-6 shadow-[0_0_40px_rgba(59,130,246,0.08)]">
+            <h3 className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">
+              Odds Watchlist
+            </h3>
+            <OddsList />
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-[#10131b] p-6 shadow-[0_0_40px_rgba(59,130,246,0.08)]">
+            <h3 className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">
+              Injury Pulse Feed
+            </h3>
+            <InjuryPulse updates={updates} />
+          </div>
         </div>
       </section>
 
