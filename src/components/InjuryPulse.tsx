@@ -1,16 +1,18 @@
 'use client';
 
 import { Clock } from 'lucide-react';
-import type { InjuryUpdate } from '@/lib/news';
+import { defaultInjuryPulseUpdates, type InjuryUpdate } from '@/lib/news';
 
 interface InjuryPulseProps {
-  updates: InjuryUpdate[];
+  updates?: InjuryUpdate[];
 }
 
 export default function InjuryPulse({ updates }: InjuryPulseProps) {
+  const pulseUpdates = updates ?? defaultInjuryPulseUpdates;
+
   return (
     <div className="space-y-4">
-      {updates.map((update) => (
+      {pulseUpdates.map((update) => (
         <div
           key={update.id}
           className="group rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:border-edge-emerald/30"
