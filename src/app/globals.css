@@ -17,6 +17,22 @@ body {
   color: #f8fafc;
 }
 
+.shard {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid #ffffff; /* White Shards */
+  filter: blur(1px);
+  transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Add a 'spin' to the explosion */
+.shatter-spin {
+  transform: translate(var(--x), var(--y)) rotate(720deg) scale(0);
+}
+
 .clinical-btn {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.9rem;
