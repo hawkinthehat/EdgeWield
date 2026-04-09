@@ -5,6 +5,34 @@ export interface TiltAnalysis {
   cooldownMinutes: number
 }
 
+export type TriageLogicPrompt = {
+  type: string
+  question: string
+  validate?: (input: string, actual: string) => boolean
+  answer?: string
+}
+
+// Halt section triage prompts used to interrupt impulsive betting flow.
+export const triageLogicPool: TriageLogicPrompt[] = [
+  {
+    type: 'Objective Observation',
+    question:
+      'Scan peripheral environment. Count the number of right-angles visible in your immediate sight line. Is the number [Even] or [Odd]?',
+    validate: (input, actual) => input === actual,
+  },
+  {
+    type: 'Cognitive Load',
+    question: 'Subtract 7 from 100 sequentially. What is the third result? (100 -> 93 -> 86 -> ?)',
+    answer: '79',
+  },
+  {
+    type: 'Pattern Triage',
+    question:
+      'Identify the current cognitive distortion: [A] Catastrophizing (Future-fear) [B] Rumination (Past-loop) [C] Somatic (Physical-focus)',
+    // This is a self-report gate; any selection counts as 'objective observation'
+  },
+]
+
 export type TiltBet = {
   status?: string | null
   wager_amount?: number | string | null
