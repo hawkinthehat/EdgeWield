@@ -1,110 +1,144 @@
-import OddsList from '@/components/OddsList';
-import InjuryPulse from '@/components/InjuryPulse';
-import WaitlistForm from '@/components/WaitlistForm';
-import { getInjuryPulse } from '@/lib/news';
-import { Zap, Shield, BarChart3, ChevronDown } from 'lucide-react';
+import { ArrowRight, Crown, ShieldCheck, Zap } from 'lucide-react';
 
-export default async function LandingPage() {
-  const injuries = await getInjuryPulse();
-
+export default function BasicLaunchPage() {
   return (
-    <div className="bg-[#020203] text-white selection:bg-edge-emerald selection:text-black">
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-edge-emerald/10 via-transparent to-transparent opacity-50" />
+    <div className="bg-[#0A0B10] text-[#E2E8F0] selection:bg-[#3B82F6] selection:text-white">
+      {/* 1. DYNAMIC HERO */}
+      <section className="relative overflow-hidden px-6 pb-20 pt-32 text-center">
+        {/* Animated Background Element */}
+        <div className="absolute left-1/2 top-0 h-[600px] w-full -translate-x-1/2 rounded-full bg-blue-600/10 opacity-50 blur-[120px]" />
 
-        <div className="relative z-10 max-w-4xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-edge-emerald opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-edge-emerald"></span>
-            </span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-              Alpha Access v5.3 Live
-            </span>
-          </div>
-
-          <h1 className="mb-6 text-6xl font-black italic leading-none tracking-tighter md:text-8xl">
-            STOP BETTING.
-            <br />
-            <span className="text-edge-emerald shadow-emerald-500/20">START WIELDING.</span>
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <h1 className="mb-8 text-7xl font-black italic tracking-tighter text-white md:text-9xl">
+            EDGE<span className="text-blue-500">WIELD</span>
           </h1>
-
-          <p className="mx-auto mb-10 max-w-2xl text-lg font-medium leading-relaxed text-slate-400 md:text-xl">
-            The institutional-grade terminal that detects market inefficiencies before the books
-            can move the lines.
+          <p className="mx-auto mb-10 max-w-2xl text-xl font-bold uppercase leading-relaxed tracking-widest text-slate-400">
+            Institutional Math for the Every Day Sharp.
           </p>
 
-          <WaitlistForm />
-
-          <ChevronDown className="mx-auto animate-bounce text-slate-600" size={32} />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <div className="mb-24 grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-8 transition-all hover:border-edge-emerald/30">
-            <BarChart3 className="mb-4 text-edge-emerald" size={32} />
-            <h3 className="mb-2 text-xl font-black italic uppercase">90s Pulse</h3>
-            <p className="text-sm font-medium text-slate-500">
-              Scanning 15+ global sportsbooks every 90 seconds. If an edge exists, we find it.
-            </p>
-          </div>
-          <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-8 transition-all hover:border-edge-emerald/30">
-            <Shield className="mb-4 text-edge-emerald" size={32} />
-            <h3 className="mb-2 text-xl font-black italic uppercase">Injury Lead</h3>
-            <p className="text-sm font-medium text-slate-500">
-              Our proprietary pulse detects player status changes before the lines adjust. Trade
-              the news.
-            </p>
-          </div>
-          <div className="rounded-[2.5rem] border border-white/10 bg-white/[0.03] p-8 transition-all hover:border-edge-emerald/30">
-            <Zap className="mb-4 text-edge-emerald" size={32} />
-            <h3 className="mb-2 text-xl font-black italic uppercase">EV+ Arbitrage</h3>
-            <p className="text-sm font-medium text-slate-500">
-              Risk-free math. Lock in profits by playing books against each other in real-time.
-            </p>
-          </div>
-        </div>
-
-        <div className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-white/[0.02] p-8 shadow-2xl md:p-12">
-          <div className="pointer-events-none absolute right-0 top-0 select-none p-8 text-[150px] font-black italic text-white/[0.02]">
-            LIVE_FEED
-          </div>
-          <div className="mb-12 flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-edge-emerald/20">
-              <BarChart3 className="text-edge-emerald" size={24} />
-            </div>
-            <div>
-              <h2 className="text-3xl font-black italic uppercase">The Terminal</h2>
-              <p className="text-xs font-mono uppercase tracking-widest text-slate-500">
-                Real-Time Alpha Capture
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-12 gap-8">
-            <div className="col-span-12 lg:col-span-8">
-              <OddsList />
-            </div>
-            <div className="col-span-12 space-y-6 lg:col-span-4">
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h4 className="mb-4 text-[10px] font-black uppercase tracking-widest text-edge-emerald">
-                  Injury Pulse
-                </h4>
-                <InjuryPulse updates={injuries} />
-              </div>
-            </div>
+          <div className="mb-20 flex flex-col items-center justify-center gap-4 md:flex-row">
+            <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 px-10 py-5 text-sm font-black uppercase text-white shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-all hover:scale-105 hover:bg-blue-500 md:w-auto">
+              Secure Pro Access <Zap size={18} fill="currentColor" />
+            </button>
+            <button className="w-full rounded-2xl border border-white/10 bg-white/5 px-10 py-5 text-sm font-black uppercase text-white transition-all hover:bg-white/10 md:w-auto">
+              Live Terminal Preview
+            </button>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-white/5 py-24 text-center">
-        <h2 className="mb-8 text-4xl font-black italic uppercase">
-          The House Doesn&apos;t Have to Win.
-        </h2>
-        <button className="rounded-2xl bg-white px-12 py-5 text-sm font-black uppercase text-black transition-all hover:bg-edge-emerald">
-          Secure Your Spot in Alpha
-        </button>
+      {/* 2. TWO-TIER PRICING (The "Basics") */}
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-4xl font-black italic uppercase text-white">Select Your Rank</h2>
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
+            Early Alpha Pricing — Locked in for Life
+          </p>
+        </div>
+
+        <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2">
+          {/* PRO TIER */}
+          <div className="group rounded-[3rem] border-2 border-white/5 bg-[#161821] p-10 transition-all hover:border-blue-500/50">
+            <div className="mb-8 flex items-start justify-between">
+              <Zap className="text-blue-500 group-hover:animate-pulse" size={40} />
+              <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1 text-[10px] font-black uppercase tracking-widest text-blue-500">
+                Most Popular
+              </span>
+            </div>
+            <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
+              Pro Terminal
+            </h3>
+            <p className="mb-8 text-sm font-medium text-slate-400">
+              Full Market Access & Arb Detection
+            </p>
+            <ul className="mb-10 space-y-4">
+              {[
+                'Live Spread/Total Alerts',
+                'Basic Steam Room',
+                'Arb Opportunity Tracker',
+                'Injury Pulse Feed',
+              ].map((f) => (
+                <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-300">
+                  <ShieldCheck size={16} className="text-blue-500" /> {f}
+                </li>
+              ))}
+            </ul>
+            <p className="mb-6 text-4xl font-black text-white">
+              $99<span className="text-lg text-slate-500">/mo</span>
+            </p>
+            <button className="w-full rounded-2xl border border-white/10 bg-white/5 py-5 text-xs font-black uppercase transition-all hover:bg-white hover:text-black">
+              Select Pro
+            </button>
+          </div>
+
+          {/* PRO+ TIER */}
+          <div className="relative overflow-hidden rounded-[3rem] border-2 border-blue-500 bg-gradient-to-b from-blue-600/20 to-transparent p-10 shadow-[0_0_50px_rgba(59,130,246,0.15)]">
+            <div className="absolute -right-4 -top-4 opacity-10">
+              <Crown size={150} />
+            </div>
+            <div className="mb-8 flex items-start justify-between">
+              <Crown className="text-blue-400" size={40} />
+              <span className="rounded-full bg-white px-4 py-1 text-[10px] font-black italic uppercase tracking-widest text-black">
+                The Edge
+              </span>
+            </div>
+            <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
+              Pro+ Syndicate
+            </h3>
+            <p className="mb-8 text-sm font-medium text-slate-400">
+              Prop-Market Domination & Early Info
+            </p>
+            <ul className="mb-10 space-y-4">
+              {[
+                'Unlocked Player Props',
+                'Advanced Steam Analytics',
+                'SMS Instant Alerts',
+                'Priority API Speed',
+              ].map((f) => (
+                <li key={f} className="flex items-center gap-3 text-sm font-bold text-slate-200">
+                  <Zap size={16} className="fill-blue-400 text-blue-400" /> {f}
+                </li>
+              ))}
+            </ul>
+            <p className="mb-6 text-4xl font-black text-white">
+              $199<span className="text-lg text-slate-500">/mo</span>
+            </p>
+            <button className="w-full rounded-2xl bg-blue-600 py-5 text-xs font-black uppercase text-white transition-all hover:shadow-[0_0_20px_#3b82f6]">
+              Select Pro+
+            </button>
+          </div>
+        </div>
+
+        {/* INSTITUTIONAL CTA */}
+        <div className="flex flex-col items-center justify-between rounded-3xl border border-white/5 bg-white/5 p-8 text-center md:flex-row md:text-left">
+          <div>
+            <h4 className="font-black italic uppercase tracking-wider text-white">Institutional Need?</h4>
+            <p className="text-xs font-medium uppercase tracking-widest text-slate-500">
+              Syndicate limits & high-volume API access
+            </p>
+          </div>
+          <button className="mt-4 flex items-center gap-2 text-xs font-black uppercase text-blue-500 transition-all hover:gap-4 md:mt-0">
+            Inquire for Access <ArrowRight size={16} />
+          </button>
+        </div>
+      </section>
+
+      {/* 3. THE "FUN" FOOTER */}
+      <footer className="border-t border-white/5 py-20 text-center">
+        <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.5em] text-slate-600">
+          Engineered for Winners
+        </p>
+        <div className="flex justify-center gap-6">
+          {['Twitter', 'Discord', 'Updates'].map((link) => (
+            <a
+              key={link}
+              href="#"
+              className="text-xs font-black uppercase text-slate-500 transition-colors hover:text-blue-500"
+            >
+              {link}
+            </a>
+          ))}
+        </div>
       </footer>
     </div>
   );
