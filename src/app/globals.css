@@ -1,5 +1,6 @@
 :root {
   color-scheme: dark;
+  --btn-active: #3b82f6;
 }
 
 * {
@@ -30,4 +31,80 @@ body {
 /* Add a 'spin' to the explosion */
 .shatter-spin {
   transform: translate(var(--x), var(--y)) rotate(720deg) scale(0);
+}
+
+.clinical-btn {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1.3rem;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+
+.clinical-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.32);
+  filter: brightness(1.05);
+}
+
+.clinical-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Extreme Warning Modal */
+.circuit-breaker-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Red/White Full-Screen Strobe */
+.strobe-active {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  animation: red-white-flash 0.08s steps(2, start) infinite;
+}
+
+@keyframes red-white-flash {
+  0% {
+    background-color: #ff0000;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+}
+
+/* Vagal Border Pulse - The 4:6 Anchor */
+.vagal-anchor {
+  position: fixed;
+  inset: 0;
+  border: 25px solid var(--btn-active);
+  z-index: 10001;
+  pointer-events: none;
+  animation: vagal-rhythm 10s infinite ease-in-out;
+}
+
+@keyframes vagal-rhythm {
+  0%,
+  100% {
+    opacity: 0.2;
+    border-width: 10px;
+  }
+  40% {
+    opacity: 1;
+    border-width: 30px;
+  }
 }
