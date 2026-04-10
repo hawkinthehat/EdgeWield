@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import './globals.css';
 import { Inter, JetBrains_Mono } from 'next/font/google';
+import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
@@ -23,7 +25,22 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="absolute -left-[10%] -top-[10%] h-[40%] w-[40%] rounded-full bg-edge-emerald/5 blur-[120px]" />
           <div className="absolute bottom-[0%] right-[0%] h-[30%] w-[30%] rounded-full bg-blue-500/5 blur-[120px]" />
         </div>
-        {children}
+        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#020203]/85 backdrop-blur">
+          <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
+            <Link href="/" aria-label="EdgeWield home">
+              <Logo />
+            </Link>
+            <nav className="hidden items-center gap-6 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 md:flex">
+              <Link href="/" className="transition-colors hover:text-white">
+                Home
+              </Link>
+              <Link href="/settings" className="transition-colors hover:text-white">
+                Settings
+              </Link>
+            </nav>
+          </div>
+        </header>
+        <main>{children}</main>
       </body>
     </html>
   );
