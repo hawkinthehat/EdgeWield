@@ -1,6 +1,7 @@
 'use client';
 
-import { Bell, Activity, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
+import { Activity, Bell, ChevronDown } from 'lucide-react';
 
 export default function Header() {
   return (
@@ -8,13 +9,8 @@ export default function Header() {
       <div className="mx-auto flex h-full max-w-[1600px] items-center justify-between">
         {/* LOGO SECTION */}
         <div className="flex items-center gap-8">
-          <div className="flex flex-col leading-none">
-            <span className="text-2xl font-black uppercase italic tracking-tighter text-white">
-              Edge<span className="text-blue-500 not-italic">Wield</span>
-            </span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">
-              Pro-Grade Extraction
-            </span>
+          <div className="relative h-10 w-40">
+            <Image src="/logo.png" alt="EdgeWield Logo" fill className="object-contain" priority />
           </div>
 
           {/* SYSTEM STATUS (Middle Lean) */}
@@ -47,7 +43,7 @@ export default function Header() {
               <p className="text-[9px] font-bold uppercase text-blue-500">Tier: Pro+</p>
             </div>
             <button className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-1 pr-3 transition-all hover:bg-white/10">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 text-xs font-black text-white">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 font-black text-xs text-white">
                 JD
               </div>
               <ChevronDown size={14} className="text-slate-500" />
