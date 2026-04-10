@@ -18,12 +18,12 @@ import Sidebar from '@/components/Sidebar';
 import type { EdgeBet } from '@/lib/scanner';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
+const PRO_BYPASS_ENABLED = (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS ?? '').trim().toLowerCase() === 'true';
 
 export default function MasterTerminal() {
-  const proBypassEnabled = (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS ?? '').trim().toLowerCase() === 'true';
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
-  const [devAccessOverride, setDevAccessOverride] = useState(proBypassEnabled);
+  const [devAccessOverride, setDevAccessOverride] = useState(PRO_BYPASS_ENABLED);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
@@ -31,7 +31,7 @@ export default function MasterTerminal() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
 
-  const canAccessProScanner = proBypassEnabled || isPro || devAccessOverride;
+  const canAccessProScanner = PRO_BYPASS_ENABLED || isPro || devAccessOverride;
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
@@ -56,7 +56,7 @@ export default function MasterTerminal() {
 
       if (!user?.id || !isMounted) {
         if (isMounted) {
-          setDevAccessOverride(proBypassEnabled);
+          setDevAccessOverride(PRO_BYPASS_ENABLED);
         }
         return;
       }
@@ -79,7 +79,7 @@ export default function MasterTerminal() {
         const bypassByEmail = bypassEmail.length > 0 && email.toLowerCase() === bypassEmail.toLowerCase();
 
         setIsPro(hasProAccess);
-        setDevAccessOverride(proBypassEnabled || bypassByEmail);
+        setDevAccessOverride(PRO_BYPASS_ENABLED || bypassByEmail);
       }
 
       channel = supabase
