@@ -12,7 +12,6 @@ export default async function BasicLaunchPage() {
       <Header />
 
       <main className="pt-20">
-        {/* HERO SECTION */}
         {/* 1. DYNAMIC HERO */}
         <section className="relative overflow-hidden px-6 pb-20 pt-32 text-center">
           {/* Animated Background Element */}
@@ -37,7 +36,6 @@ export default async function BasicLaunchPage() {
           </div>
         </section>
 
-        {/* ... existing pricing/terminal code ... */}
         {/* 2. TWO-TIER PRICING (The "Basics") */}
         <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="mb-16 text-center">
