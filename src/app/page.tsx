@@ -1,6 +1,7 @@
 import OddsList from '@/components/OddsList';
 import InjuryPulse from '@/components/InjuryPulse';
 import Header from '@/components/Header';
+import CheckoutButton from '@/components/CheckoutButton';
 import { getInjuryPulse } from '@/lib/news';
 import { ArrowRight, Crown, MousePointer2, ShieldCheck, Zap } from 'lucide-react';
 
@@ -75,9 +76,12 @@ export default async function BasicLaunchPage() {
               <p className="mb-6 text-4xl font-black text-white">
                 $99<span className="text-lg text-slate-500">/mo</span>
               </p>
-              <button className="w-full rounded-2xl border border-white/10 bg-white/5 py-5 text-xs font-black uppercase transition-all hover:bg-white hover:text-black">
-                Select Pro
-              </button>
+              <CheckoutButton
+                plan="scout"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 py-5 text-xs font-black uppercase transition-all hover:bg-white hover:text-black"
+              >
+                Select Scout
+              </CheckoutButton>
             </div>
 
             {/* PRO+ TIER */}
@@ -112,9 +116,12 @@ export default async function BasicLaunchPage() {
               <p className="mb-6 text-4xl font-black text-white">
                 $199<span className="text-lg text-slate-500">/mo</span>
               </p>
-              <button className="w-full rounded-2xl bg-blue-600 py-5 text-xs font-black uppercase text-white transition-all hover:shadow-[0_0_20px_#3b82f6]">
-                Select Pro+
-              </button>
+              <CheckoutButton
+                plan="pro"
+                className="w-full rounded-2xl bg-blue-600 py-5 text-xs font-black uppercase text-white transition-all hover:shadow-[0_0_20px_#3b82f6]"
+              >
+                Select Pro
+              </CheckoutButton>
             </div>
           </div>
 

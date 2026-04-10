@@ -6,13 +6,29 @@ import { NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-const premiumPriceId = process.env.STRIPE_PREMIUM_PRICE_ID
+const scoutPriceId = process.env.STRIPE_PRICE_ID_SCOUT
+const proPriceId = process.env.STRIPE_PRICE_ID_PRO
 
 const stripe = stripeSecretKey
   ? new Stripe(stripeSecretKey, { apiVersion: '2023-10-16' })
   : null
 
-export async function POST() {
+type CheckoutPlan = 'scout' | 'pro'
+
+function resolveCheckoutPriceId(plan: CheckoutPlan): string | null {
+  if (plan === 'scout') {
+    return scoutPriceId ?? null
+  }
+
+  return proPriceId ?? null
+}
+
+function getBaseUrl(): string | null {
+  const rawValue = process.env.NEXT_PUBLIC_URL ?? process.env.NEXT_PUBLIC_SITE_URL
+  return rawValue && rawValue.length > 0 ? rawValue : null
+}
+
+export async function POST(req: Request) {
   const cookieStore = await cookies()
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -44,11 +60,16 @@ export async function POST() {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  if (!stripe || !premiumPriceId || !process.env.NEXT_PUBLIC_URL) {
+  const body = (await req.json().catch(() => ({}))) as { plan?: string }
+  const requestedPlan = body.plan === 'scout' ? 'scout' : 'pro'
+  const selectedPriceId = resolveCheckoutPriceId(requestedPlan)
+  const baseUrl = getBaseUrl()
+
+  if (!stripe || !selectedPriceId || !baseUrl) {
     return NextResponse.json(
       {
         error:
-          'Missing STRIPE_SECRET_KEY, STRIPE_PREMIUM_PRICE_ID, or NEXT_PUBLIC_URL environment variable',
+          'Missing STRIPE_SECRET_KEY, STRIPE_PRICE_ID_SCOUT/STRIPE_PRICE_ID_PRO, or NEXT_PUBLIC_URL/NEXT_PUBLIC_SITE_URL environment variable',
       },
       { status: 500 },
     )
@@ -64,17 +85,18 @@ export async function POST() {
     payment_method_types: ['card'],
     line_items: [
       {
-        price: premiumPriceId,
+        price: selectedPriceId,
         quantity: 1,
       },
     ],
     mode: 'subscription',
     allow_promotion_codes: true,
-    success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_URL}/billing`,
+    success_url: `${baseUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/billing`,
     metadata: {
       userId: user.id,
       supabase_user_id: user.id,
+      selected_plan: requestedPlan,
     },
   }
 
