@@ -34,10 +34,10 @@ type OddsApiEvent = {
 };
 
 function americanToImpliedProbability(odds: number): number {
-  if (odds > 0) {
-    return 100 / (odds + 100);
+  if (!Number.isFinite(odds) || odds === 0) {
+    return 0;
   }
-  return Math.abs(odds) / (Math.abs(odds) + 100);
+  return odds > 0 ? 100 / (odds + 100) : Math.abs(odds) / (Math.abs(odds) + 100);
 }
 
 function formatSpreadPoint(point: number | undefined): string {
@@ -155,7 +155,7 @@ function buildEdgeBets(events: OddsApiEvent[]): EdgeBet[] {
 export async function getScannerData(): Promise<EdgeBet[]> {
   const apiKey = process.env.THE_ODDS_API_KEY;
   if (!apiKey) {
-    throw new Error('Missing THE_ODDS_API_KEY');
+    return [];
   }
 
   const endpoint = new URL('https://api.the-odds-api.com/v4/sports/basketball_nba/odds');
@@ -164,19 +164,25 @@ export async function getScannerData(): Promise<EdgeBet[]> {
   endpoint.searchParams.set('markets', 'h2h,spreads');
   endpoint.searchParams.set('oddsFormat', 'american');
 
-  const response = await fetch(endpoint.toString(), {
-    cache: 'no-store',
-    headers: { Accept: 'application/json' },
-  });
+  try {
+    const response = await fetch(endpoint.toString(), {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    });
 
-  if (!response.ok) {
-    throw new Error(`The Odds API request failed (${response.status})`);
-  }
+    if (!response.ok) {
+      console.error(`EdgeScanner: Odds API request failed (${response.status})`);
+      return [];
+    }
 
-  const payload = (await response.json()) as unknown;
-  if (!Array.isArray(payload)) {
+    const payload = (await response.json()) as unknown;
+    if (!Array.isArray(payload)) {
+      return [];
+    }
+
+    return buildEdgeBets(payload as OddsApiEvent[]);
+  } catch (error) {
+    console.error('EdgeScanner: Failed to fetch live scanner data', error);
     return [];
   }
-
-  return buildEdgeBets(payload as OddsApiEvent[]);
 }

@@ -121,10 +121,9 @@ export default function MasterTerminal() {
         if (!response.ok) {
           return;
         }
-
         const payload = (await response.json()) as { bets?: EdgeBet[] };
         if (isMounted) {
-          setScannerBets(payload.bets ?? []);
+          setScannerBets(Array.isArray(payload.bets) ? payload.bets : []);
         }
       } catch {
         if (isMounted) {
