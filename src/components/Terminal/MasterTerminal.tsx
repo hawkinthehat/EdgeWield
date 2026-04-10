@@ -15,7 +15,7 @@ import EdgeFeed from '@/components/Terminal/EdgeFeed';
 import EdgeScanner from '@/components/Terminal/EdgeScanner';
 import UpgradeButton from '@/components/UpgradeButton';
 import Sidebar from '@/components/Sidebar';
-import { getScannerData } from '@/lib/scanner';
+import type { EdgeBet } from '@/lib/scanner';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
 
@@ -27,7 +27,7 @@ export default function MasterTerminal() {
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [scannerBets, setScannerBets] = useState<Awaited<ReturnType<typeof getScannerData>>>([]);
+  const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
@@ -90,9 +90,19 @@ export default function MasterTerminal() {
     let isMounted = true;
 
     void (async () => {
-      const data = await getScannerData();
-      if (isMounted) {
-        setScannerBets(data);
+      try {
+        const response = await fetch('/api/scanner', { cache: 'no-store' });
+        if (!response.ok) {
+          return;
+        }
+        const payload = (await response.json()) as { bets?: EdgeBet[] };
+        if (isMounted) {
+          setScannerBets(Array.isArray(payload.bets) ? payload.bets : []);
+        }
+      } catch {
+        if (isMounted) {
+          setScannerBets([]);
+        }
       }
     })();
 
