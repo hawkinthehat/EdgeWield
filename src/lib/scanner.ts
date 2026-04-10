@@ -13,6 +13,7 @@ export interface EdgeBet {
 type OddsApiOutcome = {
   name: string;
   price: number;
+  point?: number;
 };
 
 type OddsApiMarket = {
@@ -32,8 +33,6 @@ type OddsApiEvent = {
   bookmakers?: OddsApiBookmaker[];
 };
 
-const DEFAULT_SPORT = 'upcoming';
-
 function americanToImpliedProbability(odds: number): number {
   if (!Number.isFinite(odds) || odds === 0) {
     return 0;
@@ -41,98 +40,147 @@ function americanToImpliedProbability(odds: number): number {
   return odds > 0 ? 100 / (odds + 100) : Math.abs(odds) / (Math.abs(odds) + 100);
 }
 
-function impliedProbabilityToAmerican(probability: number): number {
-  const safeProbability = Math.min(0.99, Math.max(0.01, probability));
-  if (safeProbability >= 0.5) {
-    return -Math.round((safeProbability / (1 - safeProbability)) * 100);
+function formatSpreadPoint(point: number | undefined): string {
+  if (!Number.isFinite(point)) {
+    return '0';
   }
-  return Math.round(((1 - safeProbability) / safeProbability) * 100);
+  const value = Number(point);
+  return value > 0 ? `+${value}` : `${value}`;
 }
 
-function toEdgeBet(event: OddsApiEvent, selection: string, offers: Array<{ bookie: string; odds: number }>): EdgeBet | null {
-  if (offers.length < 2) {
-    return null;
+function buildEdgeBets(events: OddsApiEvent[]): EdgeBet[] {
+  const edges: EdgeBet[] = [];
+
+  for (const event of events) {
+    if (!event.id || !event.home_team || !event.away_team || !Array.isArray(event.bookmakers)) {
+      continue;
+    }
+
+    type Aggregate = {
+      id: string;
+      event: string;
+      market: string;
+      selection: string;
+      bestOdds: number;
+      bestBookie: string;
+      allOdds: number[];
+    };
+
+    const marketSelectionMap = new Map<string, Aggregate>();
+
+    for (const bookmaker of event.bookmakers) {
+      if (!bookmaker?.title || !Array.isArray(bookmaker.markets)) {
+        continue;
+      }
+
+      for (const market of bookmaker.markets) {
+        if ((market.key !== 'h2h' && market.key !== 'spreads') || !Array.isArray(market.outcomes)) {
+          continue;
+        }
+
+        for (const outcome of market.outcomes) {
+          if (!outcome?.name || !Number.isFinite(outcome.price)) {
+            continue;
+          }
+
+          const selection =
+            market.key === 'spreads'
+              ? `${outcome.name} ${formatSpreadPoint(outcome.point)}`
+              : outcome.name;
+          const marketLabel =
+            market.key === 'h2h' ? 'Moneyline' : `Spread (${formatSpreadPoint(outcome.point)})`;
+          const aggregateKey = `${event.id}:${market.key}:${selection}`;
+          const existing = marketSelectionMap.get(aggregateKey);
+
+          if (!existing) {
+            marketSelectionMap.set(aggregateKey, {
+              id: aggregateKey,
+              event: `${event.away_team} vs ${event.home_team}`,
+              market: marketLabel,
+              selection,
+              bestOdds: outcome.price,
+              bestBookie: bookmaker.title,
+              allOdds: [outcome.price],
+            });
+            continue;
+          }
+
+          existing.allOdds.push(outcome.price);
+          if (outcome.price > existing.bestOdds) {
+            existing.bestOdds = outcome.price;
+            existing.bestBookie = bookmaker.title;
+          }
+        }
+      }
+    }
+
+    for (const aggregate of marketSelectionMap.values()) {
+      if (aggregate.allOdds.length === 0) {
+        continue;
+      }
+
+      const fairOdds = Math.round(
+        aggregate.allOdds.reduce((runningTotal, odds) => runningTotal + odds, 0) / aggregate.allOdds.length,
+      );
+
+      if (!Number.isFinite(fairOdds) || fairOdds === 0 || aggregate.bestOdds === 0) {
+        continue;
+      }
+
+      const bestImpliedProb = americanToImpliedProbability(aggregate.bestOdds);
+      const fairImpliedProb = americanToImpliedProbability(fairOdds);
+      const edgePct = ((fairImpliedProb - bestImpliedProb) / bestImpliedProb) * 100;
+
+      if (!Number.isFinite(edgePct) || edgePct <= 0) {
+        continue;
+      }
+
+      edges.push({
+        id: aggregate.id,
+        event: aggregate.event,
+        market: aggregate.market,
+        selection: aggregate.selection,
+        best_odds: Math.round(aggregate.bestOdds),
+        bookie: aggregate.bestBookie,
+        fair_odds: fairOdds,
+        edge_pct: Number(edgePct.toFixed(2)),
+        win_prob: Number((fairImpliedProb * 100).toFixed(2)),
+      });
+    }
   }
 
-  const bestOffer = offers.reduce((best, current) => (current.odds > best.odds ? current : best));
-  const marketProbabilities = offers.map((offer) => americanToImpliedProbability(offer.odds)).filter((prob) => prob > 0);
-  if (marketProbabilities.length === 0) {
-    return null;
-  }
-
-  const fairProbability = marketProbabilities.reduce((sum, prob) => sum + prob, 0) / marketProbabilities.length;
-  const bestImpliedProbability = americanToImpliedProbability(bestOffer.odds);
-  if (bestImpliedProbability <= 0) {
-    return null;
-  }
-
-  const edgePct = ((fairProbability - bestImpliedProbability) / bestImpliedProbability) * 100;
-  if (edgePct <= 0) {
-    return null;
-  }
-
-  return {
-    id: `${event.id}-${selection.toLowerCase().replaceAll(/\s+/g, '-')}`,
-    event: `${event.away_team} vs ${event.home_team}`,
-    market: 'Moneyline',
-    selection,
-    best_odds: bestOffer.odds,
-    bookie: bestOffer.bookie,
-    fair_odds: impliedProbabilityToAmerican(fairProbability),
-    edge_pct: Number(edgePct.toFixed(1)),
-    win_prob: Number((fairProbability * 100).toFixed(1)),
-  };
+  return edges.sort((a, b) => b.edge_pct - a.edge_pct).slice(0, 40);
 }
 
 export async function getScannerData(): Promise<EdgeBet[]> {
   const apiKey = process.env.THE_ODDS_API_KEY;
   if (!apiKey) {
-    console.error('EdgeScanner: Missing THE_ODDS_API_KEY');
     return [];
   }
 
-  const url = new URL(`https://api.the-odds-api.com/v4/sports/${DEFAULT_SPORT}/odds/`);
-  url.searchParams.set('apiKey', apiKey);
-  url.searchParams.set('regions', 'us');
-  url.searchParams.set('markets', 'h2h');
-  url.searchParams.set('oddsFormat', 'american');
+  const endpoint = new URL('https://api.the-odds-api.com/v4/sports/basketball_nba/odds');
+  endpoint.searchParams.set('apiKey', apiKey);
+  endpoint.searchParams.set('regions', 'us');
+  endpoint.searchParams.set('markets', 'h2h,spreads');
+  endpoint.searchParams.set('oddsFormat', 'american');
 
   try {
-    const response = await fetch(url.toString(), { cache: 'no-store' });
+    const response = await fetch(endpoint.toString(), {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    });
+
     if (!response.ok) {
       console.error(`EdgeScanner: Odds API request failed (${response.status})`);
       return [];
     }
 
-    const events = (await response.json()) as OddsApiEvent[];
-    if (!Array.isArray(events)) {
+    const payload = (await response.json()) as unknown;
+    if (!Array.isArray(payload)) {
       return [];
     }
 
-    const edgeBets = events
-      .flatMap((event) => {
-        const offersBySelection = new Map<string, Array<{ bookie: string; odds: number }>>();
-
-        for (const bookmaker of event.bookmakers ?? []) {
-          const h2hMarket = (bookmaker.markets ?? []).find((market) => market.key === 'h2h');
-          for (const outcome of h2hMarket?.outcomes ?? []) {
-            if (!Number.isFinite(outcome.price)) {
-              continue;
-            }
-            const offers = offersBySelection.get(outcome.name) ?? [];
-            offers.push({ bookie: bookmaker.title, odds: outcome.price });
-            offersBySelection.set(outcome.name, offers);
-          }
-        }
-
-        return Array.from(offersBySelection.entries())
-          .map(([selection, offers]) => toEdgeBet(event, selection, offers))
-          .filter((bet): bet is EdgeBet => Boolean(bet));
-      })
-      .sort((a, b) => b.edge_pct - a.edge_pct)
-      .slice(0, 20);
-
-    return edgeBets;
+    return buildEdgeBets(payload as OddsApiEvent[]);
   } catch (error) {
     console.error('EdgeScanner: Failed to fetch live scanner data', error);
     return [];

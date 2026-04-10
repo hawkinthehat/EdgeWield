@@ -22,12 +22,15 @@ type TerminalFilter = 'all' | 'game' | 'prop';
 export default function MasterTerminal() {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
+  const [devAccessOverride, setDevAccessOverride] = useState(false);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showMission, setShowMission] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
+
+  const canAccessProScanner = isPro || devAccessOverride;
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
@@ -55,10 +58,25 @@ export default function MasterTerminal() {
       }
       setUserIdentity({ id: user.id, email: user.email ?? '' });
 
-      const { data: profile } = await supabase.from('profiles').select('is_pro').eq('id', user.id).single();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_pro,is_premium,role,subscription_status')
+        .eq('id', user.id)
+        .single();
 
       if (isMounted) {
-        setIsPro(Boolean(profile?.is_pro));
+        const hasProAccess =
+          Boolean(profile?.is_pro) ||
+          Boolean(profile?.is_premium) ||
+          profile?.role === 'pro' ||
+          profile?.subscription_status === 'active';
+        const email = user.email ?? '';
+        const bypassEmail = process.env.NEXT_PUBLIC_DEV_BYPASS_EMAIL ?? '';
+        const bypassByFlag = process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS === 'true';
+        const bypassByEmail = bypassEmail.length > 0 && email.toLowerCase() === bypassEmail.toLowerCase();
+
+        setIsPro(hasProAccess);
+        setDevAccessOverride(bypassByFlag || bypassByEmail);
       }
 
       channel = supabase
@@ -67,8 +85,16 @@ export default function MasterTerminal() {
           'postgres_changes',
           { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${user.id}` },
           (payload) => {
-            const nextIsPro = Boolean(payload.new?.is_pro);
-            const previousIsPro = Boolean(payload.old?.is_pro);
+            const nextIsPro =
+              Boolean(payload.new?.is_pro) ||
+              Boolean(payload.new?.is_premium) ||
+              payload.new?.role === 'pro' ||
+              payload.new?.subscription_status === 'active';
+            const previousIsPro =
+              Boolean(payload.old?.is_pro) ||
+              Boolean(payload.old?.is_premium) ||
+              payload.old?.role === 'pro' ||
+              payload.old?.subscription_status === 'active';
             setIsPro(nextIsPro);
             if (nextIsPro && !previousIsPro) {
               setShowMission(true);
@@ -156,7 +182,7 @@ export default function MasterTerminal() {
         {/* 3. THE MARKET CONTROL */}
         <div className="mb-6 mt-12 flex items-center justify-between gap-4">
           <PropFilter active={filter} onChange={setFilter} />
-          {!isPro && (
+          {!canAccessProScanner && (
             <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
               <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
                 Upgrade to unlock Player Props
@@ -169,7 +195,7 @@ export default function MasterTerminal() {
         </div>
 
         {/* 4. THE LIVE EDGE FEED */}
-        <ArbFeed filter={filter} locked={!isPro} rows={arbs} />
+        <ArbFeed filter={filter} locked={!canAccessProScanner} rows={arbs} />
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <HedgeCalculator />
@@ -177,7 +203,7 @@ export default function MasterTerminal() {
         </div>
 
         <div className="mt-8">
-          {isPro ? (
+          {canAccessProScanner ? (
             <div className="space-y-8">
               <EdgeFeed rows={topArbs} />
               {scannerBets.length > 0 && <EdgeScanner bets={scannerBets} bankroll={bankroll} />}
@@ -205,7 +231,7 @@ export default function MasterTerminal() {
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          {isPro ? (
+          {canAccessProScanner ? (
             <HedgeAlertCard
               originalBet={{
                 wager: 100,
