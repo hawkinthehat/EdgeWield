@@ -18,7 +18,7 @@ import Sidebar from '@/components/Sidebar';
 import type { EdgeBet } from '@/lib/scanner';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
-const PRO_BYPASS_ENABLED = (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS ?? '').trim().toLowerCase() === 'true';
+const PRO_BYPASS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS === 'true';
 
 export default function MasterTerminal() {
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
