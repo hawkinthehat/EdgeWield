@@ -29,6 +29,9 @@ export default async function BasicLaunchPage() {
             <h1 className="mb-8 text-7xl font-black italic tracking-tighter text-white md:text-9xl">
               EDGE<span className="text-[#39FF14]">WIELD</span>
             </h1>
+            <p className="mx-auto mb-4 max-w-3xl text-sm font-black uppercase tracking-[0.35em] text-[#39FF14] md:text-base">
+              Institutional Vision. Predatory Precision.
+            </p>
             <p className="mx-auto mb-10 max-w-2xl text-xl font-bold uppercase leading-relaxed tracking-widest text-slate-400">
               Arbitrage math for serious sports bettors.
             </p>
@@ -51,10 +54,10 @@ export default async function BasicLaunchPage() {
             <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Choose Kestrel, Red-Tail, or Sea Hawk</p>
             <div className="mx-auto mt-5 max-w-md rounded-2xl border border-[#39FF14]/35 bg-[#39FF14]/10 px-4 py-3 text-left">
               <p className="mb-2 text-[10px] font-black uppercase tracking-[0.25em] text-[#39FF14]">
-                Founding Member
+                Founding Sea Hawk Rate
               </p>
               <label htmlFor={FOUNDING_MEMBER_CODE_INPUT_ID} className="text-xs font-bold text-slate-300">
-                Have a Founding Member code? <span className="text-[#39FF14]">Apply here.</span>
+                Have a Founding Sea Hawk code? <span className="text-[#39FF14]">Apply your 50% lifetime rate here.</span>
               </label>
               <input
                 id={FOUNDING_MEMBER_CODE_INPUT_ID}
@@ -80,7 +83,9 @@ export default async function BasicLaunchPage() {
               <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
                 Kestrel
               </h3>
-              <p className="mb-8 text-sm font-medium text-slate-400">Core access for disciplined scouting</p>
+              <p className="mb-8 text-sm font-medium text-slate-400">
+                Agile, high-frequency scanning for the daily player.
+              </p>
               <ul className="mb-10 space-y-4">
                 {[
                   '15-Minute Market Sync',
@@ -116,7 +121,7 @@ export default async function BasicLaunchPage() {
                 Red-Tail
               </h3>
               <p className="mb-8 text-sm font-medium text-slate-400">
-                Full Market Access & Arb Detection
+                Advanced market vision and expanded bookmaker access.
               </p>
               <ul className="mb-10 space-y-4">
                 {[
@@ -154,7 +159,7 @@ export default async function BasicLaunchPage() {
                     Best Value
                   </span>
                   <span className="rounded-full border border-[#39FF14]/45 bg-[#39FF14]/15 px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-[#39FF14]">
-                    Founding Member
+                    Founding Sea Hawk Rate
                   </span>
                 </div>
               </div>
@@ -162,7 +167,7 @@ export default async function BasicLaunchPage() {
                 Sea Hawk
               </h3>
               <p className="mb-8 text-sm font-medium text-slate-400">
-                Player props and faster market signals
+                The Master Eye. Full institutional suite, Live Sweat tracking, and the Eagle-Eye Calculator.
               </p>
               <ul className="mb-10 space-y-4">
                 {[
@@ -200,6 +205,17 @@ export default async function BasicLaunchPage() {
             <button className="mt-4 flex items-center gap-2 text-xs font-black uppercase text-[#39FF14] transition-all hover:gap-4 md:mt-0">
               Inquire for Access <ArrowRight size={16} />
             </button>
+          </div>
+        </section>
+
+        {/* ORIGIN BLURB */}
+        <section className="mx-auto max-w-3xl px-6 pb-8">
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center">
+            <p className="mb-2 text-[10px] font-black uppercase tracking-[0.28em] text-[#39FF14]">About the Founder</p>
+            <p className="text-sm font-medium text-slate-300">
+              EdgeWield combines Pacific Northwest heritage with the precision of a raptor&apos;s strike. Built for
+              those who hunt value in the markets.
+            </p>
           </div>
         </section>
 

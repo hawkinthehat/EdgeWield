@@ -12,7 +12,12 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" aria-label="EdgeWield home" className="flex items-center gap-3">
             <HawkLogo className="pointer-events-none h-10 w-10 shrink-0" />
-            <span className="text-xl font-black uppercase tracking-tight text-slate-100">EdgeWield</span>
+            <span className="flex flex-col leading-tight">
+              <span className="text-xl font-black uppercase tracking-tight text-slate-100">EdgeWield</span>
+              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                Institutional Vision. Predatory Precision.
+              </span>
+            </span>
           </Link>
 
           {/* SYSTEM STATUS (Middle Lean) */}
