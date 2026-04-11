@@ -20,8 +20,8 @@ type SteamMovementRow = {
   windowLabel: string;
 };
 
-const movementWindows = ['15s', '30s', '45s', '60s'];
-const velocityLabels = ['Warming', 'Building', 'Breaking', 'Explosive'];
+const movementWindows = ['15s', '30s', '45s', '60s'] as const;
+const velocityLabels = ['Warming', 'Building', 'Breaking', 'Explosive'] as const;
 
 function toMovementRows(rows: ArbRow[]): SteamMovementRow[] {
   return rows
@@ -29,7 +29,7 @@ function toMovementRows(rows: ArbRow[]): SteamMovementRow[] {
       const averageOdds = (row.odds_a + row.odds_b) / 2;
       const impliedDrift = Math.abs((row.odds_a - row.odds_b) / averageOdds) * 100;
       const movementScore = Math.max(0.1, row.profit_percent * 1.8 + impliedDrift);
-      const velocityLabel = velocityLabels[Math.min(velocityLabels.length - 1, Math.floor(movementScore / 2.5))];
+      const velocityLabel = velocityLabels[Math.min(velocityLabels.length - 1, Math.floor(movementScore / 2.5))] ?? 'Warming';
       return {
         id: row.id,
         event: row.event_name,

@@ -138,16 +138,14 @@ export default function ArbFeed({
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        {visibleRows.map((row) => (
-          <ArbCard
-            key={row.id}
-            userTier={userTier}
-            arb={toArbCardData(row)}
-            onSelect={handleSelectArb}
-            onWatch={onToggleWatch ? () => onToggleWatch(row) : undefined}
-            isWatched={watchedRowIds.includes(row.id)}
-          />
-        ))}
+        {visibleRows.map((row) => {
+          const cardProps = onToggleWatch
+            ? { onWatch: () => onToggleWatch(row), isWatched: watchedRowIds.includes(row.id) }
+            : {};
+          return (
+            <ArbCard key={row.id} userTier={userTier} arb={toArbCardData(row)} onSelect={handleSelectArb} {...cardProps} />
+          );
+        })}
       </div>
       {locked && (
         <p className="mt-3 text-[10px] uppercase tracking-widest text-amber-400">
