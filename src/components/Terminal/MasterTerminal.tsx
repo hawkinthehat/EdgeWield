@@ -5,7 +5,7 @@ import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
 import CFODash from '@/components/Terminal/CFODash';
 import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
 import PropFilter from '@/components/Terminal/PropFilter';
-import MissionAlpha from '@/components/Terminal/MissionAlpha';
+import FirstEdgeModal from '@/components/Terminal/FirstEdgeModal';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
@@ -25,7 +25,7 @@ export default function MasterTerminal() {
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [devAccessOverride, setDevAccessOverride] = useState(PRO_BYPASS_ENABLED);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
-  const [showMission, setShowMission] = useState(false);
+  const [showFirstEdgeModal, setShowFirstEdgeModal] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -100,7 +100,7 @@ export default function MasterTerminal() {
               payload.old?.subscription_status === 'active';
             setIsPro(nextIsPro);
             if (nextIsPro && !previousIsPro) {
-              setShowMission(true);
+              setShowFirstEdgeModal(true);
             }
           },
         )
@@ -254,7 +254,9 @@ export default function MasterTerminal() {
           )}
         </div>
 
-        {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
+        {showFirstEdgeModal && (
+          <FirstEdgeModal arbs={topArbs} bankroll={bankroll} onClose={() => setShowFirstEdgeModal(false)} />
+        )}
       </main>
     </div>
   );

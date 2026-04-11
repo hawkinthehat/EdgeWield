@@ -4,7 +4,7 @@ import { ChevronRight, Target } from 'lucide-react';
 import { calculateWield } from '@/lib/engine/kelly';
 import type { ArbRow } from '@/components/Terminal/ArbFeed';
 
-export default function MissionAlpha({
+export default function FirstEdgeModal({
   arbs,
   bankroll,
   onClose,
@@ -28,13 +28,11 @@ export default function MissionAlpha({
           <div className="rounded-lg bg-edge-emerald p-2">
             <Target className="text-edge-navy" size={20} />
           </div>
-          <h2 className="text-2xl font-black uppercase tracking-tighter text-white italic">
-            Mission: Alpha One
-          </h2>
+          <h2 className="text-2xl font-black uppercase tracking-tighter text-white italic">First Edge Ready</h2>
         </div>
 
         <p className="mb-8 text-xs font-bold uppercase tracking-widest text-slate-400">
-          Status: <span className="text-edge-emerald">Pro Terminal Online</span>. Execute your first edge now.
+          Status: <span className="text-edge-emerald">Pro Terminal Online</span>. Place your first edge now.
         </p>
 
         <div className="mb-8 rounded-3xl border border-edge-border bg-edge-navy p-6">
@@ -69,7 +67,7 @@ export default function MissionAlpha({
           onClick={onClose}
           className="flex w-full items-center justify-center gap-2 rounded-2xl bg-edge-emerald py-5 font-black uppercase tracking-widest text-edge-navy transition-all hover:scale-105"
         >
-          I have executed this trade <ChevronRight size={18} />
+          I placed this trade <ChevronRight size={18} />
         </button>
       </div>
     </div>

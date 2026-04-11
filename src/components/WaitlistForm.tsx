@@ -25,7 +25,7 @@ export default function WaitlistForm() {
     try {
       await joinWaitlist(email.trim().toLowerCase());
       setStatus('success');
-      setMessage('You are in. Watch your inbox for alpha access.');
+      setMessage('You are in. Watch your inbox for launch access.');
       setEmail('');
     } catch (error) {
       console.error('Waitlist join failed:', error);
@@ -47,7 +47,7 @@ export default function WaitlistForm() {
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="Enter your email for Alpha access"
+          placeholder="Enter your email for launch access"
           className="bg-transparent border-none focus:ring-0 px-6 py-3 text-sm flex-grow font-medium"
           disabled={isSubmitting}
         />

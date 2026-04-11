@@ -17,7 +17,7 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
-  const [circuitBreakerState, setCircuitBreakerState] = useState<'idle' | 'gate' | 'active'>('idle');
+  const [riskPauseState, setRiskPauseState] = useState<'idle' | 'gate' | 'active'>('idle');
 
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: 'Terminal', active: true },
@@ -27,29 +27,29 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
   ];
 
   useEffect(() => {
-    if (circuitBreakerState !== 'active') {
+    if (riskPauseState !== 'active') {
       return;
     }
 
     const timeoutId = window.setTimeout(() => {
-      setCircuitBreakerState('idle');
-      console.log('Circuit Breaker Complete. Returning to Baseline.');
+      setRiskPauseState('idle');
+      console.log('Risk pause complete. Returning to terminal.');
     }, 20_000);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [circuitBreakerState]);
+  }, [riskPauseState]);
 
   useEffect(() => {
-    if (circuitBreakerState === 'idle') {
+    if (riskPauseState === 'idle') {
       return;
     }
 
     const previousOverflow = document.body.style.overflow;
     const onEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setCircuitBreakerState('idle');
+        setRiskPauseState('idle');
       }
     };
 
@@ -60,40 +60,40 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onEscape);
     };
-  }, [circuitBreakerState]);
+  }, [riskPauseState]);
 
   return (
     <>
-      {circuitBreakerState === 'gate' && (
-        <div className="circuit-breaker-gate">
-          <h1 className="mb-4 text-4xl font-black tracking-tight text-red-500">SYSTEM WARNING</h1>
+      {riskPauseState === 'gate' && (
+        <div className="risk-gate-modal">
+          <h1 className="mb-4 text-4xl font-black tracking-tight text-red-500">RISK CONTROL NOTICE</h1>
           <p className="max-w-[540px] text-sm font-semibold uppercase tracking-wide text-white/90 md:text-base">
-            Kinetic override uses high-frequency red/white flashing. Do not proceed if you have
-            photosensitive epilepsy or light sensitivity.
+            Focus mode uses brief full-screen visual cues for 20 seconds. Continue only if this
+            display is safe for you.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <button
               type="button"
-              className="clinical-btn bg-slate-600 hover:bg-slate-500"
-              onClick={() => setCircuitBreakerState('idle')}
+              className="risk-gate-btn bg-slate-600 hover:bg-slate-500"
+              onClick={() => setRiskPauseState('idle')}
             >
-              Abort
+              Cancel
             </button>
             <button
               type="button"
-              className="clinical-btn bg-blue-600 hover:bg-blue-500"
-              onClick={() => setCircuitBreakerState('active')}
+              className="risk-gate-btn bg-blue-600 hover:bg-blue-500"
+              onClick={() => setRiskPauseState('active')}
             >
-              Proceed
+              Start Focus Mode
             </button>
           </div>
         </div>
       )}
 
-      {circuitBreakerState === 'active' && (
+      {riskPauseState === 'active' && (
         <>
-          <div className="strobe-active" />
-          <div className="vagal-anchor" />
+          <div className="alert-flash-active" />
+          <div className="lock-border-pulse" />
         </>
       )}
 
@@ -142,11 +142,11 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
 
           <button
             type="button"
-            onClick={() => setCircuitBreakerState('gate')}
+            onClick={() => setRiskPauseState('gate')}
             className="flex w-full items-center gap-4 rounded-xl px-4 py-3 text-sm font-bold text-red-400 transition-all hover:bg-red-400/10"
           >
             <AlertTriangle size={20} />
-            Circuit Breaker
+            Risk Pause
           </button>
         </div>
       </aside>

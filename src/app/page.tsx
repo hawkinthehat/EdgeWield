@@ -42,7 +42,7 @@ export default async function BasicLaunchPage() {
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-4xl font-black italic uppercase text-white">Select Your Rank</h2>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
-              Early Alpha Pricing — Locked in for Life
+              Launch Pricing - Locked in for Life
             </p>
           </div>
 
