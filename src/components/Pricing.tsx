@@ -17,7 +17,7 @@ export default function Pricing() {
     {
       name: 'Kestrel',
       price: '0.00',
-      blurb: 'Starter access for basic scouting.',
+      blurb: 'Agile, high-frequency scanning for the daily player.',
       icon: <ShieldCheck className="text-slate-400" />,
       features: [
         '15-Minute Market Sync',
@@ -31,7 +31,7 @@ export default function Pricing() {
     {
       name: 'Red-Tail',
       price: '19.99',
-      blurb: 'Faster sync and expanded market depth.',
+      blurb: 'Advanced market vision and expanded bookmaker access.',
       icon: <ShieldCheck className="text-slate-400" />,
       features: [
         '90-Second Instant Sync',
@@ -45,7 +45,7 @@ export default function Pricing() {
     {
       name: 'Sea Hawk',
       price: '99.99',
-      blurb: 'Full-speed terminal with high-frequency scanner.',
+      blurb: 'The Master Eye. Full institutional suite, Live Sweat tracking, and the Eagle-Eye Calculator.',
       icon: <Crosshair className="text-edge-emerald" />,
       features: [
         'Sub-60s Market Sync',
@@ -64,7 +64,7 @@ export default function Pricing() {
       <div className="mb-16 text-center">
         <h2 className="text-4xl font-black italic uppercase tracking-tighter">Choose Your Tier</h2>
         <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.4em] text-slate-500">
-          Sea Hawk Founding Member code: <span className="text-lime-400">FOUNDER50</span>
+          Founding Sea Hawk Rate (50% lifetime): <span className="text-lime-400">FOUNDER50</span>
         </p>
       </div>
 
@@ -85,7 +85,7 @@ export default function Pricing() {
             )}
             {tier.foundingMember && (
               <span className="absolute right-6 top-6 rounded-full border border-lime-300/70 bg-lime-400/15 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-lime-400">
-                Founding Member
+                Founding Sea Hawk Rate
               </span>
             )}
 

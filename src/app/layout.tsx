@@ -29,7 +29,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
             <Link href="/" aria-label="EdgeWield home" className="flex items-center gap-2">
               <HawkLogo className="pointer-events-none h-10 w-10 shrink-0" />
-              <span className="text-lg font-black uppercase tracking-tight text-[#39FF14]">EdgeWield</span>
+              <span className="flex flex-col leading-tight">
+                <span className="text-lg font-black uppercase tracking-tight text-[#39FF14]">EdgeWield</span>
+                <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                  Institutional Vision. Predatory Precision.
+                </span>
+              </span>
             </Link>
             <nav className="hidden items-center gap-6 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 md:flex">
               <Link href="/" className="transition-colors hover:text-[#39FF14]">
