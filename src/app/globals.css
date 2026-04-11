@@ -1,7 +1,16 @@
+@theme {
+  --color-background: #121212;
+  --color-foreground: #ececec;
+  --color-muted: #2e2e2e;
+  --color-accent: #333333;
+}
+
 :root {
   color-scheme: dark;
-  --background: #0a0a0a;
-  --foreground: #cbd5e1;
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --muted: var(--color-muted);
+  --accent: var(--color-accent);
   --btn-active: #38bdf8;
 }
 
