@@ -96,10 +96,14 @@ export default function ArbFeed({
   filter,
   locked,
   rows = sampleRows,
+  watchedRowIds = [],
+  onToggleWatch,
 }: {
   filter: FilterType;
   locked: boolean;
   rows?: ArbRow[];
+  watchedRowIds?: string[];
+  onToggleWatch?: (row: ArbRow) => void;
 }) {
   const visibleRows = filterRows(rows, filter);
   const userTier: UserTier = locked ? 'trial' : 'pro';
@@ -135,7 +139,14 @@ export default function ArbFeed({
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {visibleRows.map((row) => (
-          <ArbCard key={row.id} userTier={userTier} arb={toArbCardData(row)} onSelect={handleSelectArb} />
+          <ArbCard
+            key={row.id}
+            userTier={userTier}
+            arb={toArbCardData(row)}
+            onSelect={handleSelectArb}
+            onWatch={onToggleWatch ? () => onToggleWatch(row) : undefined}
+            isWatched={watchedRowIds.includes(row.id)}
+          />
         ))}
       </div>
       {locked && (
