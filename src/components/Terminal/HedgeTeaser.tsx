@@ -18,7 +18,7 @@ export default function HedgeTeaser({
   isCheckingOut = false,
 }: HedgeTeaserProps) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+    <div className="relative overflow-hidden rounded-3xl border border-slate-700 bg-zinc-900/90 p-6 shadow-2xl">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-400">
           <Zap size={14} className="fill-emerald-400" /> Live Opportunity
@@ -33,8 +33,8 @@ export default function HedgeTeaser({
       <h3 className="mb-6 text-lg font-bold text-white">{event}</h3>
 
       <div className="relative">
-        <div
-          className={`flex items-center justify-between rounded-2xl bg-slate-800/50 p-5 transition-all duration-700 ${
+          <div
+            className={`flex items-center justify-between rounded-2xl border border-slate-700 bg-zinc-950/80 p-5 transition-all duration-700 ${
             !isPremium ? 'scale-95 select-none blur-md' : 'blur-0'
           }`}
         >
@@ -46,12 +46,12 @@ export default function HedgeTeaser({
               ${isPremium ? potentialProfit : 'XX.XX'}
             </div>
           </div>
-          <TrendingUp className="h-10 w-10 text-slate-700" />
+          <TrendingUp className="h-10 w-10 text-slate-500" />
         </div>
 
         {!isPremium && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
-            <div className="mb-3 rounded-full bg-blue-600 p-3 shadow-lg shadow-blue-500/40">
+            <div className="mb-3 rounded-full bg-slate-700 p-3 shadow-lg shadow-slate-900/50">
               <Lock size={20} className="text-white" />
             </div>
             <p className="mb-1 text-center text-sm font-bold text-white">
@@ -70,8 +70,8 @@ export default function HedgeTeaser({
         disabled={!isPremium && isCheckingOut}
         className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-4 font-bold transition-all ${
           isPremium
-            ? 'bg-slate-800 text-white hover:bg-slate-700'
-            : 'bg-blue-600 text-white shadow-lg shadow-blue-900/20 hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60'
+            ? 'border border-slate-500 bg-slate-800 text-white hover:bg-slate-700'
+            : 'border border-slate-400 bg-slate-700 text-white shadow-lg shadow-slate-900/30 hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-60'
         }`}
       >
         {isPremium

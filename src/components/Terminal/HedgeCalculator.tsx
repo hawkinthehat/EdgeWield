@@ -27,11 +27,12 @@ export default function HedgeCalculator() {
       profit: Number.isFinite(guaranteedProfit) ? parseFloat(guaranteedProfit.toFixed(2)) : 0,
     });
   }, [wager, originalOdds, liveOpponentOdds]);
+  const isProfitPositive = result.profit >= 0;
 
   return (
-    <section className="rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
+    <section className="rounded-2xl border border-slate-700 bg-zinc-900/80 p-6">
       <div className="mb-6 flex items-center gap-2">
-        <Calculator className="text-edge-emerald" />
+        <Calculator className="text-emerald-400" />
         <h3 className="text-xl font-black italic text-white">Hedge Optimizer</h3>
       </div>
 
@@ -44,7 +45,7 @@ export default function HedgeCalculator() {
             type="number"
             value={wager}
             onChange={(event) => setWager(Number(event.target.value))}
-            className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-white"
+            className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-800/60 px-3 py-3 text-white"
           />
         </div>
 
@@ -57,7 +58,7 @@ export default function HedgeCalculator() {
               type="number"
               value={originalOdds}
               onChange={(event) => setOriginalOdds(Number(event.target.value))}
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-white"
+              className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-800/60 px-3 py-3 text-white"
             />
           </div>
           <div>
@@ -68,25 +69,27 @@ export default function HedgeCalculator() {
               type="number"
               value={liveOpponentOdds}
               onChange={(event) => setLiveOpponentOdds(Number(event.target.value))}
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-3 text-white"
+              className="mt-1 w-full rounded-lg border border-slate-600 bg-slate-800/60 px-3 py-3 text-white"
             />
           </div>
         </div>
 
-        <div className="mt-8 rounded-xl border border-edge-emerald/30 bg-edge-emerald/10 p-4">
+        <div className="mt-8 rounded-xl border border-emerald-400/35 bg-emerald-400/10 p-4">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-sm font-semibold text-edge-emerald">Recommended Hedge:</span>
+            <span className="text-sm font-semibold text-emerald-400">Recommended Hedge:</span>
             <span className="text-2xl font-black text-white">${result.hedge}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-emerald-300">Guaranteed Profit:</span>
-            <span className="text-2xl font-black text-emerald-300">${result.profit}</span>
+            <span className="text-sm font-semibold text-slate-300">Guaranteed Profit:</span>
+            <span className={`text-2xl font-black ${isProfitPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+              {isProfitPositive ? '+' : ''}${result.profit}
+            </span>
           </div>
         </div>
 
         <button
           type="button"
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-bold text-white"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-500 bg-slate-800 py-3 font-bold text-white"
         >
           <Lock size={18} /> Save to Vantedge Portfolio
         </button>

@@ -26,7 +26,7 @@ export default function UpgradeButton({ userId, email, plan = 'pro', label = 'UP
     <button
       type="button"
       onClick={handleUpgrade}
-      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-edge-emerald p-4 font-black text-edge-navy shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-transform hover:scale-105"
+      className="flex w-full items-center justify-center gap-3 rounded-2xl bg-emerald-400 p-4 font-black text-zinc-950 shadow-[0_0_20px_rgba(52,211,153,0.3)] transition-transform hover:scale-105"
     >
       <Zap size={20} fill="currentColor" />
       {label}

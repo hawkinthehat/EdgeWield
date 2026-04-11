@@ -103,10 +103,10 @@ export default function ArbFeed({
   const userTier: UserTier = locked ? 'trial' : 'pro';
 
   return (
-    <section className="rounded-2xl border border-slate-800 bg-slate-950/60 p-4">
+    <section className="rounded-2xl border border-slate-700 bg-zinc-900/80 p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-[10px] uppercase tracking-widest text-slate-400">Live Edge Feed</p>
-        <p className="text-[10px] uppercase tracking-widest text-edge-emerald">{visibleRows.length} opportunities</p>
+        <p className="text-[10px] uppercase tracking-widest text-emerald-400">{visibleRows.length} opportunities</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {visibleRows.map((row) => (
