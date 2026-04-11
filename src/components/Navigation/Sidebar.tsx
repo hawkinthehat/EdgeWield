@@ -44,7 +44,7 @@ export default function Sidebar({ userProfile }: { userProfile: SidebarProfile |
         <div className="rounded-lg bg-blue-600 p-2">
           <ShieldCheck className="h-6 w-6 text-white" />
         </div>
-        <span className="text-xl font-bold tracking-tight text-white">WATCHER</span>
+        <span className="text-xl font-bold tracking-tight text-white">EDGEWIELD PRO</span>
       </div>
 
       <nav className="mt-4 flex-1 space-y-2 px-4">

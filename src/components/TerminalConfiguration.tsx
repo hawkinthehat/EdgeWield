@@ -18,7 +18,7 @@ const BOOKIE_OPTIONS: Array<{ id: string; label: string }> = [
   { id: 'betrivers', label: 'BetRivers' },
 ];
 
-export default function WatcherOnboarding() {
+export default function EdgeWieldOnboarding() {
   const [bankroll, setBankroll] = useState<number>(1000);
   const [risk, setRisk] = useState<OnboardingPayload['risk']>('Standard');
   const [activeBookies, setActiveBookies] = useState<string[]>(DEFAULT_BOOKIES);
@@ -30,7 +30,7 @@ export default function WatcherOnboarding() {
       await finalizeOnboarding({ bankroll, risk, activeBookies });
       // Redirect happens in server action.
     } catch {
-      alert('Onboarding failed. Please try again.');
+      alert('Terminal Configuration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,7 @@ export default function WatcherOnboarding() {
 
   return (
     <section className="mx-auto max-w-lg rounded-2xl border border-slate-800 bg-slate-950/60 p-6 text-white">
-      <h2 className="text-xl font-black italic">Complete Your Watcher Setup</h2>
+      <h2 className="text-xl font-black italic">Complete Terminal Configuration</h2>
       <p className="mt-2 text-sm text-slate-400">
         Choose your bankroll and risk profile so unit sizing is calculated automatically.
       </p>
@@ -102,7 +102,7 @@ export default function WatcherOnboarding() {
         disabled={loading}
         className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-bold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? 'Saving...' : 'Complete Onboarding'}
+        {loading ? 'Saving...' : 'Save Terminal Configuration'}
       </button>
     </section>
   );

@@ -1,12 +1,12 @@
 'use client';
 
-import HawkLogo from '@/components/Icons/HawkLogo';
+import GoldenEagleCrest from '@/components/Icons/Logo';
 
 export default function Logo() {
   return (
     <div className="flex items-center gap-3">
       <div className="rounded-xl border border-[#39FF14]/35 bg-slate-900 p-2 shadow-[0_0_20px_rgba(57,255,20,0.22)]">
-        <HawkLogo className="h-8 w-8" />
+        <GoldenEagleCrest className="h-8 w-8" />
       </div>
       <div className="flex flex-col leading-none">
         <span className="text-2xl font-black uppercase italic tracking-tighter text-white">

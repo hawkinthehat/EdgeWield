@@ -1,13 +1,12 @@
 'use client';
 
-import { Activity, Swords } from 'lucide-react';
+import GoldenEagleCrest from '@/components/Icons/Logo';
 
 export default function EdgeWieldLogo({ collapsed = false }: { collapsed?: boolean }) {
   return (
     <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : ''}`}>
-      <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/40 bg-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
-        <Activity size={20} className="text-emerald-500/30" strokeWidth={1} />
-        <Swords size={24} className="absolute text-white drop-shadow-md" strokeWidth={2.5} />
+      <div className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/40 bg-slate-900 p-1 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
+        <GoldenEagleCrest className="h-8 w-8" />
       </div>
 
       {!collapsed && (

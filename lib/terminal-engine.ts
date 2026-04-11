@@ -74,7 +74,7 @@ export async function getConsolidatedOdds(sport: string): Promise<MarketCacheRow
   }
 
   if (cachedOdds && cachedOdds.length > 0) {
-    console.log('Watcher: Serving from cache')
+    console.log('EdgeWield Terminal: Serving from cache')
     return cachedOdds as MarketCacheRow[]
   }
 
@@ -83,7 +83,7 @@ export async function getConsolidatedOdds(sport: string): Promise<MarketCacheRow
     throw new Error('ODDS_API_KEY is required')
   }
 
-  console.log('Watcher: Refreshing live market data')
+  console.log('EdgeWield Terminal: Refreshing live market data')
   const endpoint = new URL(`https://api.the-odds-api.com/v4/sports/${sport}/odds/`)
   endpoint.searchParams.set('apiKey', oddsApiKey)
   endpoint.searchParams.set('regions', 'us')

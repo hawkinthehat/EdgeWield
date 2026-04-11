@@ -108,7 +108,7 @@ export default function SmartBetEntry({
       <div className="mb-8">
         <div className="mb-3 flex items-end justify-between">
           <label className="text-sm font-bold text-slate-700">
-            Watcher Confidence
+            EdgeWield Pro Confidence
           </label>
           <span className="font-mono text-xl font-bold text-blue-600">
             {confidence}u

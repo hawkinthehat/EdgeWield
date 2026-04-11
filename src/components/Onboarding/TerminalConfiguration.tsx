@@ -23,7 +23,7 @@ const riskMap: Record<RiskProfile, number> = {
   Aggressive: 0.02,
 };
 
-export default function WatcherOnboarding({
+export default function TerminalConfigurationOnboarding({
   onComplete,
 }: {
   onComplete: (data: OnboardingCompleteData) => void;
@@ -94,8 +94,8 @@ export default function WatcherOnboarding({
               </div>
               <h2 className="mb-2 text-2xl font-bold text-slate-900">Initialize Your Bankroll</h2>
               <p className="mb-8 text-slate-500">
-                What is the total amount you have allocated for sports trading? Watcher works best with
-                real data.
+                What is the total amount you have allocated for sports trading? EdgeWield Terminal
+                works best with real data.
               </p>
 
               <div className="relative">
@@ -130,7 +130,7 @@ export default function WatcherOnboarding({
               </div>
               <h2 className="mb-2 text-2xl font-bold text-slate-900">Define Your Risk Profile</h2>
               <p className="mb-6 text-slate-500">
-                Watcher auto-calculates your unit size based on this setting.
+                EdgeWield Pro auto-calculates your unit size based on this setting.
               </p>
 
               <div className="space-y-3">

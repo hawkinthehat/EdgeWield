@@ -77,7 +77,7 @@ export default function CFODash() {
   );
 }
 
-export function WatcherDash({ bankroll }: { bankroll: number }) {
+export function TerminalDash({ bankroll }: { bankroll: number }) {
   return (
     <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <MetricCard
