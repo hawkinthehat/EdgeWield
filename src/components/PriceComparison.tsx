@@ -111,7 +111,7 @@ export default function PriceComparison() {
 
       <div className="mt-8 flex justify-center gap-4">
         <p className="text-[10px] font-mono uppercase tracking-widest text-slate-500">
-          * Pricing reflects <span className="text-edge-emerald">BETA50</span> lifetime discount.
+          * Sea Hawk includes Founding Member access with <span className="text-lime-400">FOUNDER50</span>.
         </p>
       </div>
     </section>

@@ -83,9 +83,11 @@ export async function POST(req: Request) {
   }
 
   const body = (await req.json().catch(() => ({}))) as { plan?: string; foundingMemberCode?: string }
-  const foundingMemberCodeInput = body.foundingMemberCode?.trim() ?? ''
-  const hasFoundingMemberCode = foundingMemberCodeInput.length > 0
   const requestedPlan = body.plan === 'scout' ? 'scout' : 'pro'
+  const foundingMemberCodeInput = body.foundingMemberCode?.trim() ?? ''
+  const normalizedFoundingCode =
+    requestedPlan === 'pro' && foundingMemberCodeInput.length === 0 ? 'FOUNDER50' : foundingMemberCodeInput
+  const hasFoundingMemberCode = normalizedFoundingCode.length > 0
   const selectedPriceId = resolveCheckoutPriceId(requestedPlan)
   const baseUrl = getBaseUrl()
 
@@ -99,7 +101,7 @@ export async function POST(req: Request) {
     )
   }
 
-  const promotionCode = await resolvePromotionCode(stripe, foundingMemberCodeInput)
+  const promotionCode = await resolvePromotionCode(stripe, normalizedFoundingCode)
   if (hasFoundingMemberCode && !promotionCode) {
     return NextResponse.json({ error: 'Invalid or inactive Founding Member code.' }, { status: 400 })
   }
@@ -137,7 +139,7 @@ export async function POST(req: Request) {
     sessionParams.discounts = [{ promotion_code: promotionCode.id }]
     sessionParams.metadata = {
       ...sessionParams.metadata,
-      founding_member_code: promotionCode.code ?? foundingMemberCodeInput,
+      founding_member_code: promotionCode.code ?? normalizedFoundingCode,
       founding_member_promotion_code_id: promotionCode.id,
     }
   }

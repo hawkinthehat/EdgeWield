@@ -25,10 +25,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="absolute -left-[10%] -top-[10%] h-[40%] w-[40%] rounded-full bg-emerald-400/5 blur-[120px]" />
           <div className="absolute bottom-[0%] right-[0%] h-[30%] w-[30%] rounded-full bg-slate-500/10 blur-[120px]" />
         </div>
-        <header className="sticky top-0 z-30 border-b border-slate-700/60 bg-slate-950/85 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-slate-700/60 bg-slate-950/85 backdrop-blur">
           <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
             <Link href="/" aria-label="EdgeWield home" className="flex items-center gap-2">
-              <HawkLogo className="pointer-events-none h-8 w-8 shrink-0" />
+              <HawkLogo className="pointer-events-none h-10 w-10 shrink-0" />
               <span className="text-lg font-black uppercase tracking-tight text-[#39FF14]">EdgeWield</span>
             </Link>
             <nav className="hidden items-center gap-6 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400 md:flex">
