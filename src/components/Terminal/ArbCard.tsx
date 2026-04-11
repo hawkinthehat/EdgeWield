@@ -1,7 +1,7 @@
 'use client';
 
 import type { KeyboardEvent } from 'react';
-import { Lock } from 'lucide-react';
+import { Eye, Lock } from 'lucide-react';
 import { getBookmakerMeta } from '@/lib/bookmakers';
 import { formatAmericanOdds } from '@/lib/oddsFormat';
 
@@ -23,9 +23,11 @@ type ArbCardProps = {
   userTier: UserTier;
   onUnlock?: () => void;
   onSelect?: (arb: ArbCardData) => void;
+  onWatch?: () => void;
+  isWatched?: boolean;
 };
 
-export default function ArbCard({ arb, userTier, onUnlock, onSelect }: ArbCardProps) {
+export default function ArbCard({ arb, userTier, onUnlock, onSelect, onWatch, isWatched = false }: ArbCardProps) {
   const isLocked = arb.type === 'prop' && userTier === 'trial';
   const displayName = isLocked ? 'Locked Player Prop' : arb.player_name;
   const bookieA = getBookmakerMeta(arb.bookie_a);
@@ -86,7 +88,27 @@ export default function ArbCard({ arb, userTier, onUnlock, onSelect }: ArbCardPr
       >
         <div className="flex items-start justify-between">
           <h3 className="text-lg font-black uppercase italic text-white">{displayName}</h3>
-          <span className="font-black text-edge-emerald">+{arb.roi.toFixed(2)}%</span>
+          <div className="flex items-center gap-2">
+            {onWatch && (
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onWatch();
+                }}
+                aria-label={isWatched ? 'Remove from Live Sweat watchlist' : 'Add to Live Sweat watchlist'}
+                className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[9px] font-black uppercase tracking-wider transition ${
+                  isWatched
+                    ? 'border-edge-emerald/60 bg-edge-emerald/20 text-edge-emerald'
+                    : 'border-slate-700 bg-edge-navy/80 text-slate-300 hover:border-edge-emerald/60 hover:text-edge-emerald'
+                }`}
+              >
+                <Eye size={11} />
+                Watch
+              </button>
+            )}
+            <span className="font-black text-edge-emerald">+{arb.roi.toFixed(2)}%</span>
+          </div>
         </div>
         <p className="text-[10px] font-bold uppercase text-slate-500">{arb.market}</p>
 

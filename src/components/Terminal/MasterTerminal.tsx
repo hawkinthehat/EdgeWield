@@ -13,11 +13,14 @@ import BookieSelector from '@/components/Terminal/BookieSelector';
 import UnitsCalc from '@/components/Terminal/UnitsCalc';
 import EdgeFeed from '@/components/Terminal/EdgeFeed';
 import EdgeScanner from '@/components/Terminal/EdgeScanner';
+import SteamRoom from '@/components/Terminal/SteamRoom';
+import LiveSweat from '@/components/Terminal/LiveSweat';
 import UpgradeButton from '@/components/UpgradeButton';
 import Sidebar from '@/components/Sidebar';
 import type { EdgeBet } from '@/lib/scanner';
 
 type TerminalFilter = 'all' | 'h2h' | 'spreads';
+type DashboardTab = 'terminal' | 'steam-room' | 'live-sweat' | 'bankroll';
 
 function isTrueFlag(value: string | undefined) {
   return (value ?? '').trim().toLowerCase() === 'true';
@@ -25,6 +28,7 @@ function isTrueFlag(value: string | undefined) {
 
 export default function MasterTerminal() {
   const isProBypassEnabled = isTrueFlag(process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS);
+  const [activeTab, setActiveTab] = useState<DashboardTab>('terminal');
   const [filter, setFilter] = useState<TerminalFilter>('all');
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [devAccessOverride, setDevAccessOverride] = useState(isProBypassEnabled);
@@ -38,6 +42,7 @@ export default function MasterTerminal() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
   const [scannerLatencyMs, setScannerLatencyMs] = useState<number | null>(null);
+  const [watchlist, setWatchlist] = useState<ArbRow[]>([]);
 
   const canAccessProScanner = isProBypassEnabled || isPro || devAccessOverride;
 
@@ -198,15 +203,35 @@ export default function MasterTerminal() {
   const statusTone = scannerBets.length > 0 ? 'text-edge-emerald' : 'text-amber-400';
   const statusLabel = scannerBets.length > 0 ? 'Live' : 'Syncing';
   const latencyLabel = scannerLatencyMs ? `${scannerLatencyMs}ms` : '--';
+  const watchedRowIds = useMemo(() => watchlist.map((row) => row.id), [watchlist]);
+
+  const dashboardTabs: { id: DashboardTab; label: string }[] = [
+    { id: 'terminal', label: 'Terminal' },
+    { id: 'steam-room', label: 'Steam Room' },
+    { id: 'live-sweat', label: 'Live Sweat' },
+    { id: 'bankroll', label: 'Bankroll' },
+  ];
+
+  const handleToggleWatch = (row: ArbRow, shouldFocusLiveSweat = false) => {
+    const isAlreadyWatched = watchlist.some((item) => item.id === row.id);
+    if (isAlreadyWatched) {
+      setWatchlist((prev) => prev.filter((item) => item.id !== row.id));
+      return;
+    }
+    setWatchlist((prev) => [row, ...prev.filter((item) => item.id !== row.id)]);
+    if (shouldFocusLiveSweat) {
+      setActiveTab('live-sweat');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-edge-navy text-white lg:flex">
       <div className="hidden lg:block">
         <Sidebar userBankroll={bankroll} />
       </div>
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:ml-72 lg:p-8">
+      <main className="flex-1 p-4 sm:p-6 lg:ml-72 lg:p-8">
         {/* 1. THE REVENUE HEADER */}
-        <div id="terminal-top" className="mb-8 space-y-5 lg:mb-10">
+        <div id="terminal-top" className="mb-6 space-y-5 lg:mb-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <h1 className="text-3xl font-black italic uppercase tracking-tighter sm:text-4xl">Arbitrage Terminal</h1>
@@ -236,116 +261,169 @@ export default function MasterTerminal() {
           </div>
         </div>
 
-        {/* 2. THE CFO ANALYTICS */}
-        <CFODash />
+        <div className="sticky top-20 z-20 mb-6 rounded-2xl border border-edge-border bg-edge-navy/90 p-2 backdrop-blur">
+          <div
+            role="tablist"
+            aria-label="Master terminal views"
+            className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+          >
+            {dashboardTabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`rounded-xl border px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] transition ${
+                  activeTab === tab.id
+                    ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
+                    : 'border-slate-700 bg-slate-900/50 text-slate-300 hover:border-edge-emerald/35 hover:text-edge-emerald'
+                }`}
+              >
+                {tab.label}
+                {tab.id === 'live-sweat' && watchlist.length > 0 ? (
+                  <span className="ml-2 rounded-full border border-edge-emerald/50 px-1.5 py-0.5 text-[9px]">
+                    {watchlist.length}
+                  </span>
+                ) : null}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* 3. THE MARKET CONTROL */}
-        <div id="terminal-market-controls" className="mb-6 mt-10 rounded-2xl border border-edge-border bg-edge-slate/15 p-4 sm:p-5">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setShowFilters((prev) => !prev)}
-                className={`rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-wide transition ${
-                  showFilters
-                    ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
-                    : 'border-slate-700 bg-slate-900/50 text-slate-300'
-                }`}
-              >
-                Filters
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowSettings((prev) => !prev)}
-                className={`rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-wide transition ${
-                  showSettings
-                    ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
-                    : 'border-slate-700 bg-slate-900/50 text-slate-300'
-                }`}
-              >
-                Settings
-              </button>
+        {activeTab === 'terminal' && (
+          <div className="space-y-8">
+            <div
+              id="terminal-market-controls"
+              className="rounded-2xl border border-edge-border bg-edge-slate/15 p-4 sm:p-5"
+            >
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowFilters((prev) => !prev)}
+                    className={`rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-wide transition ${
+                      showFilters
+                        ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
+                        : 'border-slate-700 bg-slate-900/50 text-slate-300'
+                    }`}
+                  >
+                    Filters
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowSettings((prev) => !prev)}
+                    className={`rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-wide transition ${
+                      showSettings
+                        ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
+                        : 'border-slate-700 bg-slate-900/50 text-slate-300'
+                    }`}
+                  >
+                    Settings
+                  </button>
+                </div>
+                {!canAccessProScanner && (
+                  <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
+                      Upgrade from Red-Tail to Sea Hawk for advanced scanner analytics
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {showFilters && (
+                <div className="mb-4">
+                  <PropFilter active={filter} onChange={setFilter} />
+                </div>
+              )}
+
+              {showSettings && (
+                <div id="terminal-settings">
+                  <BookieSelector selected={selectedBookies} onChange={setSelectedBookies} />
+                </div>
+              )}
             </div>
-            {!canAccessProScanner && (
-              <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
-                <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
-                  Upgrade from Red-Tail to Sea Hawk for advanced scanner analytics
+
+            <ArbFeed
+              filter={filter}
+              locked={!canAccessProScanner}
+              rows={visibleArbs}
+              watchedRowIds={watchedRowIds}
+              onToggleWatch={(row) => handleToggleWatch(row, true)}
+            />
+
+            {canAccessProScanner ? (
+              <div className="space-y-8">
+                <EdgeFeed rows={topArbs} />
+                {scannerBets.length > 0 && <EdgeScanner bets={scannerBets} bankroll={bankroll} />}
+              </div>
+            ) : (
+              <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
+                <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
+                <p className="mb-8 text-slate-500">
+                  Upgrade from Red-Tail to Sea Hawk to see live market gaps and lock in your profit.
+                </p>
+                {userIdentity ? (
+                  <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleUpgrade}
+                    className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
+                  >
+                    UPGRADE TO SEA HAWK
+                  </button>
+                )}
+                <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
+                  USE CODE &quot;BETA50&quot; AT CHECKOUT
                 </p>
               </div>
             )}
           </div>
+        )}
 
-          {showFilters && (
-            <div className="mb-4">
-              <PropFilter active={filter} onChange={setFilter} />
+        {activeTab === 'steam-room' && <SteamRoom rows={topArbs} />}
+
+        {activeTab === 'live-sweat' && (
+          <LiveSweat watchlist={watchlist} onToggleWatch={(row) => handleToggleWatch(row)} />
+        )}
+
+        {activeTab === 'bankroll' && (
+          <div className="space-y-8">
+            <CFODash />
+            <div className="grid gap-6 lg:grid-cols-2">
+              <HedgeCalculator />
+              <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
             </div>
-          )}
-
-          {showSettings && (
-            <div id="terminal-settings">
-              <BookieSelector selected={selectedBookies} onChange={setSelectedBookies} />
-            </div>
-          )}
-        </div>
-
-        {/* 4. THE LIVE EDGE FEED */}
-        <ArbFeed filter={filter} locked={!canAccessProScanner} rows={visibleArbs} />
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <HedgeCalculator />
-          <UnitsCalc oddsA={topEdge?.odds_a ?? 2.1} oddsB={topEdge?.odds_b ?? 2.05} />
-        </div>
-
-        <div className="mt-8">
-          {canAccessProScanner ? (
-            <div className="space-y-8">
-              <EdgeFeed rows={topArbs} />
-              {scannerBets.length > 0 && <EdgeScanner bets={scannerBets} bankroll={bankroll} />}
-            </div>
-          ) : (
-            <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
-              <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
-              <p className="mb-8 text-slate-500">
-                Upgrade from Red-Tail to Sea Hawk to see live market gaps and lock in your profit.
-              </p>
-              {userIdentity ? (
-                <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
+            <div className="grid gap-6 lg:grid-cols-2">
+              {canAccessProScanner ? (
+                <HedgeAlertCard
+                  originalBet={{
+                    wager: 100,
+                    odds: 200,
+                    event_name: teaserEvent,
+                  }}
+                  liveOpponentOdds={-125}
+                />
               ) : (
-                <button
-                  type="button"
-                  onClick={handleUpgrade}
-                  className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
-                >
-                  UPGRADE TO SEA HAWK
-                </button>
+                <HedgeTeaser
+                  isPremium={false}
+                  event={teaserEvent}
+                  potentialProfit="42.50"
+                  onUpgrade={handleUpgrade}
+                  isCheckingOut={isCheckingOut}
+                />
               )}
-              <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
-                USE CODE &quot;BETA50&quot; AT CHECKOUT
-              </p>
+              <div className="rounded-2xl border border-edge-border bg-edge-slate/15 p-5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Deployable Capital</p>
+                <p className="mt-2 text-3xl font-black text-white">${bankroll.toLocaleString()}</p>
+                <p className="mt-3 text-xs text-slate-400">
+                  Keep dry powder available for line movement in Steam Room and active positions in Live Sweat.
+                </p>
+              </div>
             </div>
-          )}
-        </div>
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          {canAccessProScanner ? (
-            <HedgeAlertCard
-              originalBet={{
-                wager: 100,
-                odds: 200,
-                event_name: teaserEvent,
-              }}
-              liveOpponentOdds={-125}
-            />
-          ) : (
-            <HedgeTeaser
-              isPremium={false}
-              event={teaserEvent}
-              potentialProfit="42.50"
-              onUpgrade={handleUpgrade}
-              isCheckingOut={isCheckingOut}
-            />
-          )}
-        </div>
+          </div>
+        )}
 
         {showFirstEdgeModal && (
           <FirstEdgeModal arbs={topArbs} bankroll={bankroll} onClose={() => setShowFirstEdgeModal(false)} />
