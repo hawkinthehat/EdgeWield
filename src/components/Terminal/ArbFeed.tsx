@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import ArbCard, { type ArbCardData, type UserTier } from '@/components/Terminal/ArbCard';
+import BetCalculator from '@/components/Terminal/BetCalculator';
 
 type FilterType = 'all' | 'h2h' | 'spreads';
 
@@ -101,12 +103,25 @@ export default function ArbFeed({
 }) {
   const visibleRows = filterRows(rows, filter);
   const userTier: UserTier = locked ? 'trial' : 'pro';
+  const [showBetCalculator, setShowBetCalculator] = useState(false);
+  const primaryRow = visibleRows[0];
+  const fallbackRow = sampleRows[0];
+  const activeRow = primaryRow ?? fallbackRow;
 
   return (
-    <section className="rounded-2xl border border-slate-700 bg-zinc-900/80 p-4">
+    <section className="rounded-2xl border border-slate-700 bg-slate-950 p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-[10px] uppercase tracking-widest text-slate-400">Live Edge Feed</p>
-        <p className="text-[10px] uppercase tracking-widest text-emerald-400">{visibleRows.length} opportunities</p>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setShowBetCalculator(true)}
+            className="rounded-lg border border-[#39FF14]/40 bg-[#39FF14]/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-[#39FF14] transition hover:border-[#39FF14] hover:bg-[#39FF14]/20"
+          >
+            Eagle-Eye Calculator
+          </button>
+          <p className="text-[10px] uppercase tracking-widest text-[#39FF14]">{visibleRows.length} opportunities</p>
+        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {visibleRows.map((row) => (
@@ -115,8 +130,19 @@ export default function ArbFeed({
       </div>
       {locked && (
         <p className="mt-3 text-[10px] uppercase tracking-widest text-amber-400">
-          Premium-only markets remain blurred on trial tier.
+          Sea Hawk-only markets remain blurred on Kestrel tier.
         </p>
+      )}
+      {activeRow && (
+        <BetCalculator
+          isOpen={showBetCalculator}
+          onClose={() => setShowBetCalculator(false)}
+          marketName={activeRow.event_name}
+          bookA={activeRow.bookie_a}
+          oddsA={activeRow.odds_a}
+          bookB={activeRow.bookie_b}
+          oddsB={activeRow.odds_b}
+        />
       )}
     </section>
   );

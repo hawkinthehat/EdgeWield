@@ -4,19 +4,19 @@ import { Check, Crosshair, ShieldCheck } from 'lucide-react';
 type PricingTier = {
   name: string;
   price: string;
-  promo: string;
   icon: ReactNode;
   features: string[];
   cta: string;
+  blurb: string;
   highlight: boolean;
 };
 
 export default function Pricing() {
   const tiers: PricingTier[] = [
     {
-      name: 'Standard',
-      price: '19.99',
-      promo: '9.99',
+      name: 'Kestrel',
+      price: '0.00',
+      blurb: 'Starter access for basic scouting.',
       icon: <ShieldCheck className="text-slate-400" />,
       features: [
         '15-Minute Market Sync',
@@ -24,22 +24,35 @@ export default function Pricing() {
         'Standard Unit Calculator',
         'Email Alerts (Delayed)',
       ],
-      cta: 'Start Scouting',
+      cta: 'Start with Kestrel',
       highlight: false,
     },
     {
-      name: 'Pro Terminal',
-      price: '49.99',
-      promo: '24.99',
-      icon: <Crosshair className="text-edge-emerald" />,
+      name: 'Red-Tail',
+      price: '19.99',
+      blurb: 'Faster sync and expanded market depth.',
+      icon: <ShieldCheck className="text-slate-400" />,
       features: [
         '90-Second Instant Sync',
         'Player Props & Alt Lines',
         'Auto-Hedge Unit Execution',
         'Direct Arb SMS Alerts',
+      ],
+      cta: 'Upgrade to Red-Tail',
+      highlight: false,
+    },
+    {
+      name: 'Sea Hawk',
+      price: '99.99',
+      blurb: 'Full-speed terminal with high-frequency scanner.',
+      icon: <Crosshair className="text-edge-emerald" />,
+      features: [
+        'Sub-60s Market Sync',
+        'Priority Player Props Engine',
+        'Auto-Hedge Execution + Alerts',
         'High-Frequency Arb Scanner',
       ],
-      cta: 'Start Live Scanning',
+      cta: 'Go Sea Hawk',
       highlight: true,
     },
   ];
@@ -53,7 +66,7 @@ export default function Pricing() {
         </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-3">
         {tiers.map((tier) => (
           <div
             key={tier.name}
@@ -74,9 +87,11 @@ export default function Pricing() {
                 {tier.icon}
                 <h3 className="text-2xl font-black italic uppercase">{tier.name}</h3>
               </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black tracking-tighter">${tier.promo}</span>
-                <span className="text-sm font-bold text-slate-500 line-through">${tier.price}</span>
+              <p className="mb-3 text-xs font-semibold text-slate-400">{tier.blurb}</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-black tracking-tighter">
+                  {tier.price === '0.00' ? '$0.00' : `$${tier.price}`}
+                </span>
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-500">/ Month</span>
               </div>
             </div>

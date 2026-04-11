@@ -14,7 +14,7 @@ export default async function BasicLaunchPage() {
   const updates = await getInjuryPulse();
 
   return (
-    <div className="bg-[#0A0B10] text-[#E2E8F0] selection:bg-[#3B82F6] selection:text-white">
+    <div className="bg-slate-950 text-[#E2E8F0] selection:bg-[#39FF14] selection:text-slate-950">
       <Header />
 
       <main className="pt-20">
@@ -52,16 +52,16 @@ export default async function BasicLaunchPage() {
           </div>
 
           <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* PRO TIER */}
-            <div className="group rounded-[3rem] border-2 border-white/5 bg-[#161821] p-10 transition-all hover:border-blue-500/50">
+            {/* RED-TAIL TIER */}
+            <div className="group rounded-[3rem] border-2 border-white/5 bg-[#161821] p-10 transition-all hover:border-[#39FF14]/50">
               <div className="mb-8 flex items-start justify-between">
-                <Zap className="text-blue-500 group-hover:animate-pulse" size={40} />
-                <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1 text-[10px] font-black uppercase tracking-widest text-blue-500">
+                <Zap className="text-[#39FF14] group-hover:animate-pulse" size={40} />
+                <span className="rounded-full border border-[#39FF14]/20 bg-[#39FF14]/10 px-4 py-1 text-[10px] font-black uppercase tracking-widest text-[#39FF14]">
                   Most Popular
                 </span>
               </div>
               <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
-                Pro Terminal
+                Red-Tail
               </h3>
               <p className="mb-8 text-sm font-medium text-slate-400">
                 Full Market Access & Arb Detection
@@ -79,29 +79,29 @@ export default async function BasicLaunchPage() {
                 ))}
               </ul>
               <p className="mb-6 text-4xl font-black text-white">
-                $99<span className="text-lg text-slate-500">/mo</span>
+                $19.99<span className="text-lg text-slate-500">/mo</span>
               </p>
               <CheckoutButton
                 plan="scout"
                 className="w-full rounded-2xl border border-white/10 bg-white/5 py-5 text-xs font-black uppercase transition-all hover:bg-white hover:text-black"
               >
-                Select Scout
+                Select Red-Tail
               </CheckoutButton>
             </div>
 
-            {/* PRO+ TIER */}
-            <div className="relative overflow-hidden rounded-[3rem] border-2 border-blue-500 bg-gradient-to-b from-blue-600/20 to-transparent p-10 shadow-[0_0_50px_rgba(59,130,246,0.15)]">
+            {/* SEA HAWK TIER */}
+            <div className="relative overflow-hidden rounded-[3rem] border-2 border-[#39FF14] bg-gradient-to-b from-[#4682B4]/20 to-transparent p-10 shadow-[0_0_50px_rgba(57,255,20,0.15)]">
               <div className="absolute -right-4 -top-4 opacity-10">
                 <Crown size={150} />
               </div>
               <div className="mb-8 flex items-start justify-between">
-                <Crown className="text-blue-400" size={40} />
+                <Crown className="text-[#4682B4]" size={40} />
                 <span className="rounded-full bg-white px-4 py-1 text-[10px] font-black italic uppercase tracking-widest text-black">
                   Best Value
                 </span>
               </div>
               <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
-                Pro+ Terminal
+                Sea Hawk
               </h3>
               <p className="mb-8 text-sm font-medium text-slate-400">
                 Player props and faster market signals
@@ -119,13 +119,13 @@ export default async function BasicLaunchPage() {
                 ))}
               </ul>
               <p className="mb-6 text-4xl font-black text-white">
-                $199<span className="text-lg text-slate-500">/mo</span>
+                $99.99<span className="text-lg text-slate-500">/mo</span>
               </p>
               <CheckoutButton
                 plan="pro"
-                className="w-full rounded-2xl bg-blue-600 py-5 text-xs font-black uppercase text-white transition-all hover:shadow-[0_0_20px_#3b82f6]"
+                className="w-full rounded-2xl bg-[#39FF14] py-5 text-xs font-black uppercase text-slate-950 transition-all hover:shadow-[0_0_20px_#39FF14]"
               >
-                Select Pro
+                Select Sea Hawk
               </CheckoutButton>
             </div>
           </div>
@@ -138,7 +138,7 @@ export default async function BasicLaunchPage() {
                 Higher limits and high-volume API access
               </p>
             </div>
-            <button className="mt-4 flex items-center gap-2 text-xs font-black uppercase text-blue-500 transition-all hover:gap-4 md:mt-0">
+            <button className="mt-4 flex items-center gap-2 text-xs font-black uppercase text-[#39FF14] transition-all hover:gap-4 md:mt-0">
               Inquire for Access <ArrowRight size={16} />
             </button>
           </div>
@@ -151,7 +151,7 @@ export default async function BasicLaunchPage() {
               Live Terminal Preview
             </h2>
             <p className="mx-auto flex max-w-2xl items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
-              <MousePointer2 size={14} className="text-blue-400" />
+              <MousePointer2 size={14} className="text-[#4682B4]" />
               Interactive Edge Tools
             </p>
           </div>
@@ -181,7 +181,7 @@ export default async function BasicLaunchPage() {
               <a
                 key={link}
                 href="#"
-                className="text-xs font-black uppercase text-slate-500 transition-colors hover:text-blue-500"
+                className="text-xs font-black uppercase text-slate-500 transition-colors hover:text-[#39FF14]"
               >
                 {link}
               </a>
