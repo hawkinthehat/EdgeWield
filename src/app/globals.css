@@ -1,5 +1,7 @@
 :root {
   color-scheme: dark;
+  --background: #0f172a;
+  --foreground: #cbd5e1;
   --btn-active: #38bdf8;
 }
 
@@ -13,7 +15,11 @@ body {
   padding: 0;
   min-height: 100%;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background: #09090b;
+  background: #020617;
+  color: var(--foreground);
+}
+
+a {
   color: #cbd5e1;
 }
 

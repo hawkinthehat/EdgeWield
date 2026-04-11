@@ -206,10 +206,10 @@ export default function MasterTerminal() {
   const watchedRowIds = useMemo(() => watchlist.map((row) => row.id), [watchlist]);
 
   const dashboardTabs: { id: DashboardTab; label: string }[] = [
-    { id: 'terminal', label: 'Terminal' },
-    { id: 'steam-room', label: 'Steam Room' },
-    { id: 'live-sweat', label: 'Live Sweat' },
-    { id: 'bankroll', label: 'Bankroll' },
+    { id: 'terminal', label: 'TERMINAL' },
+    { id: 'steam-room', label: 'STEAM ROOM' },
+    { id: 'live-sweat', label: 'LIVE SWEAT' },
+    { id: 'bankroll', label: 'BANKROLL' },
   ];
 
   const handleToggleWatch = (row: ArbRow, shouldFocusLiveSweat = false) => {
@@ -225,11 +225,11 @@ export default function MasterTerminal() {
   };
 
   return (
-    <div className="min-h-screen bg-edge-navy text-white lg:flex">
+    <div className="relative z-10 min-h-screen bg-slate-950 text-slate-200 lg:flex">
       <div className="hidden lg:block">
         <Sidebar userBankroll={bankroll} />
       </div>
-      <main className="flex-1 p-4 sm:p-6 lg:ml-72 lg:p-8">
+      <main className="relative z-20 isolate flex-1 p-4 sm:p-6 lg:ml-72 lg:p-8">
         {/* 1. THE REVENUE HEADER */}
         <div id="terminal-top" className="mb-6 space-y-5 lg:mb-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
@@ -261,7 +261,7 @@ export default function MasterTerminal() {
           </div>
         </div>
 
-        <div className="sticky top-20 z-20 mb-6 rounded-2xl border border-edge-border bg-edge-navy/90 p-2 backdrop-blur">
+        <div className="sticky top-20 z-[120] mb-6 rounded-2xl border border-slate-700 bg-slate-950/95 p-2 shadow-[0_10px_30px_rgba(2,6,23,0.65)] backdrop-blur">
           <div
             role="tablist"
             aria-label="Master terminal views"
@@ -274,7 +274,7 @@ export default function MasterTerminal() {
                 role="tab"
                 aria-selected={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`rounded-xl border px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] transition ${
+                className={`rounded-xl border px-3 py-2 text-[11px] font-black tracking-[0.18em] transition ${
                   activeTab === tab.id
                     ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
                     : 'border-slate-700 bg-slate-900/50 text-slate-300 hover:border-edge-emerald/35 hover:text-edge-emerald'
@@ -375,7 +375,7 @@ export default function MasterTerminal() {
                   </button>
                 )}
                 <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
-                  USE CODE &quot;BETA50&quot; AT CHECKOUT
+                  SEA HAWK FOUNDING CODE: &quot;FOUNDER50&quot;
                 </p>
               </div>
             )}

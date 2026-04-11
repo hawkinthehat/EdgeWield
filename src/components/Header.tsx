@@ -11,7 +11,7 @@ export default function Header() {
         {/* LOGO SECTION */}
         <div className="flex items-center gap-8">
           <Link href="/" aria-label="EdgeWield home" className="flex items-center gap-3">
-            <HawkLogo className="pointer-events-none h-8 w-8 shrink-0" />
+            <HawkLogo className="pointer-events-none h-10 w-10 shrink-0" />
             <span className="text-xl font-black uppercase tracking-tight text-slate-100">EdgeWield</span>
           </Link>
 

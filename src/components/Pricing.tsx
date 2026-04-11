@@ -9,6 +9,7 @@ type PricingTier = {
   cta: string;
   blurb: string;
   highlight: boolean;
+  foundingMember?: boolean;
 };
 
 export default function Pricing() {
@@ -54,6 +55,7 @@ export default function Pricing() {
       ],
       cta: 'Go Sea Hawk',
       highlight: true,
+      foundingMember: true,
     },
   ];
 
@@ -62,7 +64,7 @@ export default function Pricing() {
       <div className="mb-16 text-center">
         <h2 className="text-4xl font-black italic uppercase tracking-tighter">Choose Your Tier</h2>
         <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.4em] text-slate-500">
-          Use Code <span className="text-edge-emerald">BETA50</span> for 50% Lifetime Discount
+          Sea Hawk Founding Member code: <span className="text-lime-400">FOUNDER50</span>
         </p>
       </div>
 
@@ -79,6 +81,11 @@ export default function Pricing() {
             {tier.highlight && (
               <span className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-edge-emerald px-4 py-1 text-[10px] font-black uppercase tracking-widest text-edge-navy">
                 Recommended for Pros
+              </span>
+            )}
+            {tier.foundingMember && (
+              <span className="absolute right-6 top-6 rounded-full border border-lime-300/70 bg-lime-400/15 px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-lime-400">
+                Founding Member
               </span>
             )}
 

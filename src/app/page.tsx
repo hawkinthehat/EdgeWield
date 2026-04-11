@@ -149,9 +149,14 @@ export default async function BasicLaunchPage() {
               </div>
               <div className="mb-8 flex items-start justify-between">
                 <Crown className="text-[#39FF14]" size={40} />
-                <span className="rounded-full bg-white px-4 py-1 text-[10px] font-black italic uppercase tracking-widest text-black">
-                  Best Value
-                </span>
+                <div className="flex flex-col items-end gap-2">
+                  <span className="rounded-full bg-white px-4 py-1 text-[10px] font-black italic uppercase tracking-widest text-black">
+                    Best Value
+                  </span>
+                  <span className="rounded-full border border-[#39FF14]/45 bg-[#39FF14]/15 px-3 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-[#39FF14]">
+                    Founding Member
+                  </span>
+                </div>
               </div>
               <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
                 Sea Hawk
