@@ -91,36 +91,40 @@ export default function EdgeFeed({
     const edges = toDisplayRows(rows);
     return (
       <section className="space-y-4">
-        <h2 className="text-xs font-black uppercase tracking-widest text-edge-emerald">Live Potential Edges</h2>
+        <h2 className="text-xs font-black uppercase tracking-widest text-emerald-400">Live Potential Edges</h2>
         {edges.map((edge, index) => {
           const isArb = edge.profit > 0;
+          const isBookmakerAActive = edge.bookA.includes('FanDuel') || edge.bookA.includes('DraftKings');
+          const isBookmakerBActive = edge.bookB.includes('FanDuel') || edge.bookB.includes('DraftKings');
           return (
             <article
               key={`${edge.event}-${index}`}
               className={`rounded-2xl border-2 p-6 transition-all ${
                 isArb
-                  ? 'border-edge-emerald bg-edge-emerald/5 shadow-[0_0_30px_rgba(16,185,129,0.1)]'
-                  : 'border-edge-border bg-edge-slate/20'
+                  ? 'border-emerald-400/45 bg-emerald-400/8 shadow-[0_0_30px_rgba(52,211,153,0.14)]'
+                  : 'border-slate-700 bg-zinc-900/80'
               }`}
             >
               <div className="flex items-start justify-between">
                 <div>
                   {isArb && (
-                    <span className="mb-2 inline-block rounded bg-edge-emerald px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-edge-navy">
+                    <span className="mb-2 inline-block rounded bg-emerald-400 px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-zinc-950">
                       Arb Detected
                     </span>
                   )}
-                  <h4 className="text-xl font-black">{edge.event}</h4>
+                  <h4 className="text-xl font-black text-white">{edge.event}</h4>
                   <p className="mt-1 text-xs text-slate-500">
-                    Bet both sides: {edge.bookA} &amp; {edge.bookB}
+                    Bet both sides:{' '}
+                    <span className={isBookmakerAActive ? 'text-emerald-400' : 'text-slate-400'}>{edge.bookA}</span> &amp;{' '}
+                    <span className={isBookmakerBActive ? 'text-emerald-400' : 'text-slate-400'}>{edge.bookB}</span>
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-2xl font-black text-edge-emerald">+{edge.profit.toFixed(2)}%</span>
-                  <p className="text-[10px] font-bold uppercase text-slate-500">Locked Profit</p>
+                  <span className="text-2xl font-black text-emerald-400">+{edge.profit.toFixed(2)}%</span>
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Locked Profit</p>
                   <button
                     type="button"
-                    className="mt-2 rounded-lg bg-white px-3 py-1 text-[10px] font-bold uppercase text-edge-navy"
+                    className="mt-2 rounded-lg border border-slate-500 bg-slate-800 px-3 py-1 text-[10px] font-bold uppercase text-white"
                   >
                     Place Bets
                   </button>
@@ -135,7 +139,7 @@ export default function EdgeFeed({
 
   if (loading) {
     return (
-      <div className="animate-pulse text-xs font-black uppercase text-slate-500">
+      <div className="animate-pulse text-xs font-black uppercase text-slate-400">
         Scanning Markets...
       </div>
     );
@@ -153,24 +157,35 @@ export default function EdgeFeed({
           return (
             <div
               key={arb.id}
-              className="rounded-3xl border-2 border-edge-emerald bg-edge-emerald/5 p-6"
+              className="rounded-3xl border-2 border-emerald-400/45 bg-emerald-400/8 p-6"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="rounded bg-edge-emerald px-2 py-0.5 text-[10px] font-black uppercase text-edge-navy">
+                  <span className="rounded bg-emerald-400 px-2 py-0.5 text-[10px] font-black uppercase text-zinc-950">
                     Arbitrage Lock
                   </span>
-                  <h4 className="mt-2 text-xl font-black">{arb.event_name}</h4>
+                  <h4 className="mt-2 text-xl font-black text-white">{arb.event_name}</h4>
                   <p className="mt-1 text-xs text-slate-400">
-                    Bet both sides: {sideABookie} ({Number(sideAOdds).toFixed(2)}) &amp; {sideBBookie} (
-                    {Number(sideBOdds).toFixed(2)})
+                    Bet both sides:{' '}
+                    <span
+                      className={sideABookie === 'FanDuel' || sideABookie === 'DraftKings' ? 'text-emerald-400' : 'text-slate-400'}
+                    >
+                      {sideABookie}
+                    </span>{' '}
+                    ({Number(sideAOdds).toFixed(2)}) &amp;{' '}
+                    <span
+                      className={sideBBookie === 'FanDuel' || sideBBookie === 'DraftKings' ? 'text-emerald-400' : 'text-slate-400'}
+                    >
+                      {sideBBookie}
+                    </span>{' '}
+                    ({Number(sideBOdds).toFixed(2)})
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-3xl font-black text-edge-emerald">
+                  <span className="text-3xl font-black text-emerald-400">
                     +{Number(arb.profit_percent).toFixed(2)}%
                   </span>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                     Guaranteed
                   </p>
                 </div>
@@ -179,7 +194,7 @@ export default function EdgeFeed({
           );
         })
       ) : (
-        <div className="rounded-[3rem] border-2 border-dashed border-edge-border p-12 text-center text-slate-600">
+        <div className="rounded-[3rem] border-2 border-dashed border-slate-700 p-12 text-center text-slate-500">
           No Arbs Detected. Monitoring 50,000+ lines...
         </div>
       )}

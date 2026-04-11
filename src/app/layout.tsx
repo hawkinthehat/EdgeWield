@@ -20,12 +20,12 @@ export const viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${mono.variable} bg-[#020203] font-sans text-slate-300 antialiased`}>
+      <body className={`${inter.variable} ${mono.variable} bg-zinc-950 font-sans text-slate-300 antialiased`}>
         <div className="pointer-events-none fixed inset-0 overflow-hidden">
-          <div className="absolute -left-[10%] -top-[10%] h-[40%] w-[40%] rounded-full bg-edge-emerald/5 blur-[120px]" />
-          <div className="absolute bottom-[0%] right-[0%] h-[30%] w-[30%] rounded-full bg-blue-500/5 blur-[120px]" />
+          <div className="absolute -left-[10%] -top-[10%] h-[40%] w-[40%] rounded-full bg-emerald-400/5 blur-[120px]" />
+          <div className="absolute bottom-[0%] right-[0%] h-[30%] w-[30%] rounded-full bg-slate-500/10 blur-[120px]" />
         </div>
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#020203]/85 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-slate-700/60 bg-zinc-950/85 backdrop-blur">
           <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
             <Link href="/" aria-label="EdgeWield home">
               <Logo />

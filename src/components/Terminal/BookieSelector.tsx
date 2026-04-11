@@ -12,8 +12,8 @@ export default function BookieSelector() {
   };
 
   return (
-    <section className="rounded-3xl border border-edge-border bg-edge-slate/20 p-6">
-      <h3 className="mb-4 text-sm font-black uppercase tracking-widest text-slate-500">Active Bookies</h3>
+    <section className="rounded-3xl border border-slate-700 bg-zinc-900/80 p-6">
+      <h3 className="mb-4 text-sm font-black uppercase tracking-widest text-slate-400">Active Bookies</h3>
       <div className="flex flex-wrap gap-2">
         {BOOKIES.map((bookie) => (
           <button
@@ -22,8 +22,8 @@ export default function BookieSelector() {
             onClick={() => toggleBookie(bookie)}
             className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
               selected.includes(bookie)
-                ? 'bg-edge-emerald text-edge-navy shadow-[0_0_10px_rgba(16,185,129,0.3)]'
-                : 'border border-edge-border bg-edge-navy text-slate-500'
+                ? 'border border-emerald-400/60 bg-emerald-400/20 text-emerald-300 shadow-[0_0_14px_rgba(52,211,153,0.28)]'
+                : 'border border-slate-600 bg-slate-800/40 text-slate-400'
             }`}
           >
             {bookie}

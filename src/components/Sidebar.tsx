@@ -97,20 +97,20 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
         </>
       )}
 
-      <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-edge-border bg-edge-navy p-6">
+      <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-slate-700 bg-zinc-950 p-6">
         <div className="mb-12">
           <Logo />
         </div>
 
-        <div className="mb-8 rounded-2xl border border-edge-border bg-edge-slate/30 p-4">
-          <div className="mb-2 flex items-center gap-2 text-slate-500">
+        <div className="mb-8 rounded-2xl border border-slate-700 bg-zinc-900/80 p-4">
+          <div className="mb-2 flex items-center gap-2 text-slate-400">
             <Wallet size={14} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Active Bankroll</span>
           </div>
           <div className="text-2xl font-black italic text-white">${userBankroll.toLocaleString()}</div>
           <div className="mt-2 flex items-center gap-2">
             <div className="h-2 w-2 animate-pulse rounded-full bg-edge-emerald" />
-            <span className="text-[9px] font-bold uppercase tracking-tighter text-edge-emerald">Odds Scanning...</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter text-emerald-400">Odds Scanning...</span>
           </div>
         </div>
 
@@ -121,8 +121,8 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
               type="button"
               className={`group flex w-full items-center gap-4 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 item.active
-                  ? 'bg-edge-emerald text-edge-navy shadow-lg shadow-edge-emerald/10'
-                  : 'text-slate-500 hover:bg-edge-slate/20 hover:text-white'
+                  ? 'border border-emerald-400/60 bg-emerald-400/20 text-emerald-300 shadow-lg shadow-emerald-400/10'
+                  : 'border border-transparent text-slate-400 hover:border-slate-600 hover:bg-slate-800/40 hover:text-white'
               }`}
             >
               {item.icon}
@@ -131,9 +131,9 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="border-t border-edge-border/50 pt-6">
-          <div className="mb-4 flex items-center gap-3 rounded-xl border border-edge-emerald/10 bg-edge-emerald/5 px-4 py-3">
-            <Activity size={16} className="text-edge-emerald" />
+        <div className="border-t border-slate-700/70 pt-6">
+          <div className="mb-4 flex items-center gap-3 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3">
+            <Activity size={16} className="text-emerald-400" />
             <div className="flex flex-col">
               <span className="text-[10px] font-black leading-none text-white">SYSTEM OK</span>
               <span className="mt-1 text-[8px] uppercase tracking-widest text-slate-500">API Latency: 42ms</span>

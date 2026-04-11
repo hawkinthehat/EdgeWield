@@ -34,6 +34,7 @@ export default function MasterTerminal() {
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
+  const [latencyMs, setLatencyMs] = useState<number | null>(null);
 
   const canAccessProScanner = isProBypassEnabled || isPro || devAccessOverride;
 
@@ -129,16 +130,23 @@ export default function MasterTerminal() {
 
     void (async () => {
       try {
+        const requestStartedAt = performance.now();
         const response = await fetch('/api/scanner', { cache: 'no-store' });
+        const responseLatency = Math.round(performance.now() - requestStartedAt);
         if (!response.ok) {
+          if (isMounted) {
+            setLatencyMs(responseLatency);
+          }
           return;
         }
         const payload = (await response.json()) as { bets?: EdgeBet[] };
         if (isMounted) {
+          setLatencyMs(responseLatency);
           setScannerBets(Array.isArray(payload.bets) ? payload.bets : []);
         }
       } catch {
         if (isMounted) {
+          setLatencyMs(null);
           setScannerBets([]);
         }
       }
@@ -171,22 +179,36 @@ export default function MasterTerminal() {
 
   const teaserEvent = topArbs[0]?.event_name ?? 'No live game selected';
   const topEdge = topArbs[0];
+  const isLatencySlow = latencyMs !== null && latencyMs > 350;
+  const latencyStateClass = isLatencySlow ? 'text-red-400' : 'text-emerald-400';
 
   return (
-    <div className="flex min-h-screen bg-edge-navy text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-slate-300">
       <Sidebar userBankroll={bankroll} />
       <main className="ml-72 flex-1 overflow-y-auto p-8">
         {/* 1. THE REVENUE HEADER */}
-        <div className="mb-10 flex items-end justify-between">
+        <div className="mb-10 grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
           <div>
-            <h1 className="text-4xl font-black italic uppercase tracking-tighter">Arbitrage Terminal</h1>
-            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter text-white">Arbitrage Terminal</h1>
+            <p className="mt-2 font-mono text-[10px] uppercase text-emerald-400">
               Status: Live Odds Sync Active
             </p>
           </div>
-          <div className="text-right">
-            <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
-            <p className="text-xs font-black italic text-white">Seat #42/100</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-slate-700 bg-zinc-900/90 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Bankroll</p>
+              <p className="mt-2 text-2xl font-black italic text-white">${bankroll.toLocaleString()}</p>
+              <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Capital Allocated</p>
+            </div>
+            <div className="rounded-2xl border border-slate-700 bg-zinc-900/90 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Latency</p>
+              <p className={`mt-2 text-2xl font-black italic ${latencyStateClass}`}>
+                {latencyMs === null ? '--' : `${latencyMs}ms`}
+              </p>
+              <p className={`mt-1 text-[10px] font-bold uppercase tracking-widest ${latencyStateClass}`}>
+                Latency: {isLatencySlow ? 'SLOW' : 'OK'}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -223,21 +245,21 @@ export default function MasterTerminal() {
               {scannerBets.length > 0 && <EdgeScanner bets={scannerBets} bankroll={bankroll} />}
             </div>
           ) : (
-            <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
-              <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
-              <p className="mb-8 text-slate-500">Upgrade to Pro to see live market gaps and lock in your profit.</p>
+            <div className="rounded-[3rem] border-2 border-dashed border-slate-700 bg-zinc-900/70 p-12 text-center">
+              <h3 className="mb-4 text-2xl font-bold text-white">Locked Analytics</h3>
+              <p className="mb-8 text-slate-400">Upgrade to Pro to see live market gaps and lock in your profit.</p>
               {userIdentity ? (
                 <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
               ) : (
                 <button
                   type="button"
                   onClick={handleUpgrade}
-                  className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
+                  className="mx-auto rounded-2xl bg-emerald-400 px-8 py-4 font-black text-zinc-950"
                 >
                   UPGRADE TO PRO
                 </button>
               )}
-              <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
+              <p className="mt-4 text-[10px] font-bold tracking-widest text-emerald-400">
                 USE CODE &quot;BETA50&quot; AT CHECKOUT
               </p>
             </div>

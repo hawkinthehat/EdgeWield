@@ -28,7 +28,7 @@ export function KellySidebar({
   if (!activeBet) {
     return (
       <div className="space-y-6">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+        <div className="rounded-3xl border border-slate-700 bg-zinc-900/80 p-6">
           <h5 className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
             Recommended Stake
           </h5>
@@ -47,8 +47,8 @@ export function KellySidebar({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-blue-500/20 bg-blue-600/5 p-6">
-        <h5 className="mb-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-500">
+      <div className="rounded-3xl border border-slate-700 bg-zinc-900/80 p-6">
+        <h5 className="mb-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
           <Target size={14} /> Recommended Stake
         </h5>
         <div className="mb-6">
@@ -57,7 +57,7 @@ export function KellySidebar({
         </div>
         <button
           type="button"
-          className="w-full rounded-xl bg-blue-600 py-4 text-[10px] font-black uppercase text-white shadow-[0_0_20px_rgba(59,130,246,0.3)]"
+          className="w-full rounded-xl border border-slate-500 bg-slate-800 py-4 text-[10px] font-black uppercase text-white"
         >
           Log to Bankroll
         </button>
@@ -69,8 +69,8 @@ export function KellySidebar({
           <span className="font-bold text-slate-500">Sharp Liquidity</span>
           <span className="font-mono text-white">{quarterKelly.isAdvantage ? 'High' : 'Moderate'}</span>
         </div>
-        <div className="h-1 w-full overflow-hidden rounded-full bg-white/5">
-          <div className={`${quarterKelly.isAdvantage ? 'w-[85%]' : 'w-[60%]'} h-full bg-blue-500`} />
+        <div className="h-1 w-full overflow-hidden rounded-full bg-slate-800">
+          <div className={`${quarterKelly.isAdvantage ? 'w-[85%]' : 'w-[60%]'} h-full bg-emerald-400`} />
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@ export default function EdgeScanner({ bets, bankroll }: EdgeScannerProps) {
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
       <div className="w-full space-y-4">
-        <div className="grid grid-cols-12 px-6 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">
+        <div className="grid grid-cols-12 px-6 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
           <div className="col-span-5">Event / Market</div>
           <div className="col-span-2 text-center">Best Odds</div>
           <div className="col-span-2 text-center">Fair Value</div>
@@ -96,8 +96,8 @@ export default function EdgeScanner({ bets, bankroll }: EdgeScannerProps) {
           return (
             <div
               key={bet.id}
-              className={`group grid grid-cols-12 items-center rounded-2xl border bg-[#161821] px-6 py-5 transition-all ${
-                isActive ? 'border-blue-500/60' : 'border-white/5 hover:border-blue-500/50'
+              className={`group grid grid-cols-12 items-center rounded-2xl border bg-zinc-900/80 px-6 py-5 transition-all ${
+                isActive ? 'border-emerald-400/60' : 'border-slate-700 hover:border-slate-500'
               }`}
             >
               <div className="col-span-5">
@@ -108,21 +108,27 @@ export default function EdgeScanner({ bets, bankroll }: EdgeScannerProps) {
               </div>
 
               <div className="col-span-2 text-center">
-                <div className="inline-block rounded-lg border border-blue-500/20 bg-blue-600/10 px-3 py-1">
-                  <span className="text-sm font-black text-blue-500">{formatAmericanOdds(bet.best_odds)}</span>
+                <div className="inline-block rounded-lg border border-slate-600 bg-slate-800/40 px-3 py-1">
+                  <span className="text-sm font-black text-white">{formatAmericanOdds(bet.best_odds)}</span>
                 </div>
-                <p className="mt-1 text-[9px] font-bold uppercase text-slate-600">{bet.bookie}</p>
+                <p
+                  className={`mt-1 text-[9px] font-bold uppercase ${
+                    bet.bookie === 'FanDuel' || bet.bookie === 'DraftKings' ? 'text-emerald-400' : 'text-slate-500'
+                  }`}
+                >
+                  {bet.bookie}
+                </p>
               </div>
 
               <div className="col-span-2 text-center">
                 <span className="text-xs font-mono font-bold text-slate-400">{formatAmericanOdds(bet.fair_odds)}</span>
-                <p className="mt-1 text-[9px] font-bold uppercase text-slate-600">Sharp Avg</p>
+                <p className="mt-1 text-[9px] font-bold uppercase text-slate-500">Sharp Avg</p>
               </div>
 
               <div className="col-span-3 flex items-center justify-end gap-4">
                 <div className="text-right">
-                  <p className="leading-none text-lg font-black italic text-white">{bet.edge_pct}%</p>
-                  <p className="flex items-center justify-end gap-1 text-[9px] font-bold uppercase tracking-widest text-blue-500">
+                  <p className="leading-none text-lg font-black italic text-emerald-400">+{bet.edge_pct}%</p>
+                  <p className="flex items-center justify-end gap-1 text-[9px] font-bold uppercase tracking-widest text-emerald-400">
                     <TrendingUp size={11} />
                     Expected Value
                   </p>
@@ -130,7 +136,7 @@ export default function EdgeScanner({ bets, bankroll }: EdgeScannerProps) {
                 <button
                   type="button"
                   onClick={() => setActiveBetId(bet.id)}
-                  className="rounded-lg bg-white/5 p-2 text-slate-500 transition-all hover:bg-white/10 hover:text-white"
+                  className="rounded-lg border border-slate-600 bg-slate-800/40 p-2 text-slate-400 transition-all hover:border-slate-400 hover:text-white"
                   aria-label={`Select ${bet.event} ${bet.selection}`}
                 >
                   <ExternalLink size={16} />

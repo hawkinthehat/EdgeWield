@@ -12,10 +12,10 @@ type MetricCardProps = {
 
 function MetricCard({ label, value, tone = "neutral" }: MetricCardProps) {
   const valueClass =
-    tone === "positive" ? "text-edge-emerald" : "text-white";
+    tone === "positive" ? "text-emerald-400" : "text-white";
 
   return (
-    <div className="rounded-2xl border border-slate-700/80 bg-slate-900/60 p-4">
+    <div className="rounded-2xl border border-slate-700 bg-zinc-900/80 p-4">
       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
         {label}
       </p>

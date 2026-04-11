@@ -71,7 +71,7 @@ export default function BookieSettings({
   };
 
   return (
-    <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+    <div className="rounded-3xl border border-slate-700 bg-zinc-900/80 p-6">
       <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400">Your Active Bookies</h3>
       <div className="grid grid-cols-1 gap-2">
         {ALL_BOOKS.map((book) => (
@@ -81,8 +81,8 @@ export default function BookieSettings({
             onClick={() => toggleBook(book.id)}
             className={`flex items-center justify-between rounded-2xl border p-3 transition-all ${
               selected.includes(book.id)
-                ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
-                : 'border-slate-800 bg-slate-950 text-slate-500'
+                ? 'border-emerald-400/60 bg-emerald-400/15 text-white'
+                : 'border-slate-700 bg-zinc-950 text-slate-400'
             }`}
           >
             <div className="flex items-center gap-3">
