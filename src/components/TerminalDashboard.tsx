@@ -4,7 +4,6 @@ import {
   AlertCircle,
   Plus,
   ShieldCheck,
-  TrendingUp,
   Zap,
 } from "lucide-react";
 import OddsList from "@/components/OddsList";
