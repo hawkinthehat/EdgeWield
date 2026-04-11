@@ -4,7 +4,6 @@ import {
   AlertCircle,
   Plus,
   ShieldCheck,
-  TrendingUp,
   Zap,
 } from "lucide-react";
 import OddsList from "@/components/OddsList";
@@ -84,7 +83,7 @@ function StatCard({
   );
 }
 
-export default function WatcherDashboard() {
+export default function EdgeWieldDashboard() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />

@@ -3,14 +3,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
 
-export type WatcherProfile = {
+export type TerminalProfile = {
   id?: string;
   bankroll_size: number;
   is_pro: boolean;
 };
 
-export const useWatcherRealtime = (initialProfile: WatcherProfile) => {
-  const [profile, setProfile] = useState<WatcherProfile>(initialProfile);
+export const useTerminalRealtime = (initialProfile: TerminalProfile) => {
+  const [profile, setProfile] = useState<TerminalProfile>(initialProfile);
 
   useEffect(() => {
     setProfile(initialProfile);
@@ -43,7 +43,7 @@ export const useWatcherRealtime = (initialProfile: WatcherProfile) => {
           filter: `id=eq.${profile.id}`,
         },
         (payload) => {
-          const nextProfile = payload.new as Partial<WatcherProfile>;
+          const nextProfile = payload.new as Partial<TerminalProfile>;
           if (!nextProfile) {
             return;
           }
