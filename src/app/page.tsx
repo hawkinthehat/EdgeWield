@@ -7,8 +7,7 @@ import { getInjuryPulse } from '@/lib/news';
 import { ArrowRight, Crown, MousePointer2, ShieldCheck, Zap } from 'lucide-react';
 
 export default async function BasicLaunchPage() {
-  const isProBypassEnabled = (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS ?? '').trim().toLowerCase() === 'true';
-  if (isProBypassEnabled) {
+  if (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS === 'true') {
     return <MasterTerminal />;
   }
 
