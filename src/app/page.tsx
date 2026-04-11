@@ -7,7 +7,7 @@ const tabs = ['TERMINAL', 'STEAM ROOM', 'LIVE SWEAT'];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-950 px-6 py-10 text-slate-300">
+    <div className="min-h-screen bg-[#121212] px-6 py-10 text-[#d1d1d1] font-mono">
       <div className="mx-auto max-w-6xl space-y-7">
         <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-[0_12px_40px_rgba(2,6,23,0.4)]">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">EdgeWield Pro</p>
