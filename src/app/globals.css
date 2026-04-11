@@ -37,6 +37,18 @@
   --color-indigo-800: #3c6f16;
   --color-indigo-900: #2e5511;
   --color-indigo-950: #1a3209;
+
+  --color-emerald-50: #eef7e6;
+  --color-emerald-100: #deefcc;
+  --color-emerald-200: #c0df9f;
+  --color-emerald-300: #a1ce72;
+  --color-emerald-400: #84c74c;
+  --color-emerald-500: #69be28;
+  --color-emerald-600: #5aa421;
+  --color-emerald-700: #4b891b;
+  --color-emerald-800: #3c6f16;
+  --color-emerald-900: #2e5511;
+  --color-emerald-950: #1a3209;
 }
 
 :root {
@@ -108,14 +120,14 @@ a {
 }
 
 .risk-gate-btn-primary {
-  border-color: rgba(52, 211, 153, 0.6);
-  color: rgba(52, 211, 153, 0.95);
+  border-color: rgba(105, 190, 40, 0.6);
+  color: rgba(105, 190, 40, 0.95);
 }
 
 .risk-gate-btn-primary:hover {
-  border-color: rgba(110, 231, 183, 0.85);
-  color: #d1fae5;
-  box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
+  border-color: rgba(132, 199, 76, 0.85);
+  color: #f3f7ef;
+  box-shadow: 0 0 20px rgba(105, 190, 40, 0.2);
 }
 
 /* Risk gate modal */
