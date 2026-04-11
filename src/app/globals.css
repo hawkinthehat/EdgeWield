@@ -1,8 +1,42 @@
+@import "tailwindcss";
+
 @theme {
+  /* Core stealth palette */
   --color-background: #121212;
-  --color-foreground: #ececec;
+  --color-foreground: #d1d1d1;
   --color-muted: #2e2e2e;
   --color-accent: #333333;
+  --color-gray-card: #1c1c1c;
+  --color-gray-border: #2e2e2e;
+  --color-hawk-green: #69be28;
+
+  /*
+    Tailwind utilities like bg-blue-600/text-blue-500 are used throughout the app.
+    Remap blue/indigo scales to a hawk-green scale so existing classes stop rendering blue.
+  */
+  --color-blue-50: #eef7e6;
+  --color-blue-100: #deefcc;
+  --color-blue-200: #c0df9f;
+  --color-blue-300: #a1ce72;
+  --color-blue-400: #84c74c;
+  --color-blue-500: #69be28;
+  --color-blue-600: #5aa421;
+  --color-blue-700: #4b891b;
+  --color-blue-800: #3c6f16;
+  --color-blue-900: #2e5511;
+  --color-blue-950: #1a3209;
+
+  --color-indigo-50: #eef7e6;
+  --color-indigo-100: #deefcc;
+  --color-indigo-200: #c0df9f;
+  --color-indigo-300: #a1ce72;
+  --color-indigo-400: #84c74c;
+  --color-indigo-500: #69be28;
+  --color-indigo-600: #5aa421;
+  --color-indigo-700: #4b891b;
+  --color-indigo-800: #3c6f16;
+  --color-indigo-900: #2e5511;
+  --color-indigo-950: #1a3209;
 }
 
 :root {
@@ -11,7 +45,7 @@
   --foreground: var(--color-foreground);
   --muted: var(--color-muted);
   --accent: var(--color-accent);
-  --btn-active: #38bdf8;
+  --btn-active: var(--color-hawk-green);
 }
 
 * {
@@ -29,7 +63,7 @@ body {
 }
 
 a {
-  color: #cbd5e1;
+  color: #d1d1d1;
 }
 
 .shard {
@@ -49,11 +83,11 @@ a {
 }
 
 .risk-gate-btn {
-  border: 1px solid rgba(96, 165, 250, 0.35);
+  border: 1px solid rgba(105, 190, 40, 0.35);
   border-radius: 0.9rem;
   padding: 0.9rem 1.3rem;
-  background: rgba(15, 23, 42, 0.5);
-  color: rgba(148, 163, 184, 0.95);
+  background: rgba(18, 18, 18, 0.75);
+  color: rgba(209, 209, 209, 0.95);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -63,13 +97,13 @@ a {
 
 .risk-gate-btn:hover {
   transform: translateY(-1px);
-  border-color: rgba(147, 197, 253, 0.55);
-  color: #e2e8f0;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.18);
+  border-color: rgba(132, 199, 76, 0.55);
+  color: #f3f7ef;
+  box-shadow: 0 0 16px rgba(105, 190, 40, 0.18);
 }
 
 .risk-gate-btn:focus-visible {
-  outline: 2px solid rgba(96, 165, 250, 0.8);
+  outline: 2px solid rgba(105, 190, 40, 0.8);
   outline-offset: 2px;
 }
 
