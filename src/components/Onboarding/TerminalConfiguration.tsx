@@ -94,8 +94,8 @@ export default function TerminalConfigurationOnboarding({
               </div>
               <h2 className="mb-2 text-2xl font-bold text-slate-900">Initialize Your Bankroll</h2>
               <p className="mb-8 text-slate-500">
-                What is the total amount you have allocated for sports trading? EdgeWield Terminal
-                works best with real data.
+                What is the total amount you have allocated for sports trading? EdgeWield Pro works best
+                with real data.
               </p>
 
               <div className="relative">
