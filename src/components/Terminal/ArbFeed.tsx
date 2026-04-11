@@ -2,7 +2,7 @@
 
 import ArbCard, { type ArbCardData, type UserTier } from '@/components/Terminal/ArbCard';
 
-type FilterType = 'all' | 'game' | 'prop';
+type FilterType = 'all' | 'h2h' | 'spreads';
 
 export type ArbRow = {
   id: string;
@@ -65,11 +65,14 @@ export const sampleRows: ArbRow[] = [
 ];
 
 function filterRows(rows: ArbRow[], filter: FilterType): ArbRow[] {
-  if (filter === 'game') {
-    return rows.filter((row) => !row.is_prop);
+  if (filter === 'h2h') {
+    return rows.filter((row) => row.market_type.toLowerCase() === 'h2h');
   }
-  if (filter === 'prop') {
-    return rows.filter((row) => row.is_prop);
+  if (filter === 'spreads') {
+    return rows.filter((row) => {
+      const marketType = row.market_type.toLowerCase();
+      return marketType === 'spread' || marketType === 'spreads';
+    });
   }
   return rows;
 }
@@ -112,7 +115,7 @@ export default function ArbFeed({
       </div>
       {locked && (
         <p className="mt-3 text-[10px] uppercase tracking-widest text-amber-400">
-          Player props are blurred on trial tier.
+          Premium-only markets remain blurred on trial tier.
         </p>
       )}
     </section>

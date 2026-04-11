@@ -17,7 +17,7 @@ import UpgradeButton from '@/components/UpgradeButton';
 import Sidebar from '@/components/Sidebar';
 import type { EdgeBet } from '@/lib/scanner';
 
-type TerminalFilter = 'all' | 'game' | 'prop';
+type TerminalFilter = 'all' | 'h2h' | 'spreads';
 
 function isTrueFlag(value: string | undefined) {
   return (value ?? '').trim().toLowerCase() === 'true';
@@ -25,21 +25,40 @@ function isTrueFlag(value: string | undefined) {
 
 export default function MasterTerminal() {
   const isProBypassEnabled = isTrueFlag(process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS);
-  const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
+  const [filter, setFilter] = useState<TerminalFilter>('all');
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [devAccessOverride, setDevAccessOverride] = useState(isProBypassEnabled);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showFirstEdgeModal, setShowFirstEdgeModal] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
+  const [selectedBookies, setSelectedBookies] = useState<string[]>(['FanDuel', 'DraftKings', 'BetMGM']);
+  const [showFilters, setShowFilters] = useState(true);
+  const [showSettings, setShowSettings] = useState(true);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
+  const [scannerLatencyMs, setScannerLatencyMs] = useState<number | null>(null);
 
   const canAccessProScanner = isProBypassEnabled || isPro || devAccessOverride;
 
+  const visibleArbs = useMemo(() => {
+    return arbs.filter((row) => {
+      const marketType = row.market_type.toLowerCase();
+      if (filter === 'h2h' && marketType !== 'h2h') {
+        return false;
+      }
+      if (filter === 'spreads' && marketType !== 'spread' && marketType !== 'spreads') {
+        return false;
+      }
+
+      const rowBookies = [row.bookie_a, row.bookie_b];
+      return rowBookies.some((bookie) => selectedBookies.includes(bookie));
+    });
+  }, [arbs, filter, selectedBookies]);
+
   const topArbs = useMemo(() => {
-    return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
-  }, [arbs]);
+    return [...visibleArbs].sort((a, b) => b.profit_percent - a.profit_percent);
+  }, [visibleArbs]);
 
   useEffect(() => {
     if (isProBypassEnabled) {
@@ -129,7 +148,12 @@ export default function MasterTerminal() {
 
     void (async () => {
       try {
+        const startedAt = performance.now();
         const response = await fetch('/api/scanner', { cache: 'no-store' });
+        const finishedAt = performance.now();
+        if (isMounted) {
+          setScannerLatencyMs(Math.max(1, Math.round(finishedAt - startedAt)));
+        }
         if (!response.ok) {
           return;
         }
@@ -171,22 +195,44 @@ export default function MasterTerminal() {
 
   const teaserEvent = topArbs[0]?.event_name ?? 'No live game selected';
   const topEdge = topArbs[0];
+  const statusTone = scannerBets.length > 0 ? 'text-edge-emerald' : 'text-amber-400';
+  const statusLabel = scannerBets.length > 0 ? 'Live' : 'Syncing';
+  const latencyLabel = scannerLatencyMs ? `${scannerLatencyMs}ms` : '--';
 
   return (
-    <div className="flex min-h-screen bg-edge-navy text-white">
-      <Sidebar userBankroll={bankroll} />
-      <main className="ml-72 flex-1 overflow-y-auto p-8">
+    <div className="min-h-screen bg-edge-navy text-white lg:flex">
+      <div className="hidden lg:block">
+        <Sidebar userBankroll={bankroll} />
+      </div>
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:ml-72 lg:p-8">
         {/* 1. THE REVENUE HEADER */}
-        <div className="mb-10 flex items-end justify-between">
-          <div>
-            <h1 className="text-4xl font-black italic uppercase tracking-tighter">Arbitrage Terminal</h1>
-            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
-              Status: Live Odds Sync Active
-            </p>
+        <div id="terminal-top" className="mb-8 space-y-5 lg:mb-10">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <h1 className="text-3xl font-black italic uppercase tracking-tighter sm:text-4xl">Arbitrage Terminal</h1>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-edge-emerald">
+                Status: Live Odds Sync Active
+              </p>
+            </div>
+            <div className="md:text-right">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Beta Access</p>
+              <p className="text-xs font-black italic text-white">Seat #42/100</p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
-            <p className="text-xs font-black italic text-white">Seat #42/100</p>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="rounded-2xl border border-edge-border bg-edge-slate/30 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Latency</p>
+              <p className="mt-1 text-lg font-black text-white">{latencyLabel}</p>
+            </div>
+            <div id="terminal-bankroll" className="rounded-2xl border border-edge-border bg-edge-slate/30 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Bankroll</p>
+              <p className="mt-1 text-lg font-black text-white">${bankroll.toLocaleString()}</p>
+            </div>
+            <div className="rounded-2xl border border-edge-border bg-edge-slate/30 p-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</p>
+              <p className={`mt-1 text-lg font-black ${statusTone}`}>{statusLabel}</p>
+            </div>
           </div>
         </div>
 
@@ -194,22 +240,56 @@ export default function MasterTerminal() {
         <CFODash />
 
         {/* 3. THE MARKET CONTROL */}
-        <div className="mb-6 mt-12 flex items-center justify-between gap-4">
-          <PropFilter active={filter} onChange={setFilter} />
-          {!canAccessProScanner && (
-            <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
-              <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
-                Upgrade to unlock Player Props
-              </p>
+        <div id="terminal-market-controls" className="mb-6 mt-10 rounded-2xl border border-edge-border bg-edge-slate/15 p-4 sm:p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowFilters((prev) => !prev)}
+                className={`rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-wide transition ${
+                  showFilters
+                    ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
+                    : 'border-slate-700 bg-slate-900/50 text-slate-300'
+                }`}
+              >
+                Filters
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowSettings((prev) => !prev)}
+                className={`rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-wide transition ${
+                  showSettings
+                    ? 'border-edge-emerald bg-edge-emerald/20 text-edge-emerald'
+                    : 'border-slate-700 bg-slate-900/50 text-slate-300'
+                }`}
+              >
+                Settings
+              </button>
+            </div>
+            {!canAccessProScanner && (
+              <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
+                <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
+                  Upgrade to unlock advanced scanner analytics
+                </p>
+              </div>
+            )}
+          </div>
+
+          {showFilters && (
+            <div className="mb-4">
+              <PropFilter active={filter} onChange={setFilter} />
+            </div>
+          )}
+
+          {showSettings && (
+            <div id="terminal-settings">
+              <BookieSelector selected={selectedBookies} onChange={setSelectedBookies} />
             </div>
           )}
         </div>
-        <div className="mb-8">
-          <BookieSelector />
-        </div>
 
         {/* 4. THE LIVE EDGE FEED */}
-        <ArbFeed filter={filter} locked={!canAccessProScanner} rows={arbs} />
+        <ArbFeed filter={filter} locked={!canAccessProScanner} rows={visibleArbs} />
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <HedgeCalculator />

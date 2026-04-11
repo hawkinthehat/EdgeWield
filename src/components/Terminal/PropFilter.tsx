@@ -1,6 +1,6 @@
 'use client';
 
-type FilterValue = 'all' | 'game' | 'prop';
+type FilterValue = 'all' | 'h2h' | 'spreads';
 
 type PropFilterProps = {
   active: FilterValue;
@@ -9,8 +9,8 @@ type PropFilterProps = {
 
 const FILTERS: Array<{ key: FilterValue; label: string }> = [
   { key: 'all', label: 'All Markets' },
-  { key: 'game', label: 'Game Lines' },
-  { key: 'prop', label: 'Player Props' },
+  { key: 'h2h', label: 'H2H' },
+  { key: 'spreads', label: 'Spreads' },
 ];
 
 export default function PropFilter({ active, onChange }: PropFilterProps) {

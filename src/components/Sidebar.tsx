@@ -97,7 +97,7 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
         </>
       )}
 
-      <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-edge-border bg-edge-navy p-6">
+      <aside className="fixed left-0 top-0 hidden h-screen w-72 flex-col border-r border-edge-border bg-edge-navy p-6 lg:flex">
         <div className="mb-12">
           <Logo />
         </div>

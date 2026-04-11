@@ -1,6 +1,8 @@
 'use client';
 
 import { Lock } from 'lucide-react';
+import { getBookmakerMeta } from '@/lib/bookmakers';
+import { formatAmericanOdds } from '@/lib/oddsFormat';
 
 export type UserTier = 'trial' | 'pro';
 
@@ -24,6 +26,8 @@ type ArbCardProps = {
 export default function ArbCard({ arb, userTier, onUnlock }: ArbCardProps) {
   const isLocked = arb.type === 'prop' && userTier === 'trial';
   const displayName = isLocked ? 'Locked Player Prop' : arb.player_name;
+  const bookieA = getBookmakerMeta(arb.bookie_a);
+  const bookieB = getBookmakerMeta(arb.bookie_b);
   const handleUnlock = () => {
     if (onUnlock) {
       onUnlock();
@@ -70,12 +74,26 @@ export default function ArbCard({ arb, userTier, onUnlock }: ArbCardProps) {
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <div className="rounded-xl border border-white/5 bg-edge-navy p-3">
-            <p className="text-[8px] uppercase text-slate-500">{arb.bookie_a}</p>
-            <p className="text-sm font-black text-white">{arb.odds_a.toFixed(2)}</p>
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[8px] font-black ${bookieA.accentClass}`}
+              >
+                {bookieA.badge}
+              </span>
+              <p className="text-[8px] uppercase text-slate-500">{arb.bookie_a}</p>
+            </div>
+            <p className="mt-1 text-sm font-black text-white">{formatAmericanOdds(arb.odds_a)}</p>
           </div>
           <div className="rounded-xl border border-white/5 bg-edge-navy p-3">
-            <p className="text-[8px] uppercase text-slate-500">{arb.bookie_b}</p>
-            <p className="text-sm font-black text-white">{arb.odds_b.toFixed(2)}</p>
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[8px] font-black ${bookieB.accentClass}`}
+              >
+                {bookieB.badge}
+              </span>
+              <p className="text-[8px] uppercase text-slate-500">{arb.bookie_b}</p>
+            </div>
+            <p className="mt-1 text-sm font-black text-white">{formatAmericanOdds(arb.odds_b)}</p>
           </div>
         </div>
       </div>

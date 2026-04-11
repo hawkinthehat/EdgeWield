@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import type { ArbRow } from '@/components/Terminal/ArbFeed';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getBookmakerMeta } from '@/lib/bookmakers';
+import { formatAmericanOdds } from '@/lib/oddsFormat';
 
 type ScanEdgeFeedRow = ArbRow & {
   sideA?: { bookie: string; odds: number; team: string };
@@ -27,8 +29,8 @@ function toDisplayRows(rows?: ArbRow[]): DisplayEdgeFeedRow[] {
   return rows.map((row) => ({
     event: row.event_name,
     profit: row.profit_percent,
-    bookA: `${row.bookie_a} (${row.odds_a.toFixed(2)})`,
-    bookB: `${row.bookie_b} (${row.odds_b.toFixed(2)})`,
+    bookA: `${row.bookie_a} (${formatAmericanOdds(row.odds_a)})`,
+    bookB: `${row.bookie_b} (${formatAmericanOdds(row.odds_b)})`,
   }));
 }
 
@@ -149,6 +151,8 @@ export default function EdgeFeed({
           const sideAOdds = arb.sideA?.odds ?? arb.odds_a;
           const sideBBookie = arb.sideB?.bookie ?? arb.bookie_b;
           const sideBOdds = arb.sideB?.odds ?? arb.odds_b;
+          const sideAMeta = getBookmakerMeta(sideABookie);
+          const sideBMeta = getBookmakerMeta(sideBBookie);
 
           return (
             <div
@@ -161,10 +165,20 @@ export default function EdgeFeed({
                     Arbitrage Lock
                   </span>
                   <h4 className="mt-2 text-xl font-black">{arb.event_name}</h4>
-                  <p className="mt-1 text-xs text-slate-400">
-                    Bet both sides: {sideABookie} ({Number(sideAOdds).toFixed(2)}) &amp; {sideBBookie} (
-                    {Number(sideBOdds).toFixed(2)})
-                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-300">
+                    <span className="font-semibold text-slate-400">Bet both sides:</span>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-bold ${sideAMeta.accentClass}`}
+                    >
+                      {sideAMeta.badge} {sideABookie} {formatAmericanOdds(Number(sideAOdds))}
+                    </span>
+                    <span className="text-slate-500">&amp;</span>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-bold ${sideBMeta.accentClass}`}
+                    >
+                      {sideBMeta.badge} {sideBBookie} {formatAmericanOdds(Number(sideBOdds))}
+                    </span>
+                  </div>
                 </div>
                 <div className="text-right">
                   <span className="text-3xl font-black text-edge-emerald">
