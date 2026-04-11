@@ -98,12 +98,12 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
         </>
       )}
 
-      <aside className="fixed left-0 top-0 hidden h-screen w-72 flex-col border-r border-blue-400/20 bg-zinc-950 p-6 lg:flex">
+      <aside className="fixed left-0 top-0 hidden h-screen w-72 flex-col border-r border-slate-700/70 bg-slate-950 p-6 lg:flex">
         <div className="mb-12">
           <Logo />
         </div>
 
-        <div className="mb-8 rounded-2xl border border-blue-400/20 bg-slate-900/40 p-4 backdrop-blur-md">
+        <div className="mb-8 rounded-2xl border border-slate-700 bg-slate-900/40 p-4 backdrop-blur-md">
           <div className="mb-2 flex items-center gap-2 text-slate-400">
             <Wallet size={14} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Active Bankroll</span>
@@ -122,8 +122,8 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
               type="button"
               className={`group flex w-full items-center gap-4 rounded-xl border px-4 py-3 text-sm font-semibold transition-all ${
                 item.active
-                  ? 'border-blue-300/60 bg-slate-900/60 text-slate-100'
-                  : 'border-blue-400/10 text-slate-400 hover:border-blue-300/30 hover:bg-slate-900/50 hover:text-slate-100'
+                  ? 'border-[#39FF14]/55 bg-slate-900/70 text-white'
+                  : 'border-slate-700 text-slate-400 hover:border-[#39FF14]/35 hover:bg-slate-900/50 hover:text-slate-100'
               }`}
             >
               {item.icon}
@@ -132,8 +132,8 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="border-t border-blue-400/20 pt-6">
-          <div className="mb-4 flex items-center gap-3 rounded-xl border border-blue-400/20 bg-slate-900/50 px-4 py-3">
+        <div className="border-t border-slate-700 pt-6">
+          <div className="mb-4 flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/50 px-4 py-3">
             <Activity size={16} className="text-emerald-400" />
             <div className="flex flex-col">
               <span className="text-[10px] font-bold leading-none text-slate-100">SYSTEM OK</span>
@@ -147,7 +147,7 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
             className={`flex w-full items-center gap-4 rounded-xl border px-4 py-3 text-sm font-semibold transition-all ${
               isRiskPauseActive
                 ? 'border-red-400/35 bg-red-500/10 text-red-400/80'
-                : 'border-blue-400/20 text-slate-400 hover:border-blue-300/30 hover:bg-slate-900/50 hover:text-slate-100'
+                : 'border-slate-700 text-slate-400 hover:border-[#39FF14]/35 hover:bg-slate-900/50 hover:text-slate-100'
             }`}
           >
             <AlertTriangle size={20} />

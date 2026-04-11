@@ -4,16 +4,28 @@ type HawkLogoProps = SVGProps<SVGSVGElement> & {
   title?: string;
 };
 
-export default function HawkLogo({ title = 'Geometric Hawk icon', ...props }: HawkLogoProps) {
+export default function HawkLogo({
+  title = 'Geometric Hawk icon',
+  className = 'h-8 w-8',
+  ...props
+}: HawkLogoProps) {
   return (
-    <svg viewBox="0 0 64 64" role="img" aria-label={title} {...props}>
+    <svg
+      viewBox="0 0 64 64"
+      role="img"
+      aria-label={title}
+      width={64}
+      height={64}
+      className={className}
+      {...props}
+    >
       <title>{title}</title>
-      <polygon points="8,34 24,14 38,18 30,34 16,38" fill="#334155" />
-      <polygon points="30,34 38,18 52,24 44,40 30,44" fill="#4682B4" />
-      <polygon points="16,38 30,34 30,44 20,52 10,46" fill="#1E293B" />
-      <polygon points="30,44 44,40 54,50 36,56 20,52" fill="#0F172A" />
-      <polygon points="45,33 60,36 46,43 41,38" fill="#39FF14" />
-      <circle cx="34.5" cy="29.5" r="2" fill="#39FF14" />
+      <polygon points="8,36 24,14 40,20 30,38 16,42" fill="#374151" />
+      <polygon points="30,38 40,20 54,26 46,42 32,46" fill="#4B5563" />
+      <polygon points="16,42 30,38 32,46 20,54 10,48" fill="#1F2937" />
+      <polygon points="32,46 46,42 56,52 36,58 20,54" fill="#111827" />
+      <polygon points="46,33 61,36 47,43 42,38" fill="#39FF14" />
+      <circle cx="35" cy="30" r="2.1" fill="#39FF14" />
     </svg>
   );
 }

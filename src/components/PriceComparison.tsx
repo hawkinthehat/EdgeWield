@@ -2,21 +2,22 @@ import { Check, X } from 'lucide-react';
 
 type FeatureRow = {
   name: string;
-  standard: boolean | string;
-  pro: boolean | string;
+  kestrel: boolean | string;
+  redTail: boolean | string;
+  seaHawk: boolean | string;
   highlight?: boolean;
 };
 
 export default function PriceComparison() {
   const features: FeatureRow[] = [
-    { name: 'Market Refresh Rate', standard: '15 Minutes', pro: '90 Seconds', highlight: true },
-    { name: 'Moneyline & Spreads', standard: true, pro: true },
-    { name: 'Player Props (Over/Under)', standard: false, pro: true },
-    { name: 'Alt Lines & Derivatives', standard: false, pro: true },
-    { name: 'Hedge Unit Calculator', standard: 'Basic', pro: 'Advanced / Auto', highlight: true },
-    { name: 'Multi-Bookie Filtering', standard: 'Up to 3', pro: 'Unlimited' },
-    { name: 'Priority Arbs Alerts', standard: 'Email', pro: 'SMS / Push', highlight: true },
-    { name: 'Live Bankroll Tracking', standard: true, pro: true },
+    { name: 'Market Refresh Rate', kestrel: '15 Minutes', redTail: '90 Seconds', seaHawk: 'Sub-60 Seconds', highlight: true },
+    { name: 'Moneyline & Spreads', kestrel: true, redTail: true, seaHawk: true },
+    { name: 'Player Props (Over/Under)', kestrel: false, redTail: true, seaHawk: true },
+    { name: 'Alt Lines & Derivatives', kestrel: false, redTail: true, seaHawk: true },
+    { name: 'Hedge Unit Calculator', kestrel: 'Standard', redTail: 'Advanced', seaHawk: 'Advanced + Auto', highlight: true },
+    { name: 'Multi-Bookie Filtering', kestrel: 'Up to 3', redTail: 'Expanded', seaHawk: 'Unlimited' },
+    { name: 'Priority Arb Alerts', kestrel: 'Email', redTail: 'SMS', seaHawk: 'SMS + Push', highlight: true },
+    { name: 'Live Bankroll Tracking', kestrel: true, redTail: true, seaHawk: true },
   ];
 
   return (
@@ -24,7 +25,7 @@ export default function PriceComparison() {
       <div className="mb-16 text-center">
         <h2 className="mb-4 text-3xl font-black italic uppercase tracking-tighter">Terminal Capability</h2>
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
-          Sea Hawk Arbitrage Tools vs Red-Tail
+          Kestrel vs Red-Tail vs Sea Hawk
         </p>
       </div>
 
@@ -34,9 +35,15 @@ export default function PriceComparison() {
             <tr className="border-b border-edge-border bg-edge-slate/20">
               <th className="p-8 text-xs font-black uppercase tracking-widest text-slate-500">Capabilities</th>
               <th className="p-8 text-center">
+                <span className="text-sm font-black uppercase tracking-tighter text-slate-300">Kestrel</span>
+                <div className="mt-1 text-xl font-black">
+                  $0.00<span className="text-[10px] opacity-50">/mo</span>
+                </div>
+              </th>
+              <th className="p-8 text-center">
                 <span className="text-sm font-black uppercase tracking-tighter text-slate-300">Red-Tail</span>
                 <div className="mt-1 text-xl font-black">
-                  $9.99<span className="text-[10px] opacity-50">/mo</span>
+                  $19.99<span className="text-[10px] opacity-50">/mo</span>
                 </div>
               </th>
               <th className="bg-edge-emerald/5 p-8 text-center">
@@ -44,7 +51,7 @@ export default function PriceComparison() {
                   Sea Hawk
                 </span>
                 <div className="mt-1 text-xl font-black text-white">
-                  $24.99<span className="text-[10px] opacity-50">/mo</span>
+                  $99.99<span className="text-[10px] opacity-50">/mo</span>
                 </div>
               </th>
             </tr>
@@ -62,26 +69,38 @@ export default function PriceComparison() {
                 </td>
 
                 <td className="p-6 text-center">
-                  {typeof feature.standard === 'boolean' ? (
-                    feature.standard ? (
+                  {typeof feature.kestrel === 'boolean' ? (
+                    feature.kestrel ? (
                       <Check size={18} className="mx-auto text-slate-500" />
                     ) : (
                       <X size={18} className="mx-auto text-slate-800" />
                     )
                   ) : (
-                    <span className="text-xs font-bold text-slate-500">{feature.standard}</span>
+                    <span className="text-xs font-bold text-slate-500">{feature.kestrel}</span>
+                  )}
+                </td>
+
+                <td className="p-6 text-center">
+                  {typeof feature.redTail === 'boolean' ? (
+                    feature.redTail ? (
+                      <Check size={18} className="mx-auto text-slate-300" />
+                    ) : (
+                      <X size={18} className="mx-auto text-slate-800" />
+                    )
+                  ) : (
+                    <span className="text-xs font-bold text-slate-300">{feature.redTail}</span>
                   )}
                 </td>
 
                 <td className="bg-edge-emerald/5 p-6 text-center">
-                  {typeof feature.pro === 'boolean' ? (
-                    feature.pro ? (
+                  {typeof feature.seaHawk === 'boolean' ? (
+                    feature.seaHawk ? (
                       <Check size={20} className="mx-auto text-edge-emerald" />
                     ) : (
                       <X size={20} className="mx-auto text-slate-800" />
                     )
                   ) : (
-                    <span className="text-sm font-black italic text-edge-emerald">{feature.pro}</span>
+                    <span className="text-sm font-black italic text-edge-emerald">{feature.seaHawk}</span>
                   )}
                 </td>
               </tr>

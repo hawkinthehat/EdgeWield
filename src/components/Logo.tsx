@@ -1,12 +1,12 @@
 'use client';
 
-import { Swords } from 'lucide-react';
+import HawkLogo from '@/components/Icons/HawkLogo';
 
 export default function Logo() {
   return (
     <div className="flex items-center gap-3">
-      <div className="rounded-xl bg-edge-emerald p-2 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-        <Swords size={24} className="text-edge-navy" strokeWidth={2.5} />
+      <div className="rounded-xl border border-[#39FF14]/35 bg-slate-900 p-2 shadow-[0_0_20px_rgba(57,255,20,0.22)]">
+        <HawkLogo className="h-8 w-8" />
       </div>
       <div className="flex flex-col leading-none">
         <span className="text-2xl font-black uppercase italic tracking-tighter text-white">

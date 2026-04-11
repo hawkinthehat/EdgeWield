@@ -104,9 +104,12 @@ export default function ArbFeed({
   const visibleRows = filterRows(rows, filter);
   const userTier: UserTier = locked ? 'trial' : 'pro';
   const [showBetCalculator, setShowBetCalculator] = useState(false);
-  const primaryRow = visibleRows[0];
-  const fallbackRow = sampleRows[0];
-  const activeRow = primaryRow ?? fallbackRow;
+  const [selectedArb, setSelectedArb] = useState<ArbCardData | null>(null);
+
+  const handleSelectArb = (arb: ArbCardData) => {
+    setSelectedArb(arb);
+    setShowBetCalculator(true);
+  };
 
   return (
     <section className="rounded-2xl border border-slate-700 bg-slate-950 p-4">
@@ -115,7 +118,14 @@ export default function ArbFeed({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => setShowBetCalculator(true)}
+            onClick={() => {
+              const firstVisible = visibleRows[0];
+              if (!firstVisible) {
+                return;
+              }
+              handleSelectArb(toArbCardData(firstVisible));
+            }}
+            disabled={visibleRows.length === 0}
             className="rounded-lg border border-[#39FF14]/40 bg-[#39FF14]/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-[#39FF14] transition hover:border-[#39FF14] hover:bg-[#39FF14]/20"
           >
             Eagle-Eye Calculator
@@ -125,7 +135,7 @@ export default function ArbFeed({
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         {visibleRows.map((row) => (
-          <ArbCard key={row.id} userTier={userTier} arb={toArbCardData(row)} />
+          <ArbCard key={row.id} userTier={userTier} arb={toArbCardData(row)} onSelect={handleSelectArb} />
         ))}
       </div>
       {locked && (
@@ -133,15 +143,18 @@ export default function ArbFeed({
           Sea Hawk-only markets remain blurred on Kestrel tier.
         </p>
       )}
-      {activeRow && (
+      {selectedArb && (
         <BetCalculator
           isOpen={showBetCalculator}
-          onClose={() => setShowBetCalculator(false)}
-          marketName={activeRow.event_name}
-          bookA={activeRow.bookie_a}
-          oddsA={activeRow.odds_a}
-          bookB={activeRow.bookie_b}
-          oddsB={activeRow.odds_b}
+          onClose={() => {
+            setShowBetCalculator(false);
+            setSelectedArb(null);
+          }}
+          marketName={selectedArb.player_name}
+          bookA={selectedArb.bookie_a}
+          oddsA={selectedArb.odds_a}
+          bookB={selectedArb.bookie_b}
+          oddsB={selectedArb.odds_b}
         />
       )}
     </section>

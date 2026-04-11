@@ -25,7 +25,7 @@ export default function HedgeTeaser({
         </div>
         {!isPremium && (
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-1 text-[10px] font-bold text-amber-500">
-            PRO FEATURE
+            SEA HAWK FEATURE
           </span>
         )}
       </div>
@@ -58,7 +58,7 @@ export default function HedgeTeaser({
               Unlock Calculation
             </p>
             <p className="max-w-[140px] text-center text-[11px] text-slate-400">
-              Get the exact hedge amount for this game.
+              Sea Hawk unlocks exact hedge amounts for each game.
             </p>
           </div>
         )}
@@ -78,7 +78,7 @@ export default function HedgeTeaser({
           ? 'View Strategy'
           : isCheckingOut
             ? 'Redirecting to Checkout...'
-            : 'Upgrade to EdgeWield Pro'}
+            : 'Upgrade to Sea Hawk'}
       </button>
     </div>
   );

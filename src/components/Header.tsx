@@ -11,7 +11,7 @@ export default function Header() {
         {/* LOGO SECTION */}
         <div className="flex items-center gap-8">
           <Link href="/" aria-label="EdgeWield home" className="flex items-center gap-3">
-            <HawkLogo className="h-8 w-auto" />
+            <HawkLogo className="pointer-events-none h-8 w-8 shrink-0" />
             <span className="text-xl font-black uppercase tracking-tight text-slate-100">EdgeWield</span>
           </Link>
 
@@ -24,7 +24,7 @@ export default function Header() {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Activity size={14} className="text-[#4682B4]" />
+              <Activity size={14} className="text-[#39FF14]" />
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
                 Latency: 18ms
               </span>
@@ -45,7 +45,7 @@ export default function Header() {
               <p className="text-[9px] font-bold uppercase text-[#39FF14]">Tier: Sea Hawk</p>
             </div>
             <button className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-1 pr-3 transition-all hover:bg-white/10">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#4682B4] to-[#39FF14] font-black text-xs text-slate-950">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-slate-600 to-[#39FF14] font-black text-xs text-slate-950">
                 JD
               </div>
               <ChevronDown size={14} className="text-slate-500" />

@@ -69,7 +69,7 @@ export default function BetCalculator({
 
   return (
     <div className="fixed inset-0 z-[260] flex items-center justify-center bg-slate-950/90 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-[0_0_50px_rgba(70,130,180,0.18)] sm:p-8">
+      <div className="w-full max-w-2xl rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-[0_0_50px_rgba(57,255,20,0.12)] sm:p-8">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-400">Eagle-Eye Calculator</p>
@@ -98,7 +98,7 @@ export default function BetCalculator({
               placeholder="100.00"
             />
           </div>
-          <div className="rounded-xl border border-[#4682B4]/40 bg-[#4682B4]/10 p-3">
+          <div className="rounded-xl border border-slate-600 bg-slate-900 p-3">
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-300">Odds Inputs</p>
             <p className="mt-2 text-xs text-slate-200">
               {bookA}: <span className="font-black text-[#39FF14]">{oddsA.toFixed(2)}</span>
@@ -117,14 +117,14 @@ export default function BetCalculator({
           <div className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-slate-700 bg-slate-950/80 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#4682B4]">{bookA} Stake</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-300">{bookA} Stake</p>
                 <p className="mt-2 text-2xl font-black text-[#39FF14]">${formatCurrency(result.stakeA)}</p>
                 <p className="mt-1 text-[10px] uppercase tracking-wider text-slate-400">
                   Payout: ${formatCurrency(result.payoutA)}
                 </p>
               </div>
               <div className="rounded-2xl border border-slate-700 bg-slate-950/80 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#4682B4]">{bookB} Stake</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-300">{bookB} Stake</p>
                 <p className="mt-2 text-2xl font-black text-[#39FF14]">${formatCurrency(result.stakeB)}</p>
                 <p className="mt-1 text-[10px] uppercase tracking-wider text-slate-400">
                   Payout: ${formatCurrency(result.payoutB)}
@@ -138,14 +138,14 @@ export default function BetCalculator({
                 <p className="text-3xl font-black text-white">
                   {result.guaranteedProfit >= 0 ? '+' : ''}${formatCurrency(result.guaranteedProfit)}
                 </p>
-                <p className="text-sm font-black uppercase tracking-wider text-[#4682B4]">ROI {result.roi.toFixed(2)}%</p>
+                <p className="text-sm font-black uppercase tracking-wider text-slate-300">ROI {result.roi.toFixed(2)}%</p>
               </div>
             </div>
           </div>
         )}
 
         <div className="mt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-          <Calculator size={14} className="text-[#4682B4]" />
+          <Calculator size={14} className="text-[#39FF14]" />
           Exact split based on decimal-odds hedge math.
         </div>
       </div>

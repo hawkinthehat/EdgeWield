@@ -269,7 +269,7 @@ export default function MasterTerminal() {
             {!canAccessProScanner && (
               <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-4 py-2">
                 <p className="text-[9px] font-black uppercase tracking-widest text-amber-500">
-                  Upgrade to Sea Hawk for advanced scanner analytics
+                  Upgrade from Red-Tail to Sea Hawk for advanced scanner analytics
                 </p>
               </div>
             )}
@@ -305,7 +305,9 @@ export default function MasterTerminal() {
           ) : (
             <div className="rounded-[3rem] border-2 border-dashed border-edge-border bg-edge-slate/20 p-12 text-center">
               <h3 className="mb-4 text-2xl font-bold">Locked Analytics</h3>
-              <p className="mb-8 text-slate-500">Upgrade to Sea Hawk to see live market gaps and lock in your profit.</p>
+              <p className="mb-8 text-slate-500">
+                Upgrade from Red-Tail to Sea Hawk to see live market gaps and lock in your profit.
+              </p>
               {userIdentity ? (
                 <UpgradeButton userId={userIdentity.id} email={userIdentity.email} />
               ) : (
