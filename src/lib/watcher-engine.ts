@@ -54,6 +54,7 @@ function getBestOdds(bookmakers: OddsApiBookmaker[] | undefined, teamName: strin
 export async function getConsolidatedOdds(sport: string): Promise<MarketCacheRow[]> {
   const supabase = getSupabaseAdmin();
   const freshnessCutoff = new Date(Date.now() - 10 * 60_000).toISOString();
+  const oddsApiKey = process.env.ODDS_API_KEY;
 
   const { data: cachedOdds, error: cacheError } = await supabase
     .from('market_cache')
@@ -70,11 +71,17 @@ export async function getConsolidatedOdds(sport: string): Promise<MarketCacheRow
     return cachedOdds as MarketCacheRow[];
   }
 
+  if (!oddsApiKey) {
+    throw new Error('Missing ODDS_API_KEY environment variable');
+  }
+
   console.log('Watcher: Refreshing live market data');
-  const response = await fetch(
-    `https://api.the-odds-api.com/v4/sports/${sport}/odds/?apiKey=${process.env.ODDS_API_KEY}&regions=us&markets=h2h`,
-    { cache: 'no-store' },
-  );
+  const endpoint = new URL(`https://api.the-odds-api.com/v4/sports/${sport}/odds/`);
+  endpoint.searchParams.set('apiKey', oddsApiKey);
+  endpoint.searchParams.set('regions', 'us');
+  endpoint.searchParams.set('markets', 'h2h');
+
+  const response = await fetch(endpoint.toString(), { cache: 'no-store' });
 
   if (!response.ok) {
     throw new Error(`Odds API request failed with ${response.status}`);
