@@ -170,8 +170,10 @@ export default function MasterTerminal() {
         {/* 1. THE REVENUE HEADER */}
         <div className="mb-10 flex items-end justify-between">
           <div>
-            <h1 className="text-4xl font-black italic uppercase tracking-tighter">Terminal_v1.0</h1>
-            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">Status: 90s Pulse Sync Active</p>
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter">Arbitrage Terminal</h1>
+            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
+              Status: Live Odds Sync Active
+            </p>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
@@ -223,7 +225,7 @@ export default function MasterTerminal() {
                   onClick={handleUpgrade}
                   className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
                 >
-                  WIELD THE PRO EDGE
+                  UPGRADE TO PRO
                 </button>
               )}
               <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">

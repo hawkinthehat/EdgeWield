@@ -53,7 +53,7 @@ export default function AuthUI() {
       ) : (
         <div className="rounded-2xl border border-edge-emerald/20 bg-edge-emerald/10 p-6 text-center">
           <p className="font-bold text-edge-emerald">Check your inbox.</p>
-          <p className="mt-2 text-xs italic text-slate-400">A secure magic link has been sent to your terminal.</p>
+          <p className="mt-2 text-xs italic text-slate-400">A secure sign-in link has been sent to your email.</p>
         </div>
       )}
     </section>

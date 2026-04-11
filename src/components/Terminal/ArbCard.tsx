@@ -23,7 +23,7 @@ type ArbCardProps = {
 
 export default function ArbCard({ arb, userTier, onUnlock }: ArbCardProps) {
   const isLocked = arb.type === 'prop' && userTier === 'trial';
-  const displayName = isLocked ? 'Top Secret Player' : arb.player_name;
+  const displayName = isLocked ? 'Locked Player Prop' : arb.player_name;
   const handleUnlock = () => {
     if (onUnlock) {
       onUnlock();

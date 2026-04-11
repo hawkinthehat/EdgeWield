@@ -21,8 +21,8 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
 
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: 'Terminal', active: true },
-    { icon: <Zap size={20} />, label: 'Active Edges', active: false },
-    { icon: <ShieldCheck size={20} />, label: 'Unit Vault', active: false },
+    { icon: <Zap size={20} />, label: 'Live Arbs', active: false },
+    { icon: <ShieldCheck size={20} />, label: 'Bankroll', active: false },
     { icon: <Settings size={20} />, label: 'Filters', active: false },
   ];
 
@@ -110,7 +110,7 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
           <div className="text-2xl font-black italic text-white">${userBankroll.toLocaleString()}</div>
           <div className="mt-2 flex items-center gap-2">
             <div className="h-2 w-2 animate-pulse rounded-full bg-edge-emerald" />
-            <span className="text-[9px] font-bold uppercase tracking-tighter text-edge-emerald">Bot Scanning...</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter text-edge-emerald">Odds Scanning...</span>
           </div>
         </div>
 
