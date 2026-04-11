@@ -6,6 +6,8 @@ import MasterTerminal from '@/components/Terminal/MasterTerminal';
 import { getInjuryPulse } from '@/lib/news';
 import { ArrowRight, Crown, MousePointer2, ShieldCheck, Zap } from 'lucide-react';
 
+const FOUNDING_MEMBER_CODE_INPUT_ID = 'founding-member-code-input';
+
 export default async function BasicLaunchPage() {
   if (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS === 'true') {
     return <MasterTerminal />;
@@ -47,6 +49,23 @@ export default async function BasicLaunchPage() {
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-4xl font-black italic uppercase text-white">Choose Your Plan</h2>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Choose Kestrel, Red-Tail, or Sea Hawk</p>
+            <div className="mx-auto mt-5 max-w-md rounded-2xl border border-[#39FF14]/35 bg-[#39FF14]/10 px-4 py-3 text-left">
+              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.25em] text-[#39FF14]">
+                Founding Member
+              </p>
+              <label htmlFor={FOUNDING_MEMBER_CODE_INPUT_ID} className="text-xs font-bold text-slate-300">
+                Have a Founding Member code? <span className="text-[#39FF14]">Apply here.</span>
+              </label>
+              <input
+                id={FOUNDING_MEMBER_CODE_INPUT_ID}
+                name={FOUNDING_MEMBER_CODE_INPUT_ID}
+                type="text"
+                placeholder="Enter your code"
+                className="mt-2 w-full rounded-xl border border-[#39FF14]/35 bg-slate-950/70 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white outline-none transition focus:border-[#39FF14]"
+                autoCapitalize="characters"
+                autoCorrect="off"
+              />
+            </div>
           </div>
 
           <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -116,6 +135,7 @@ export default async function BasicLaunchPage() {
               </p>
               <CheckoutButton
                 plan="scout"
+                foundingMemberCodeInputId={FOUNDING_MEMBER_CODE_INPUT_ID}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 py-5 text-xs font-black uppercase transition-all hover:bg-white hover:text-black"
               >
                 Select Red-Tail
@@ -156,6 +176,7 @@ export default async function BasicLaunchPage() {
               </p>
               <CheckoutButton
                 plan="pro"
+                foundingMemberCodeInputId={FOUNDING_MEMBER_CODE_INPUT_ID}
                 className="w-full rounded-2xl bg-[#39FF14] py-5 text-xs font-black uppercase text-slate-950 transition-all hover:shadow-[0_0_20px_#39FF14]"
               >
                 Select Sea Hawk

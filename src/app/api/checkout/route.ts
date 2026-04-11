@@ -28,6 +28,28 @@ function getBaseUrl(): string | null {
   return rawValue && rawValue.length > 0 ? rawValue : null
 }
 
+async function resolvePromotionCode(
+  stripeClient: Stripe,
+  rawCode: string | undefined,
+): Promise<Stripe.PromotionCode | null> {
+  if (!rawCode || rawCode.length === 0) {
+    return null
+  }
+
+  const normalizedCode = rawCode.trim()
+  if (normalizedCode.length === 0) {
+    return null
+  }
+
+  const promotionCodeList = await stripeClient.promotionCodes.list({
+    code: normalizedCode,
+    active: true,
+    limit: 1,
+  })
+
+  return promotionCodeList.data[0] ?? null
+}
+
 export async function POST(req: Request) {
   const cookieStore = await cookies()
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -60,7 +82,9 @@ export async function POST(req: Request) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const body = (await req.json().catch(() => ({}))) as { plan?: string }
+  const body = (await req.json().catch(() => ({}))) as { plan?: string; foundingMemberCode?: string }
+  const foundingMemberCodeInput = body.foundingMemberCode?.trim() ?? ''
+  const hasFoundingMemberCode = foundingMemberCodeInput.length > 0
   const requestedPlan = body.plan === 'scout' ? 'scout' : 'pro'
   const selectedPriceId = resolveCheckoutPriceId(requestedPlan)
   const baseUrl = getBaseUrl()
@@ -73,6 +97,11 @@ export async function POST(req: Request) {
       },
       { status: 500 },
     )
+  }
+
+  const promotionCode = await resolvePromotionCode(stripe, foundingMemberCodeInput)
+  if (hasFoundingMemberCode && !promotionCode) {
+    return NextResponse.json({ error: 'Invalid or inactive Founding Member code.' }, { status: 400 })
   }
 
   const { data: profile } = await supabase
@@ -102,6 +131,15 @@ export async function POST(req: Request) {
 
   if (typeof profile?.stripe_customer_id === 'string' && profile.stripe_customer_id.length > 0) {
     sessionParams.customer = profile.stripe_customer_id
+  }
+
+  if (promotionCode) {
+    sessionParams.discounts = [{ promotion_code: promotionCode.id }]
+    sessionParams.metadata = {
+      ...sessionParams.metadata,
+      founding_member_code: promotionCode.code ?? foundingMemberCodeInput,
+      founding_member_promotion_code_id: promotionCode.id,
+    }
   }
 
   const session = await stripe.checkout.sessions.create(sessionParams)
