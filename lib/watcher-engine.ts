@@ -84,9 +84,12 @@ export async function getConsolidatedOdds(sport: string): Promise<MarketCacheRow
   }
 
   console.log('Watcher: Refreshing live market data')
-  const response = await fetch(
-    `https://api.the-odds-api.com/v4/sports/${sport}/odds/?apiKey=${oddsApiKey}&regions=us&markets=h2h`,
-  )
+  const endpoint = new URL(`https://api.the-odds-api.com/v4/sports/${sport}/odds/`)
+  endpoint.searchParams.set('apiKey', oddsApiKey)
+  endpoint.searchParams.set('regions', 'us')
+  endpoint.searchParams.set('markets', 'h2h')
+
+  const response = await fetch(endpoint.toString())
 
   if (!response.ok) {
     throw new Error(`Odds API request failed with status ${response.status}`)

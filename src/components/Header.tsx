@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { Activity, Bell, ChevronDown } from 'lucide-react';
+import Logo from '@/components/Icons/Logo';
 
 export default function Header() {
   return (
@@ -9,8 +9,9 @@ export default function Header() {
       <div className="mx-auto flex h-full max-w-[1600px] items-center justify-between">
         {/* LOGO SECTION */}
         <div className="flex items-center gap-8">
-          <div className="relative h-10 w-40">
-            <Image src="/logo.png" alt="EdgeWield Logo" fill className="object-contain" priority />
+          <div className="flex items-center gap-3">
+            <Logo className="h-10 w-10" />
+            <span className="text-xl font-black uppercase tracking-tight text-slate-100">EdgeWield</span>
           </div>
 
           {/* SYSTEM STATUS (Middle Lean) */}
