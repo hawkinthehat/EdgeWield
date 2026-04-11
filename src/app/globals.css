@@ -33,7 +33,7 @@ body {
   transform: translate(var(--x), var(--y)) rotate(720deg) scale(0);
 }
 
-.clinical-btn {
+.risk-gate-btn {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.9rem;
   padding: 0.9rem 1.3rem;
@@ -45,19 +45,19 @@ body {
   transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
 }
 
-.clinical-btn:hover {
+.risk-gate-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.32);
   filter: brightness(1.05);
 }
 
-.clinical-btn:focus-visible {
+.risk-gate-btn:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
 
-/* Extreme Warning Modal */
-.circuit-breaker-gate {
+/* Risk gate modal */
+.risk-gate-modal {
   position: fixed;
   inset: 0;
   z-index: 10000;
@@ -70,15 +70,15 @@ body {
   text-align: center;
 }
 
-/* Red/White Full-Screen Strobe */
-.strobe-active {
+/* Full-screen alert pulse */
+.alert-flash-active {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  animation: red-white-flash 0.08s steps(2, start) infinite;
+  animation: alert-flash 0.08s steps(2, start) infinite;
 }
 
-@keyframes red-white-flash {
+@keyframes alert-flash {
   0% {
     background-color: #ff0000;
   }
@@ -87,17 +87,17 @@ body {
   }
 }
 
-/* Vagal Border Pulse - The 4:6 Anchor */
-.vagal-anchor {
+/* Screen border pulse during lock */
+.lock-border-pulse {
   position: fixed;
   inset: 0;
   border: 25px solid var(--btn-active);
   z-index: 10001;
   pointer-events: none;
-  animation: vagal-rhythm 10s infinite ease-in-out;
+  animation: lock-pulse-rhythm 10s infinite ease-in-out;
 }
 
-@keyframes vagal-rhythm {
+@keyframes lock-pulse-rhythm {
   0%,
   100% {
     opacity: 0.2;

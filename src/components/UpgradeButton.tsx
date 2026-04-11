@@ -9,7 +9,7 @@ type UpgradeButtonProps = {
   label?: string;
 };
 
-export default function UpgradeButton({ userId, email, plan = 'pro', label = 'WIELD THE PRO EDGE' }: UpgradeButtonProps) {
+export default function UpgradeButton({ userId, email, plan = 'pro', label = 'UPGRADE TO PRO SCANNER' }: UpgradeButtonProps) {
   const handleUpgrade = async () => {
     const response = await fetch('/api/checkout', {
       method: 'POST',

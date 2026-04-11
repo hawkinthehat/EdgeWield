@@ -5,8 +5,8 @@ export default function WelcomeGuide() {
     <div className="max-w-lg rounded-[3rem] border-2 border-edge-emerald bg-edge-navy p-8 shadow-2xl">
       <h2 className="mb-4 text-2xl font-black italic uppercase text-edge-emerald">Terminal Activated</h2>
       <p className="mb-6 text-sm leading-relaxed text-slate-400">
-        Welcome to the inner circle. EdgeWield is now scanning 42,000+ lines on your behalf. Follow the 3-step
-        protocol to lock your first unit.
+        EdgeWield is scanning 42,000+ lines on your behalf. Follow the 3-step workflow to lock your first arbitrage
+        position.
       </p>
 
       <div className="mb-8 space-y-4">

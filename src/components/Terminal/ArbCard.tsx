@@ -23,7 +23,7 @@ type ArbCardProps = {
 
 export default function ArbCard({ arb, userTier, onUnlock }: ArbCardProps) {
   const isLocked = arb.type === 'prop' && userTier === 'trial';
-  const displayName = isLocked ? 'Top Secret Player' : arb.player_name;
+  const displayName = isLocked ? 'Locked Player Prop' : arb.player_name;
   const handleUnlock = () => {
     if (onUnlock) {
       onUnlock();
@@ -43,7 +43,7 @@ export default function ArbCard({ arb, userTier, onUnlock }: ArbCardProps) {
           <div className="mb-3 rounded-full border border-edge-emerald/35 bg-edge-emerald/15 p-3 shadow-[0_0_20px_rgba(16,185,129,0.25)]">
             <Lock className="text-edge-emerald" size={20} />
           </div>
-          <p className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-white">Alpha Access Required</p>
+          <p className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-white">Pro Access Required</p>
           <p className="mb-4 max-w-[22ch] text-[10px] font-semibold text-slate-300">
             Upgrade to unlock player-level edges and prop-specific lines.
           </p>

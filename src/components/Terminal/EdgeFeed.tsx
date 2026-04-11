@@ -112,7 +112,7 @@ export default function EdgeFeed({
                   )}
                   <h4 className="text-xl font-black">{edge.event}</h4>
                   <p className="mt-1 text-xs text-slate-500">
-                    Execute: {edge.bookA} &amp; {edge.bookB}
+                    Bet both sides: {edge.bookA} &amp; {edge.bookB}
                   </p>
                 </div>
                 <div className="text-right">
@@ -122,7 +122,7 @@ export default function EdgeFeed({
                     type="button"
                     className="mt-2 rounded-lg bg-white px-3 py-1 text-[10px] font-bold uppercase text-edge-navy"
                   >
-                    Wield It
+                    Place Bets
                   </button>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function EdgeFeed({
                   </span>
                   <h4 className="mt-2 text-xl font-black">{arb.event_name}</h4>
                   <p className="mt-1 text-xs text-slate-400">
-                    Wield: {sideABookie} ({Number(sideAOdds).toFixed(2)}) &amp; {sideBBookie} (
+                    Bet both sides: {sideABookie} ({Number(sideAOdds).toFixed(2)}) &amp; {sideBBookie} (
                     {Number(sideBOdds).toFixed(2)})
                   </p>
                 </div>

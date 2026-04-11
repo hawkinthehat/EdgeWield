@@ -36,10 +36,10 @@ export default function Pricing() {
         '90-Second Instant Sync',
         'Player Props & Alt Lines',
         'Auto-Hedge Unit Execution',
-        'Direct "Wield" SMS Alerts',
-        'Institutional Arb Scanner',
+        'Direct Arb SMS Alerts',
+        'High-Frequency Arb Scanner',
       ],
-      cta: 'Wield the Edge',
+      cta: 'Start Live Scanning',
       highlight: true,
     },
   ];

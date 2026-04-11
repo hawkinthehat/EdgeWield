@@ -5,7 +5,7 @@ import { createClient, type RealtimeChannel } from '@supabase/supabase-js';
 import CFODash from '@/components/Terminal/CFODash';
 import ArbFeed, { type ArbRow, sampleRows } from '@/components/Terminal/ArbFeed';
 import PropFilter from '@/components/Terminal/PropFilter';
-import MissionAlpha from '@/components/Terminal/MissionAlpha';
+import FirstEdgeModal from '@/components/Terminal/FirstEdgeModal';
 import HedgeCalculator from '@/components/Terminal/HedgeCalculator';
 import HedgeAlertCard from '@/components/Terminal/HedgeAlertCard';
 import HedgeTeaser from '@/components/Terminal/HedgeTeaser';
@@ -25,7 +25,7 @@ export default function MasterTerminal() {
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
   const [devAccessOverride, setDevAccessOverride] = useState(PRO_BYPASS_ENABLED);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
-  const [showMission, setShowMission] = useState(false);
+  const [showFirstEdgeModal, setShowFirstEdgeModal] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
   const [bankroll] = useState(1000);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -100,7 +100,7 @@ export default function MasterTerminal() {
               payload.old?.subscription_status === 'active';
             setIsPro(nextIsPro);
             if (nextIsPro && !previousIsPro) {
-              setShowMission(true);
+              setShowFirstEdgeModal(true);
             }
           },
         )
@@ -170,8 +170,10 @@ export default function MasterTerminal() {
         {/* 1. THE REVENUE HEADER */}
         <div className="mb-10 flex items-end justify-between">
           <div>
-            <h1 className="text-4xl font-black italic uppercase tracking-tighter">Terminal_v1.0</h1>
-            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">Status: 90s Pulse Sync Active</p>
+            <h1 className="text-4xl font-black italic uppercase tracking-tighter">Arbitrage Terminal</h1>
+            <p className="mt-2 font-mono text-[10px] uppercase text-edge-emerald">
+              Status: Live Odds Sync Active
+            </p>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-bold uppercase text-slate-500">Beta Access</p>
@@ -223,7 +225,7 @@ export default function MasterTerminal() {
                   onClick={handleUpgrade}
                   className="mx-auto rounded-2xl bg-edge-emerald px-8 py-4 font-black text-edge-navy"
                 >
-                  WIELD THE PRO EDGE
+                  UPGRADE TO PRO
                 </button>
               )}
               <p className="mt-4 text-[10px] font-bold tracking-widest text-edge-emerald">
@@ -254,7 +256,9 @@ export default function MasterTerminal() {
           )}
         </div>
 
-        {showMission && <MissionAlpha arbs={topArbs} bankroll={bankroll} onClose={() => setShowMission(false)} />}
+        {showFirstEdgeModal && (
+          <FirstEdgeModal arbs={topArbs} bankroll={bankroll} onClose={() => setShowFirstEdgeModal(false)} />
+        )}
       </main>
     </div>
   );

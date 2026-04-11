@@ -39,7 +39,7 @@ export default function Header() {
 
           <div className="flex items-center gap-3 border-l border-white/10 pl-4">
             <div className="hidden text-right sm:block">
-              <p className="text-[10px] font-black uppercase tracking-tighter text-white">Alpha Tester</p>
+              <p className="text-[10px] font-black uppercase tracking-tighter text-white">Early Access</p>
               <p className="text-[9px] font-bold uppercase text-blue-500">Tier: Pro+</p>
             </div>
             <button className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-1 pr-3 transition-all hover:bg-white/10">

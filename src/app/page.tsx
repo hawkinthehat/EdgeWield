@@ -23,12 +23,12 @@ export default async function BasicLaunchPage() {
               EDGE<span className="text-blue-500">WIELD</span>
             </h1>
             <p className="mx-auto mb-10 max-w-2xl text-xl font-bold uppercase leading-relaxed tracking-widest text-slate-400">
-              Institutional Math for the Every Day Sharp.
+              Arbitrage math for serious sports bettors.
             </p>
 
             <div className="mb-20 flex flex-col items-center justify-center gap-4 md:flex-row">
               <button className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 px-10 py-5 text-sm font-black uppercase text-white shadow-[0_0_30px_rgba(59,130,246,0.4)] transition-all hover:scale-105 hover:bg-blue-500 md:w-auto">
-                Secure Pro Access <Zap size={18} fill="currentColor" />
+                Start Pro Access <Zap size={18} fill="currentColor" />
               </button>
               <button className="w-full rounded-2xl border border-white/10 bg-white/5 px-10 py-5 text-sm font-black uppercase text-white transition-all hover:bg-white/10 md:w-auto">
                 Live Terminal Preview
@@ -40,9 +40,9 @@ export default async function BasicLaunchPage() {
         {/* 2. TWO-TIER PRICING (The "Basics") */}
         <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-black italic uppercase text-white">Select Your Rank</h2>
+            <h2 className="mb-4 text-4xl font-black italic uppercase text-white">Choose Your Plan</h2>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
-              Early Alpha Pricing — Locked in for Life
+              Launch pricing for early subscribers
             </p>
           </div>
 
@@ -92,14 +92,14 @@ export default async function BasicLaunchPage() {
               <div className="mb-8 flex items-start justify-between">
                 <Crown className="text-blue-400" size={40} />
                 <span className="rounded-full bg-white px-4 py-1 text-[10px] font-black italic uppercase tracking-widest text-black">
-                  The Edge
+                  Best Value
                 </span>
               </div>
               <h3 className="mb-2 text-3xl font-black italic uppercase tracking-tighter text-white">
-                Pro+ Syndicate
+                Pro+ Terminal
               </h3>
               <p className="mb-8 text-sm font-medium text-slate-400">
-                Prop-Market Domination & Early Info
+                Player props and faster market signals
               </p>
               <ul className="mb-10 space-y-4">
                 {[
@@ -128,9 +128,9 @@ export default async function BasicLaunchPage() {
           {/* INSTITUTIONAL CTA */}
           <div className="flex flex-col items-center justify-between rounded-3xl border border-white/5 bg-white/5 p-8 text-center md:flex-row md:text-left">
             <div>
-              <h4 className="font-black italic uppercase tracking-wider text-white">Institutional Need?</h4>
+              <h4 className="font-black italic uppercase tracking-wider text-white">Need Team Access?</h4>
               <p className="text-xs font-medium uppercase tracking-widest text-slate-500">
-                Syndicate limits & high-volume API access
+                Higher limits and high-volume API access
               </p>
             </div>
             <button className="mt-4 flex items-center gap-2 text-xs font-black uppercase text-blue-500 transition-all hover:gap-4 md:mt-0">
@@ -170,9 +170,7 @@ export default async function BasicLaunchPage() {
 
         {/* 3. THE "FUN" FOOTER */}
         <footer className="border-t border-white/5 py-20 text-center">
-          <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.5em] text-slate-600">
-            Engineered for Winners
-          </p>
+          <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.5em] text-slate-600">Built for disciplined betting</p>
           <div className="flex justify-center gap-6">
             {['Twitter', 'Discord', 'Updates'].map((link) => (
               <a

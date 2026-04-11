@@ -5,15 +5,15 @@ export interface TiltAnalysis {
   cooldownMinutes: number
 }
 
-export type TriageLogicPrompt = {
+export type RiskCheckPrompt = {
   type: string
   question: string
   validate?: (input: string, actual: string) => boolean
   answer?: string
 }
 
-// Halt section triage prompts used to interrupt impulsive betting flow.
-export const triageLogicPool: TriageLogicPrompt[] = [
+// Responsible betting prompts used to interrupt impulsive betting flow.
+export const riskCheckPromptPool: RiskCheckPrompt[] = [
   {
     type: 'Objective Observation',
     question:
@@ -26,9 +26,9 @@ export const triageLogicPool: TriageLogicPrompt[] = [
     answer: '79',
   },
   {
-    type: 'Pattern Triage',
+    type: 'Pattern Check',
     question:
-      'Identify the current cognitive distortion: [A] Catastrophizing (Future-fear) [B] Rumination (Past-loop) [C] Somatic (Physical-focus)',
+      'Identify the decision pattern: [A] Chasing losses [B] Overexposure after a streak [C] Fatigue-based impulse',
     // This is a self-report gate; any selection counts as 'objective observation'
   },
 ]

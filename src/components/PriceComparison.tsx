@@ -24,7 +24,7 @@ export default function PriceComparison() {
       <div className="mb-16 text-center">
         <h2 className="mb-4 text-3xl font-black italic uppercase tracking-tighter">Terminal Capability</h2>
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
-          Institutional Grade vs Standard Scout
+          Pro Arbitrage Tools vs Standard Scout
         </p>
       </div>
 
