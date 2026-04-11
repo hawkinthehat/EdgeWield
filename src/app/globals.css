@@ -1,67 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  /* Core stealth palette */
-  --color-background: #121212;
-  --color-foreground: #d1d1d1;
-  --color-muted: #2e2e2e;
-  --color-accent: #333333;
-  --color-gray-card: #1c1c1c;
-  --color-gray-border: #2e2e2e;
-  --color-hawk-green: #69be28;
-
-  /*
-    Tailwind utilities like bg-blue-600/text-blue-500 are used throughout the app.
-    Remap blue/indigo scales to a hawk-green scale so existing classes stop rendering blue.
-  */
-  --color-blue-50: #eef7e6;
-  --color-blue-100: #deefcc;
-  --color-blue-200: #c0df9f;
-  --color-blue-300: #a1ce72;
-  --color-blue-400: #84c74c;
-  --color-blue-500: #69be28;
-  --color-blue-600: #5aa421;
-  --color-blue-700: #4b891b;
-  --color-blue-800: #3c6f16;
-  --color-blue-900: #2e5511;
-  --color-blue-950: #1a3209;
-
-  --color-indigo-50: #eef7e6;
-  --color-indigo-100: #deefcc;
-  --color-indigo-200: #c0df9f;
-  --color-indigo-300: #a1ce72;
-  --color-indigo-400: #84c74c;
-  --color-indigo-500: #69be28;
-  --color-indigo-600: #5aa421;
-  --color-indigo-700: #4b891b;
-  --color-indigo-800: #3c6f16;
-  --color-indigo-900: #2e5511;
-  --color-indigo-950: #1a3209;
-
-  --color-emerald-50: #eef7e6;
-  --color-emerald-100: #deefcc;
-  --color-emerald-200: #c0df9f;
-  --color-emerald-300: #a1ce72;
-  --color-emerald-400: #84c74c;
-  --color-emerald-500: #69be28;
-  --color-emerald-600: #5aa421;
-  --color-emerald-700: #4b891b;
-  --color-emerald-800: #3c6f16;
-  --color-emerald-900: #2e5511;
-  --color-emerald-950: #1a3209;
+  /* The "Institutional" Palette */
+  --color-app-bg: #121212;
+  --color-card-bg: #1a1a1a;
+  --color-border-muted: #2e2e2e;
+  --color-text-main: #e0e0e0;
+  --color-text-dim: #888888;
+  --color-accent-blue: #3b82f6;
 }
 
 :root {
   color-scheme: dark;
-  --background: var(--color-background);
-  --foreground: var(--color-foreground);
-  --muted: var(--color-muted);
-  --accent: var(--color-accent);
-  --btn-active: var(--color-hawk-green);
+  --background: var(--color-app-bg);
+  --foreground: var(--color-text-main);
+  --muted: var(--color-border-muted);
+  --accent: var(--color-accent-blue);
 }
 
 * {
   box-sizing: border-box;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-app-bg);
+    color: var(--color-text-main);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+      monospace;
+  }
 }
 
 html,
@@ -69,9 +36,6 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  background: var(--background);
-  color: var(--foreground);
 }
 
 a {

@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${mono.variable} bg-slate-950 font-sans text-slate-300 antialiased`}>
+      <body className={`${inter.variable} ${mono.variable} antialiased`}>
         <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
           <div className="absolute -left-[8%] -top-[8%] h-[38%] w-[38%] rounded-full bg-emerald-400/5 blur-[120px]" />
           <div className="absolute bottom-[0%] right-[0%] h-[30%] w-[30%] rounded-full bg-slate-500/8 blur-[120px]" />
