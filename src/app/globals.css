@@ -34,26 +34,39 @@ body {
 }
 
 .risk-gate-btn {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.35);
   border-radius: 0.9rem;
   padding: 0.9rem 1.3rem;
-  color: #fff;
+  background: rgba(15, 23, 42, 0.5);
+  color: rgba(148, 163, 184, 0.95);
   font-size: 0.72rem;
-  font-weight: 900;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+  transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
 }
 
 .risk-gate-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.32);
-  filter: brightness(1.05);
+  border-color: rgba(147, 197, 253, 0.55);
+  color: #e2e8f0;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.18);
 }
 
 .risk-gate-btn:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid rgba(96, 165, 250, 0.8);
   outline-offset: 2px;
+}
+
+.risk-gate-btn-primary {
+  border-color: rgba(52, 211, 153, 0.6);
+  color: rgba(52, 211, 153, 0.95);
+}
+
+.risk-gate-btn-primary:hover {
+  border-color: rgba(110, 231, 183, 0.85);
+  color: #d1fae5;
+  box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
 }
 
 /* Risk gate modal */
@@ -61,7 +74,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: #1a1a1a;
+  background: rgba(2, 6, 23, 0.97);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -91,7 +104,7 @@ body {
 .lock-border-pulse {
   position: fixed;
   inset: 0;
-  border: 25px solid var(--btn-active);
+  border: 25px solid rgba(239, 68, 68, 0.65);
   z-index: 10001;
   pointer-events: none;
   animation: lock-pulse-rhythm 10s infinite ease-in-out;
