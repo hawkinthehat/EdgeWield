@@ -24,7 +24,7 @@ export default function PriceComparison() {
       <div className="mb-16 text-center">
         <h2 className="mb-4 text-3xl font-black italic uppercase tracking-tighter">Terminal Capability</h2>
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-slate-500">
-          Pro Arbitrage Tools vs Standard Scout
+          Sea Hawk Arbitrage Tools vs Red-Tail
         </p>
       </div>
 
@@ -34,14 +34,14 @@ export default function PriceComparison() {
             <tr className="border-b border-edge-border bg-edge-slate/20">
               <th className="p-8 text-xs font-black uppercase tracking-widest text-slate-500">Capabilities</th>
               <th className="p-8 text-center">
-                <span className="text-sm font-black uppercase tracking-tighter text-slate-300">Standard</span>
+                <span className="text-sm font-black uppercase tracking-tighter text-slate-300">Red-Tail</span>
                 <div className="mt-1 text-xl font-black">
                   $9.99<span className="text-[10px] opacity-50">/mo</span>
                 </div>
               </th>
               <th className="bg-edge-emerald/5 p-8 text-center">
                 <span className="text-sm font-black uppercase tracking-tighter text-edge-emerald">
-                  Pro Terminal
+                  Sea Hawk
                 </span>
                 <div className="mt-1 text-xl font-black text-white">
                   $24.99<span className="text-[10px] opacity-50">/mo</span>

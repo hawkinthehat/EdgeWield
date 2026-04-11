@@ -25,20 +25,20 @@ export default function FirstEdgeModal({
   const isPreferredBook = (bookie: string) => bookie === 'FanDuel' || bookie === 'DraftKings';
 
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-zinc-950/95 p-4 backdrop-blur-xl">
-      <div className="w-full max-w-xl rounded-[2.5rem] border border-slate-700 bg-zinc-900/95 p-8 shadow-[0_0_80px_rgba(15,23,42,0.4)]">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-slate-950/95 p-4 backdrop-blur-xl">
+      <div className="w-full max-w-xl rounded-[2.5rem] border border-slate-700 bg-slate-900/95 p-8 shadow-[0_0_80px_rgba(15,23,42,0.4)]">
         <div className="mb-6 flex items-center gap-3">
-          <div className="rounded-lg bg-emerald-400 p-2">
-            <Target className="text-zinc-950" size={20} />
+          <div className="rounded-lg bg-[#39FF14] p-2">
+            <Target className="text-slate-950" size={20} />
           </div>
           <h2 className="text-2xl font-black uppercase tracking-tighter text-white italic">First Edge Ready</h2>
         </div>
 
         <p className="mb-8 text-xs font-bold uppercase tracking-widest text-slate-400">
-          Status: <span className="text-emerald-400">Pro Terminal Online</span>. Place your first edge now.
+          Status: <span className="text-emerald-400">Sea Hawk Online</span>. Place your first edge now.
         </p>
 
-        <div className="mb-8 rounded-3xl border border-slate-700 bg-zinc-950 p-6">
+        <div className="mb-8 rounded-3xl border border-slate-700 bg-slate-950 p-6">
           <div className="mb-4 flex items-start justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Market</p>
@@ -47,7 +47,7 @@ export default function FirstEdgeModal({
             </div>
             <div className="text-right">
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Est. Profit</p>
-              <p className={`text-3xl font-black ${isProfitPositive ? 'text-emerald-400' : 'text-red-400'}`}>
+              <p className={`text-3xl font-black ${isProfitPositive ? 'text-[#39FF14]' : 'text-red-400'}`}>
                 {isProfitPositive ? '+' : ''}
                 {profitPct.toFixed(2)}%
               </p>
@@ -55,27 +55,27 @@ export default function FirstEdgeModal({
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-slate-700 bg-zinc-900 p-4">
+            <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
               <p
                 className={`text-[9px] font-bold uppercase ${
-                  isPreferredBook(topArb.bookie_a) ? 'text-emerald-400' : 'text-slate-400'
+                  isPreferredBook(topArb.bookie_a) ? 'text-[#39FF14]' : 'text-slate-400'
                 }`}
               >
                 {topArb.bookie_a}
               </p>
               <p className="text-xl font-black text-white italic">{topArb.odds_a}</p>
-              <p className="mt-2 text-[10px] font-black text-emerald-400">BET: ${wield?.allocation.a ?? '0.00'}</p>
+              <p className="mt-2 text-[10px] font-black text-[#39FF14]">BET: ${wield?.allocation.a ?? '0.00'}</p>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-zinc-900 p-4">
+            <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
               <p
                 className={`text-[9px] font-bold uppercase ${
-                  isPreferredBook(topArb.bookie_b) ? 'text-emerald-400' : 'text-slate-400'
+                  isPreferredBook(topArb.bookie_b) ? 'text-[#39FF14]' : 'text-slate-400'
                 }`}
               >
                 {topArb.bookie_b}
               </p>
               <p className="text-xl font-black text-white italic">{topArb.odds_b}</p>
-              <p className="mt-2 text-[10px] font-black text-emerald-400">BET: ${wield?.allocation.b ?? '0.00'}</p>
+              <p className="mt-2 text-[10px] font-black text-[#39FF14]">BET: ${wield?.allocation.b ?? '0.00'}</p>
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function FirstEdgeModal({
         <button
           type="button"
           onClick={onClose}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 py-5 font-black uppercase tracking-widest text-zinc-950 transition-all hover:scale-105"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#39FF14] py-5 font-black uppercase tracking-widest text-slate-950 transition-all hover:scale-105"
         >
           I placed this trade <ChevronRight size={18} />
         </button>
