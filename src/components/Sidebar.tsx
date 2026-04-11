@@ -18,6 +18,7 @@ type SidebarProps = {
 
 export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
   const [riskPauseState, setRiskPauseState] = useState<'idle' | 'gate' | 'active'>('idle');
+  const isRiskPauseActive = riskPauseState === 'active';
 
   const menuItems = [
     { icon: <LayoutDashboard size={20} />, label: 'Terminal', active: true },
@@ -66,7 +67,7 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
     <>
       {riskPauseState === 'gate' && (
         <div className="risk-gate-modal">
-          <h1 className="mb-4 text-4xl font-black tracking-tight text-red-500">RISK CONTROL NOTICE</h1>
+          <h1 className="mb-4 text-4xl font-black tracking-tight text-red-400/80">RISK CONTROL NOTICE</h1>
           <p className="max-w-[540px] text-sm font-semibold uppercase tracking-wide text-white/90 md:text-base">
             Focus mode uses brief full-screen visual cues for 20 seconds. Continue only if this
             display is safe for you.
@@ -74,14 +75,14 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <button
               type="button"
-              className="risk-gate-btn bg-slate-600 hover:bg-slate-500"
+              className="risk-gate-btn"
               onClick={() => setRiskPauseState('idle')}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="risk-gate-btn bg-blue-600 hover:bg-blue-500"
+              className="risk-gate-btn risk-gate-btn-primary"
               onClick={() => setRiskPauseState('active')}
             >
               Start Focus Mode
@@ -97,20 +98,20 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
         </>
       )}
 
-      <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-edge-border bg-edge-navy p-6">
+      <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-blue-400/20 bg-zinc-950 p-6">
         <div className="mb-12">
           <Logo />
         </div>
 
-        <div className="mb-8 rounded-2xl border border-edge-border bg-edge-slate/30 p-4">
-          <div className="mb-2 flex items-center gap-2 text-slate-500">
+        <div className="mb-8 rounded-2xl border border-blue-400/20 bg-slate-900/40 p-4 backdrop-blur-md">
+          <div className="mb-2 flex items-center gap-2 text-slate-400">
             <Wallet size={14} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Active Bankroll</span>
           </div>
-          <div className="text-2xl font-black italic text-white">${userBankroll.toLocaleString()}</div>
+          <div className="text-2xl font-semibold text-slate-100">${userBankroll.toLocaleString()}</div>
           <div className="mt-2 flex items-center gap-2">
-            <div className="h-2 w-2 animate-pulse rounded-full bg-edge-emerald" />
-            <span className="text-[9px] font-bold uppercase tracking-tighter text-edge-emerald">Odds Scanning...</span>
+            <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-emerald-400">Odds Scanning...</span>
           </div>
         </div>
 
@@ -119,10 +120,10 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
             <button
               key={item.label}
               type="button"
-              className={`group flex w-full items-center gap-4 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
+              className={`group flex w-full items-center gap-4 rounded-xl border px-4 py-3 text-sm font-semibold transition-all ${
                 item.active
-                  ? 'bg-edge-emerald text-edge-navy shadow-lg shadow-edge-emerald/10'
-                  : 'text-slate-500 hover:bg-edge-slate/20 hover:text-white'
+                  ? 'border-blue-300/60 bg-slate-900/60 text-slate-100'
+                  : 'border-blue-400/10 text-slate-400 hover:border-blue-300/30 hover:bg-slate-900/50 hover:text-slate-100'
               }`}
             >
               {item.icon}
@@ -131,19 +132,23 @@ export default function Sidebar({ userBankroll = 1250 }: SidebarProps) {
           ))}
         </nav>
 
-        <div className="border-t border-edge-border/50 pt-6">
-          <div className="mb-4 flex items-center gap-3 rounded-xl border border-edge-emerald/10 bg-edge-emerald/5 px-4 py-3">
-            <Activity size={16} className="text-edge-emerald" />
+        <div className="border-t border-blue-400/20 pt-6">
+          <div className="mb-4 flex items-center gap-3 rounded-xl border border-blue-400/20 bg-slate-900/50 px-4 py-3">
+            <Activity size={16} className="text-emerald-400" />
             <div className="flex flex-col">
-              <span className="text-[10px] font-black leading-none text-white">SYSTEM OK</span>
-              <span className="mt-1 text-[8px] uppercase tracking-widest text-slate-500">API Latency: 42ms</span>
+              <span className="text-[10px] font-bold leading-none text-slate-100">SYSTEM OK</span>
+              <span className="mt-1 text-[8px] uppercase tracking-[0.14em] text-slate-400">API Latency: 42ms</span>
             </div>
           </div>
 
           <button
             type="button"
             onClick={() => setRiskPauseState('gate')}
-            className="flex w-full items-center gap-4 rounded-xl px-4 py-3 text-sm font-bold text-red-400 transition-all hover:bg-red-400/10"
+            className={`flex w-full items-center gap-4 rounded-xl border px-4 py-3 text-sm font-semibold transition-all ${
+              isRiskPauseActive
+                ? 'border-red-400/35 bg-red-500/10 text-red-400/80'
+                : 'border-blue-400/20 text-slate-400 hover:border-blue-300/30 hover:bg-slate-900/50 hover:text-slate-100'
+            }`}
           >
             <AlertTriangle size={20} />
             Risk Pause
