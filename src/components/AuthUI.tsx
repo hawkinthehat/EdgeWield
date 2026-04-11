@@ -26,7 +26,7 @@ export default function AuthUI() {
           <ShieldCheck className="text-edge-emerald" size={32} />
         </div>
         <h2 className="text-3xl font-black uppercase italic tracking-tighter">Secure Entry</h2>
-        <p className="mt-2 text-xs font-bold uppercase tracking-widest text-slate-500">EdgeWield Terminal Access</p>
+        <p className="mt-2 text-xs font-bold uppercase tracking-widest text-slate-500">EdgeWield Pro Access</p>
       </div>
 
       {!sent ? (
