@@ -18,12 +18,16 @@ import Sidebar from '@/components/Sidebar';
 import type { EdgeBet } from '@/lib/scanner';
 
 type TerminalFilter = 'all' | 'game' | 'prop';
-const PRO_BYPASS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS === 'true';
+
+function isTrueFlag(value: string | undefined) {
+  return (value ?? '').trim().toLowerCase() === 'true';
+}
 
 export default function MasterTerminal() {
+  const isProBypassEnabled = isTrueFlag(process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS);
   const [filter, setFilter] = useState<TerminalFilter>('all'); // all, game, prop
   const [isPro, setIsPro] = useState(false); // Pulled from Supabase
-  const [devAccessOverride, setDevAccessOverride] = useState(PRO_BYPASS_ENABLED);
+  const [devAccessOverride, setDevAccessOverride] = useState(isProBypassEnabled);
   const [userIdentity, setUserIdentity] = useState<{ id: string; email: string } | null>(null);
   const [showFirstEdgeModal, setShowFirstEdgeModal] = useState(false);
   const [arbs] = useState<ArbRow[]>(sampleRows);
@@ -31,13 +35,18 @@ export default function MasterTerminal() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [scannerBets, setScannerBets] = useState<EdgeBet[]>([]);
 
-  const canAccessProScanner = PRO_BYPASS_ENABLED || isPro || devAccessOverride;
+  const canAccessProScanner = isProBypassEnabled || isPro || devAccessOverride;
 
   const topArbs = useMemo(() => {
     return [...arbs].sort((a, b) => b.profit_percent - a.profit_percent);
   }, [arbs]);
 
   useEffect(() => {
+    if (isProBypassEnabled) {
+      setDevAccessOverride(true);
+      return;
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -56,7 +65,7 @@ export default function MasterTerminal() {
 
       if (!user?.id || !isMounted) {
         if (isMounted) {
-          setDevAccessOverride(PRO_BYPASS_ENABLED);
+          setDevAccessOverride(isProBypassEnabled);
         }
         return;
       }
@@ -79,7 +88,7 @@ export default function MasterTerminal() {
         const bypassByEmail = bypassEmail.length > 0 && email.toLowerCase() === bypassEmail.toLowerCase();
 
         setIsPro(hasProAccess);
-        setDevAccessOverride(PRO_BYPASS_ENABLED || bypassByEmail);
+        setDevAccessOverride(isProBypassEnabled || bypassByEmail);
       }
 
       channel = supabase
@@ -113,7 +122,7 @@ export default function MasterTerminal() {
         void supabase.removeChannel(channel);
       }
     };
-  }, []);
+  }, [isProBypassEnabled]);
 
   useEffect(() => {
     let isMounted = true;

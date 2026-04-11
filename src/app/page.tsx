@@ -2,10 +2,16 @@ import OddsList from '@/components/OddsList';
 import InjuryPulse from '@/components/InjuryPulse';
 import Header from '@/components/Header';
 import CheckoutButton from '@/components/CheckoutButton';
+import MasterTerminal from '@/components/Terminal/MasterTerminal';
 import { getInjuryPulse } from '@/lib/news';
 import { ArrowRight, Crown, MousePointer2, ShieldCheck, Zap } from 'lucide-react';
 
 export default async function BasicLaunchPage() {
+  const isProBypassEnabled = (process.env.NEXT_PUBLIC_ENABLE_PRO_BYPASS ?? '').trim().toLowerCase() === 'true';
+  if (isProBypassEnabled) {
+    return <MasterTerminal />;
+  }
+
   const updates = await getInjuryPulse();
 
   return (
