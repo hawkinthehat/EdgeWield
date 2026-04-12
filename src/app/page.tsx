@@ -1,36 +1,25 @@
 export default function Page() {
   return (
-    <main
-      style={{ backgroundColor: '#18181b', minHeight: '100vh' }}
-      className="p-6 md:p-12 text-[#f4f4f5]"
-    >
-      <div className="max-w-xl mx-auto space-y-10">
-        {/* Branding */}
-        <div className="border-b border-[#3f3f46] pb-4">
-          <h2 className="text-edge-emerald font-bold text-xs tracking-widest uppercase">
-            EdgeWield Pro
-          </h2>
-          <p className="text-zinc-500 text-[10px] italic">Institutional Vision. Predatory Precision.</p>
-        </div>
+    <main className="min-h-screen bg-[#18181b] text-zinc-100 p-8">
+      <div className="max-w-xl mx-auto space-y-12">
+        <header className="border-b border-zinc-700 pb-4">
+          <h1 className="text-[#69be28] text-[10px] uppercase tracking-[0.2em]">EdgeWield Pro</h1>
+          <p className="text-zinc-400 text-[10px] mt-2">Institutional Vision. Predatory Precision.</p>
+        </header>
 
-        {/* Command Center Content */}
         <section className="space-y-6">
-          <h1 className="text-3xl font-bold tracking-tight">Command Center</h1>
+          <h2 className="text-3xl font-bold tracking-tight text-white">Command Center</h2>
 
-          <div className="bg-[#27272a] border border-[#3f3f46] p-6 rounded-sm">
-            <p className="text-zinc-500 text-xs uppercase tracking-widest">Bankroll</p>
-            <p className="text-4xl font-mono mt-1">$12,480</p>
-            <p className="text-edge-emerald text-sm mt-2">+2.1% session</p>
+          <div className="bg-zinc-800/50 border border-zinc-700 p-6 rounded-sm">
+            <p className="text-zinc-400 text-[10px] uppercase tracking-[0.2em]">Bankroll</p>
+            <p className="text-4xl font-mono font-bold text-white mt-2">$12,480</p>
+            <p className="text-[#69be28] text-sm mt-2">+2.1% session</p>
           </div>
         </section>
 
-        {/* Navigation */}
-        <nav className="flex gap-2">
+        <nav className="flex flex-row gap-4">
           {['TERMINAL', 'STEAM ROOM', 'LIVE SWEAT'].map((btn) => (
-            <button
-              key={btn}
-              className="px-4 py-2 bg-[#27272a] border border-[#3f3f46] text-[10px] font-bold tracking-tighter hover:border-edge-emerald transition-all"
-            >
+            <button key={btn} className="border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-[9px] font-black">
               {btn}
             </button>
           ))}
