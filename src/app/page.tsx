@@ -1,49 +1,37 @@
-export default function CommandCenter() {
+export default function Page() {
   return (
-    <main className="min-h-screen bg-edge-slate p-6 md:p-12">
-      {/* Container to prevent text from hitting the screen edges */}
-      <div className="max-w-2xl mx-auto space-y-10">
-        {/* Top Branding */}
-        <header className="border-b border-edge-border pb-6">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-edge-emerald font-bold">E</span>
-            <span className="text-xs tracking-tighter uppercase opacity-70">EdgeWield Pro</span>
-          </div>
-          <p className="text-xs italic text-gray-500">Institutional Vision. Predatory Precision.</p>
-        </header>
+    <main
+      style={{ backgroundColor: '#18181b', minHeight: '100vh' }}
+      className="p-6 md:p-12 text-[#f4f4f5]"
+    >
+      <div className="max-w-xl mx-auto space-y-10">
+        {/* Branding */}
+        <div className="border-b border-[#3f3f46] pb-4">
+          <h2 className="text-edge-emerald font-bold text-xs tracking-widest uppercase">
+            EdgeWield Pro
+          </h2>
+          <p className="text-zinc-500 text-[10px] italic">Institutional Vision. Predatory Precision.</p>
+        </div>
 
-        {/* Hero Section */}
-        <section>
-          <h1 className="text-4xl font-bold tracking-tight mb-8">Command Center</h1>
+        {/* Command Center Content */}
+        <section className="space-y-6">
+          <h1 className="text-3xl font-bold tracking-tight">Command Center</h1>
 
-          <div className="grid grid-cols-1 gap-8">
-            {/* Bankroll Stat */}
-            <div className="space-y-1">
-              <p className="text-sm uppercase tracking-widest text-gray-500">Bankroll</p>
-              <p className="text-3xl font-mono">$12,480</p>
-              <p className="text-edge-emerald text-sm">+2.1% session</p>
-            </div>
-
-            {/* Latency Stat */}
-            <div className="space-y-1">
-              <p className="text-sm uppercase tracking-widest text-gray-500">Latency</p>
-              <p className="text-xl font-mono">18ms</p>
-              <p className="text-blue-400 text-xs flex items-center gap-2">
-                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
-                Live feed stable
-              </p>
-            </div>
+          <div className="bg-[#27272a] border border-[#3f3f46] p-6 rounded-sm">
+            <p className="text-zinc-500 text-xs uppercase tracking-widest">Bankroll</p>
+            <p className="text-4xl font-mono mt-1">$12,480</p>
+            <p className="text-edge-emerald text-sm mt-2">+2.1% session</p>
           </div>
         </section>
 
-        {/* Navigation Buttons */}
-        <nav className="flex gap-3 pt-6">
-          {['TERMINAL', 'STEAM ROOM', 'LIVE SWEAT'].map((item) => (
+        {/* Navigation */}
+        <nav className="flex gap-2">
+          {['TERMINAL', 'STEAM ROOM', 'LIVE SWEAT'].map((btn) => (
             <button
-              key={item}
-              className="px-4 py-2 border border-edge-border bg-black/20 text-[10px] font-bold tracking-widest hover:border-edge-emerald transition-colors"
+              key={btn}
+              className="px-4 py-2 bg-[#27272a] border border-[#3f3f46] text-[10px] font-bold tracking-tighter hover:border-edge-emerald transition-all"
             >
-              {item}
+              {btn}
             </button>
           ))}
         </nav>
