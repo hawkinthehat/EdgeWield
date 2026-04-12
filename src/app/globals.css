@@ -1,15 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  /* This creates the Gray background you want */
-  --color-edge-slate: #121212;
-  --color-edge-emerald: #69be28; /* Seahawks/Hawk Green */
-  --color-edge-border: #2e2e2e;
-  --color-edge-text: #e0e0e0;
+  --color-edge-slate: #f4f6fa;
+  --color-edge-emerald: #2f7a1f;
+  --color-edge-border: #cfd6e3;
+  --color-edge-text: #1f2937;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --background: var(--color-edge-slate);
   --foreground: var(--color-edge-text);
   --muted: var(--color-edge-border);
@@ -24,8 +23,7 @@
   body {
     background-color: var(--color-edge-slate);
     color: var(--color-edge-text);
-    /* This forces the 'Terminal' font look */
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 }
 
@@ -37,7 +35,7 @@ body {
 }
 
 a {
-  color: #d1d1d1;
+  color: #1f4ed8;
 }
 
 .shard {
