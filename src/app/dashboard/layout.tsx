@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/auth-helpers-nextjs';
-import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -8,22 +7,25 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    redirect('/');
+    // Keep dashboard renderable in partially configured environments.
+    return <>{children}</>;
   }
 
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name) {
-        return cookieStore.get(name)?.value;
+  try {
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value;
+        },
+        // Layout only needs reads; writes are no-ops here.
+        set() {},
+        remove() {},
       },
-      // Layout only needs reads; writes are no-ops here.
-      set() {},
-      remove() {},
-    },
-  });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    });
+    await supabase.auth.getSession();
+  } catch (error) {
+    console.error('dashboard_layout_session_init_failed', error);
+  }
 
   // if (!session) {
   //   redirect('/');
