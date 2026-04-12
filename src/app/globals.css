@@ -1,27 +1,19 @@
 @import "tailwindcss";
 
 @theme {
-  /* The "Institutional" Palette */
-  --color-app-bg: #121212;
-  --color-card-bg: #1a1a1a;
-  --color-border-muted: #2e2e2e;
-  --color-text-main: #e0e0e0;
-  --color-text-dim: #888888;
-  --color-accent-blue: #3b82f6;
-
-  /* Edge terminal palette used across dashboard components */
-  --color-edge-emerald: #10b981;
-  --color-edge-navy: #020617;
-  --color-edge-slate: #0f172a;
-  --color-edge-border: #1e293b;
+  /* This creates the Gray background you want */
+  --color-edge-slate: #121212;
+  --color-edge-emerald: #69be28; /* Seahawks/Hawk Green */
+  --color-edge-border: #2e2e2e;
+  --color-edge-text: #e0e0e0;
 }
 
 :root {
   color-scheme: dark;
-  --background: var(--color-app-bg);
-  --foreground: var(--color-text-main);
-  --muted: var(--color-border-muted);
-  --accent: var(--color-accent-blue);
+  --background: var(--color-edge-slate);
+  --foreground: var(--color-edge-text);
+  --muted: var(--color-edge-border);
+  --accent: var(--color-edge-emerald);
 }
 
 * {
@@ -30,10 +22,10 @@
 
 @layer base {
   body {
-    background-color: var(--color-app-bg);
-    color: var(--color-text-main);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
-      monospace;
+    background-color: var(--color-edge-slate);
+    color: var(--color-edge-text);
+    /* This forces the 'Terminal' font look */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   }
 }
 

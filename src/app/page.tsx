@@ -1,47 +1,53 @@
-const commandStats = [
-  { label: 'Bankroll', value: '$12,480', detail: '+2.1% session' },
-  { label: 'Latency', value: '18ms', detail: 'Live feed stable' },
-];
-
-const tabs = ['TERMINAL', 'STEAM ROOM', 'LIVE SWEAT'];
-
-export default function HomePage() {
+export default function CommandCenter() {
   return (
-    <div className="min-h-screen bg-[#121212] px-6 py-10 text-[#d1d1d1] font-mono">
-      <div className="mx-auto max-w-6xl space-y-7">
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-[0_12px_40px_rgba(2,6,23,0.4)]">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">EdgeWield Pro</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-100">Command Center</h1>
-        </section>
+    <main className="min-h-screen bg-edge-slate p-6 md:p-12">
+      {/* Container to prevent text from hitting the screen edges */}
+      <div className="max-w-2xl mx-auto space-y-10">
+        {/* Top Branding */}
+        <header className="border-b border-edge-border pb-6">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-edge-emerald font-bold">E</span>
+            <span className="text-xs tracking-tighter uppercase opacity-70">EdgeWield Pro</span>
+          </div>
+          <p className="text-xs italic text-gray-500">Institutional Vision. Predatory Precision.</p>
+        </header>
 
-        <section className="grid gap-4 sm:grid-cols-2">
-          {commandStats.map((stat) => (
-            <article key={stat.label} className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">{stat.label}</p>
-              <p className="mt-2 text-2xl font-semibold text-slate-100">{stat.value}</p>
-              <p className="mt-1 text-sm text-slate-400">{stat.detail}</p>
-            </article>
-          ))}
-        </section>
+        {/* Hero Section */}
+        <section>
+          <h1 className="text-4xl font-bold tracking-tight mb-8">Command Center</h1>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/55 p-4">
-          <div className="grid gap-3 sm:grid-cols-3">
-            {tabs.map((tab, idx) => (
-              <button
-                key={tab}
-                type="button"
-                className={`rounded-lg border px-4 py-3 text-sm font-semibold tracking-[0.16em] transition ${
-                  idx === 0
-                    ? 'border-emerald-400/50 bg-emerald-500/10 text-emerald-300'
-                    : 'border-slate-700 bg-slate-950/70 text-slate-300 hover:border-slate-600'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+          <div className="grid grid-cols-1 gap-8">
+            {/* Bankroll Stat */}
+            <div className="space-y-1">
+              <p className="text-sm uppercase tracking-widest text-gray-500">Bankroll</p>
+              <p className="text-3xl font-mono">$12,480</p>
+              <p className="text-edge-emerald text-sm">+2.1% session</p>
+            </div>
+
+            {/* Latency Stat */}
+            <div className="space-y-1">
+              <p className="text-sm uppercase tracking-widest text-gray-500">Latency</p>
+              <p className="text-xl font-mono">18ms</p>
+              <p className="text-blue-400 text-xs flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                Live feed stable
+              </p>
+            </div>
           </div>
         </section>
+
+        {/* Navigation Buttons */}
+        <nav className="flex gap-3 pt-6">
+          {['TERMINAL', 'STEAM ROOM', 'LIVE SWEAT'].map((item) => (
+            <button
+              key={item}
+              className="px-4 py-2 border border-edge-border bg-black/20 text-[10px] font-bold tracking-widest hover:border-edge-emerald transition-colors"
+            >
+              {item}
+            </button>
+          ))}
+        </nav>
       </div>
-    </div>
+    </main>
   );
 }
