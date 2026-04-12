@@ -1,5 +1,5 @@
-import MasterTerminal from '@/components/Terminal/MasterTerminal';
+import UnifiedDashboard from '@/components/UnifiedDashboard';
 
 export default function DashboardPage() {
-  return <MasterTerminal />;
+  return <UnifiedDashboard />;
 }
