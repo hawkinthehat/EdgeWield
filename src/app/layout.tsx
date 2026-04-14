@@ -1,20 +1,9 @@
-import type { ReactNode } from 'react';
-import './globals.css';
-
-export const metadata = {
-  title: 'EdgeWield Pro',
-  description: 'Professional trading command center',
-};
-
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-};
-
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body style={{ backgroundColor: '#050608', color: 'white', margin: 0 }}>
+        {children}
+      </body>
     </html>
-  );
+  )
 }
