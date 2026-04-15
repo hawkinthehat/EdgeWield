@@ -20,7 +20,7 @@ export default function EdgeWield() {
     fetchOdds();
   }, []);
 
-  if (error) return <div style={{color: 'red', padding: '50px'}}>Error: {error}</div>;
+  if (errr) return <div style={{color: 'red', padding: '50px'}}>Error: {error}</div>;
   if (games.length === 0) return <div style={{background: '#050608', color: 'white', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}><h1>SCANNING MARKET...</h1></div>;
 
   return (
